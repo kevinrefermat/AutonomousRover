@@ -3,7 +3,6 @@
 
 typedef unsigned short gridUnit_t;
 typedef unsigned short degree_t;
-typedef unsigned short length_t;
 typedef unsigned short pulseCount_t;
 
 #endif
