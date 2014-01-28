@@ -1,5 +1,5 @@
 *** EVALUATION ***
-PROGRAM "F:\RoverTeamTwo\RoverTeamTwo\bin\Project.abs"
+PROGRAM "F:\RoverTeamTwo\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -24,7 +24,7 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     0
-  _Copy    *toCopyDownBeg 0xC04D
+  _Copy    *toCopyDownBeg 0xC0A3
 } _startupData;
 
 *********************************************************************************************
@@ -33,8 +33,9 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.text                             18     R     0xC03B     0xC04C   ROM_C000
-.copy                              2     R     0xC04D     0xC04E   ROM_C000
+.rodata                            1     R     0xC03B     0xC03B   ROM_C000
+.text                            103     R     0xC03C     0xC0A2   ROM_C000
+.copy                              2     R     0xC0A3     0xC0A4   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -261,7 +262,7 @@ Section Name                    Size  Type     From       To       Segment
 .vectSeg222_vect                   2     R     0xFFFE     0xFFFF   .vectSeg222
 
 Summary of section sizes per section type:
-READ_ONLY (R):          53 (dec:       83)
+READ_ONLY (R):          A9 (dec:      169)
 READ_WRITE (R/W):      100 (dec:      256)
 NO_INIT (N/I):         104 (dec:      260)
 
@@ -317,7 +318,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _CFORC                                      41       1       1       0   .abs_section_41
      _OC7M                                       42       1       1       0   .abs_section_42
      _OC7D                                       43       1       1       0   .abs_section_43
-     _TSCR1                                      46       1       1       0   .abs_section_46
+     _TSCR1                                      46       1       1       1   .abs_section_46
      _TTOV                                       47       1       1       0   .abs_section_47
      _TCTL1                                      48       1       1       0   .abs_section_48
      _TCTL2                                      49       1       1       0   .abs_section_49
@@ -327,8 +328,8 @@ MODULE:                 -- MC9S12C128.c.o --
      _TSCR2                                      4D       1       1       0   .abs_section_4d
      _TFLG1                                      4E       1       1       0   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
-     _PACTL                                      60       1       1       1   .abs_section_60
-     _PAFLG                                      61       1       1       0   .abs_section_61
+     _PACTL                                      60       1       1       7   .abs_section_60
+     _PAFLG                                      61       1       1       1   .abs_section_61
      _ATDSTAT0                                   86       1       1       0   .abs_section_86
      _ATDTEST1                                   89       1       1       0   .abs_section_89
      _ATDSTAT1                                   8B       1       1       0   .abs_section_8b
@@ -461,7 +462,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
      _PORTAB                                      0       2       2       2   .abs_section_0
-     _DDRAB                                       2       2       2       0   .abs_section_2
+     _DDRAB                                       2       2       2       1   .abs_section_2
      _PARTID                                     1A       2       2       0   .abs_section_1a
      _DBGTB                                      22       2       2       0   .abs_section_22
      _DBGCC                                      26       2       2       0   .abs_section_26
@@ -476,7 +477,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _TC5                                        5A       2       2       0   .abs_section_5a
      _TC6                                        5C       2       2       0   .abs_section_5c
      _TC7                                        5E       2       2       0   .abs_section_5e
-     _PACNT                                      62       2       2       0   .abs_section_62
+     _PACNT                                      62       2       2       1   .abs_section_62
      _ATDCTL23                                   82       2       2       0   .abs_section_82
      _ATDCTL45                                   84       2       2       0   .abs_section_84
      _ATDDR0                                     90       2       2       0   .abs_section_90
@@ -501,13 +502,17 @@ MODULE:                 -- MC9S12C128.c.o --
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C03B       5       5       1   .text       
+     main                                      C03C      13      19       1   .text       
 - VARIABLES:
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     stopMotion                                C040       A      10       1   .text       
-     motionCompleted                           C04A       3       3       1   .text       
+     initializeMotorControlSystem              C04F       5       5       1   .text       
+     stopMotion                                C054       8       8       2   .text       
+     move                                      C05C      3B      59       1   .text       
+     distanceToPulses                          C097       9       9       1   .text       
+     motionCompleted                           C0A0       3       3       1   .text       
 - VARIABLES:
+     FORWARD_MOTION                            C03B       1       1       1   .rodata     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
@@ -523,8 +528,8 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   MC9S12C128.c.o                             260      0      0
-  main.c.o                                     0      5      0
-  MotorControlSystem.c.o                       0     13      2
+  main.c.o                                     0     19      0
+  MotorControlSystem.c.o                       0     84      3
   Start12.c.o                                  0     49      0
   other                                      256     12      2
 
@@ -532,9 +537,12 @@ MODULE STATISTIC
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  main stopMotion motionCompleted 
+  main initializeMotorControlSystem stopMotion move distanceToPulses 
+  motionCompleted 
 SECTION: ".init"
   Init _Startup 
+SECTION: ".rodata"
+  FORWARD_MOTION 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -985,7 +993,7 @@ OBJECT LIST SORTED BY ADDRESS
      Name                                      Addr   hSize   dSize     Ref    Section   RLIB
 ---------------------------------------------------------------------------------------------
      _PORTAB                                      0       2       2       2   .abs_section_0
-     _DDRAB                                       2       2       2       0   .abs_section_2
+     _DDRAB                                       2       2       2       1   .abs_section_2
      _PORTE                                       8       1       1       0   .abs_section_8
      _DDRE                                        9       1       1       0   .abs_section_9
      _PEAR                                        A       1       1       0   .abs_section_a
@@ -1031,7 +1039,7 @@ OBJECT LIST SORTED BY ADDRESS
      _OC7M                                       42       1       1       0   .abs_section_42
      _OC7D                                       43       1       1       0   .abs_section_43
      _TCNT                                       44       2       2       0   .abs_section_44
-     _TSCR1                                      46       1       1       0   .abs_section_46
+     _TSCR1                                      46       1       1       1   .abs_section_46
      _TTOV                                       47       1       1       0   .abs_section_47
      _TCTL1                                      48       1       1       0   .abs_section_48
      _TCTL2                                      49       1       1       0   .abs_section_49
@@ -1049,9 +1057,9 @@ OBJECT LIST SORTED BY ADDRESS
      _TC5                                        5A       2       2       0   .abs_section_5a
      _TC6                                        5C       2       2       0   .abs_section_5c
      _TC7                                        5E       2       2       0   .abs_section_5e
-     _PACTL                                      60       1       1       1   .abs_section_60
-     _PAFLG                                      61       1       1       0   .abs_section_61
-     _PACNT                                      62       2       2       0   .abs_section_62
+     _PACTL                                      60       1       1       7   .abs_section_60
+     _PAFLG                                      61       1       1       1   .abs_section_61
+     _PACNT                                      62       2       2       1   .abs_section_62
      _ATDCTL23                                   82       2       2       0   .abs_section_82
      _ATDCTL45                                   84       2       2       0   .abs_section_84
      _ATDSTAT0                                   86       1       1       0   .abs_section_86
@@ -1207,27 +1215,28 @@ OBJECT LIST SORTED BY ADDRESS
      _PPSAD                                     275       1       1       0   .abs_section_275
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     main                                      C03B       5       5       1   .text       
-     stopMotion                                C040       A      10       1   .text       
-     motionCompleted                           C04A       3       3       1   .text       
+     FORWARD_MOTION                            C03B       1       1       1   .rodata     
+     main                                      C03C      13      19       1   .text       
+     initializeMotorControlSystem              C04F       5       5       1   .text       
+     stopMotion                                C054       8       8       2   .text       
+     move                                      C05C      3B      59       1   .text       
+     distanceToPulses                          C097       9       9       1   .text       
+     motionCompleted                           C0A0       3       3       1   .text       
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 
 *********************************************************************************************
 UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
-NOT USED PROCEDURES
-MotorControlSystem.c.o:
-  initializeMotorControlSystem move distanceToPulses 
 NOT USED VARIABLES
 main.c.o:
-  False True PULSES_PER_FOOT MOVE_FORWARD MOVE_BACKWARD 
+  False True 
 MotorControlSystem.c.o:
-  False True PULSES_PER_FOOT MOVE_FORWARD MOVE_BACKWARD 
+  False True PULSES_PER_FOOT REVERSE_MOTION STOP_MOTION 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC04D ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC0A3 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1236,7 +1245,12 @@ OBJECT-DEPENDENCIES SECTION
 ---------------------------------------------------------------------------------------------
 Init                      USES _startupData 
 _Startup                  USES __SEG_END_SSTACK Init main 
+main                      USES initializeMotorControlSystem FORWARD_MOTION 
+                                move 
+initializeMotorControlSystem USES _DDRAB 
 stopMotion                USES _PORTAB _PACTL 
+move                      USES _TSCR1 _PAFLG distanceToPulses _PACNT _PACTL 
+                                _PORTAB stopMotion 
 motionCompleted           USES stopMotion 
 _Vector_17                USES motionCompleted 
 
@@ -1246,7 +1260,15 @@ DEPENDENCY TREE
  main and _Startup Group
  | 
  +- main                
- |    
+ |  | 
+ |  +- initializeMotorControlSystem
+ |  |    
+ |  +- move                
+ |     | 
+ |     +- distanceToPulses    
+ |     |    
+ |     +- stopMotion          
+ |          
  +- _Startup            
     | 
     +- Init                
@@ -1257,14 +1279,14 @@ DEPENDENCY TREE
  | 
  +- motionCompleted     
     | 
-    +- stopMotion          
-         
+    +- stopMotion           (see above)
+       
 *********************************************************************************************
 STATISTIC SECTION
 ---------------------------------------------------------------------------------------------
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 6
-Total size of all blocks to be downloaded: 83
+Number of blocks to be downloaded: 7
+Total size of all blocks to be downloaded: 169
 

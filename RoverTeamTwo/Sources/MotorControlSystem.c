@@ -1,5 +1,6 @@
-#include "MotorControlSystem.h"
 #include "MC9S12C128.h"
+#include "MotorControlSystem.h"
+#include "main.h"
 
 // need to implement a flag to indicate when current motion operation is done.
 // Currently, calling moveForward() will start motion and then return. Forward motion
@@ -9,13 +10,12 @@
 
 void initializeMotorControlSystem()
 {
-	// Write interrupt vector for PAOVI to stop the rover.
+	DDRA = 0xFF;
 }
 
 void stopMotion()
 {
-	MOTOR_DRIVER_INPUT_0 = 0;
-	MOTOR_DRIVER_INPUT_1 = 0;
+	PORTA = STOP_MOTION;
 	
 	// Disable pulse accumulator
 	PACTL_PAEN = 0;
@@ -42,15 +42,13 @@ boolean_t move( direction_t direction, gridUnit_t distance )
 	PACTL_PAI = 0;
 	
 	// initialize motor drivers
-	if ( direction == MOVE_FORWARD )
+	if ( direction == FORWARD_MOTION )
 	{
-		MOTOR_DRIVER_INPUT_0 = 1;
-		MOTOR_DRIVER_INPUT_1 = 0;
+		PORTA = FORWARD_MOTION;
 	}
-	else if ( direction == MOVE_BACKWARD )
+	else if ( direction == REVERSE_MOTION )
 	{
-		MOTOR_DRIVER_INPUT_0 = 0;
-		MOTOR_DRIVER_INPUT_1 = 1;
+		PORTA = REVERSE_MOTION;
 	}
 	else
 	{
