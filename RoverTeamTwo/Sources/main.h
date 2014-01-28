@@ -6,9 +6,15 @@
 
 /*** ROVER IO CONTROL ***/
 
-#define MOTOR_DRIVER_INPUT_0  PORTA_BIT0
-#define MOTOR_DRIVER_INPUT_1  PORTA_BIT1
+// not sure if this should be extern or not
+struct RoverIOControl
+{
+	unsigned short MotorControl : 2;
+};
 
+extern const direction_t FORWARD_MOTION;
+extern const direction_t REVERSE_MOTION;
+extern const direction_t STOP_MOTION;
 
 /*** TYPE DECLARATIONS ***/
 
