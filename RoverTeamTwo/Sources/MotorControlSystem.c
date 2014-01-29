@@ -23,6 +23,7 @@ void initializeMotorControlSystem( void )
 	
 	// Set pins for output
 	DDRA = 0xFF;
+	stopMotion();
 }
 
 void stopMotion( void )
@@ -43,45 +44,40 @@ void stopMotion( void )
 	RoverInMotionFlag = False;
 }
 
-boolean_t move( direction_t direction, gridUnit_t distance )
+void moveForward( gridUnit_t distance )
 { 
- 	// Write the negative number of encoder pulses to PACNT and enable PAOVI to interrupt when
-	PACNT = ~distanceToPulses( distance ) + 1;
+  initializePulseAccumulator( distanceToPulses( distance ) );
 	
-	// Initialize pulse accumulator for encoders.\
-	// PACTL = 0x52;
-	PACTL_PAEN = 1;
-	PACTL_PAMOD = 0;
-	PACTL_PEDGE = 1;
-	PACTL_CLK = 0;
-	PACTL_PAOVI = 1;
-	PACTL_PAI = 0;
+	MOTOR_DRIVE_LEFT_IN_0 = 0; 
+	MOTOR_DRIVE_RIGHT_IN_0 = 0;
+	MOTOR_DRIVE_LEFT_IN_1 = 1;
+	MOTOR_DRIVE_RIGHT_IN_1 = 1;
 	
-	// initialize motor drivers
-	if ( direction == FORWARD_MOTION )
-	{
-		MOTOR_DRIVE_LEFT_IN_0 = 0; 
-		MOTOR_DRIVE_RIGHT_IN_0 = 0;
-		MOTOR_DRIVE_LEFT_IN_1 = 1;
-		MOTOR_DRIVE_RIGHT_IN_1 = 1;
-	}
-	else if ( direction == REVERSE_MOTION )
-	{
-		MOTOR_DRIVE_LEFT_IN_0 = 1; 
-		MOTOR_DRIVE_RIGHT_IN_0 = 1;
-		MOTOR_DRIVE_LEFT_IN_1 = 0;
-		MOTOR_DRIVE_RIGHT_IN_1 = 0;
-	}
-	else
-	{
-		stopMotion();
-		return False;
-	}
-	RoverInMotionFlag = True;
-	return True;
+ 	RoverInMotionFlag = True;	
 }
 
-int distanceToPulses( gridUnit_t distance ) 
+void moveReverse( gridUnit_t distance )
+{ 
+  initializePulseAccumulator( distanceToPulses( distance ) );
+	
+	MOTOR_DRIVE_LEFT_IN_0 = 1; 
+	MOTOR_DRIVE_RIGHT_IN_0 = 1;
+	MOTOR_DRIVE_LEFT_IN_1 = 0;
+	MOTOR_DRIVE_RIGHT_IN_1 = 0;
+	
+ 	RoverInMotionFlag = True;	
+}
+
+static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt )
+{
+  // Write the negative number of encoder pulses to PACNT and enable PAOVI to interrupt when
+	PACNT = ~numberOfPulsesTillInterrupt + 1;
+	
+	// Initialize pulse accumulator for encoders.
+	PACTL = 0x52;
+}
+
+static pulseCount_t distanceToPulses( gridUnit_t distance ) 
 {
 	return PULSES_PER_FOOT * distance;
 }

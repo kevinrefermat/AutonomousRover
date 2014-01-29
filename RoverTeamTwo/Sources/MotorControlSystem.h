@@ -10,11 +10,17 @@
 
 void initializeMotorControlSystem( void );
 
-boolean_t move( direction_t direction, gridUnit_t distance );
+void moveForward( gridUnit_t distance );
+
+void moveReverse( gridUnit_t distance );
+
+//void rotate( degree_t degrees );
 
 void stopMotion( void );
 
-static int distanceToPulses( gridUnit_t distance );
+static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt );
+
+static pulseCount_t distanceToPulses( gridUnit_t distance );
 
 interrupt VectorNumber_Vtimpaovf void motionCompleted();
 

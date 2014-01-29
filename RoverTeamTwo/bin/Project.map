@@ -26,7 +26,7 @@ _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
   _Range   pZeroOut       0x500     1
-  _Copy    *toCopyDownBeg 0xC0F4
+  _Copy    *toCopyDownBeg 0xC0C8
 } _startupData;
 
 *********************************************************************************************
@@ -35,9 +35,9 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata                            4     R     0xC03B     0xC03E   ROM_C000
-.text                            181     R     0xC03F     0xC0F3   ROM_C000
-.copy                              2     R     0xC0F4     0xC0F5   ROM_C000
+.rodata                            2     R     0xC03B     0xC03C   ROM_C000
+.text                            139     R     0xC03D     0xC0C7   ROM_C000
+.copy                              2     R     0xC0C8     0xC0C9   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -265,7 +265,7 @@ Section Name                    Size  Type     From       To       Segment
 .vectSeg222_vect                   2     R     0xFFFE     0xFFFF   .vectSeg222
 
 Summary of section sizes per section type:
-READ_ONLY (R):          FA (dec:      250)
+READ_ONLY (R):          CE (dec:      206)
 READ_WRITE (R/W):      101 (dec:      257)
 NO_INIT (N/I):         104 (dec:      260)
 
@@ -331,7 +331,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _TSCR2                                      4D       1       1       0   .abs_section_4d
      _TFLG1                                      4E       1       1       0   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
-     _PACTL                                      60       1       1       7   .abs_section_60
+     _PACTL                                      60       1       1       2   .abs_section_60
      _PAFLG                                      61       1       1       1   .abs_section_61
      _ATDSTAT0                                   86       1       1       0   .abs_section_86
      _ATDTEST1                                   89       1       1       0   .abs_section_89
@@ -505,18 +505,18 @@ MODULE:                 -- MC9S12C128.c.o --
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C03F      3E      62       1   .text       
+     main                                      C03D      23      35       1   .text       
 - VARIABLES:
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     initializeMotorControlSystem              C07D       8       8       1   .text       
-     stopMotion                                C085      1C      28       2   .text       
-     move                                      C0A1      4F      79       2   .text       
-     distanceToPulses                          C0F0       1       1       1   .text       
-     motionCompleted                           C0F1       3       3       1   .text       
+     initializeMotorControlSystem              C060       A      10       1   .text       
+     stopMotion                                C06A      1C      28       2   .text       
+     moveForward                               C086      19      25       1   .text       
+     moveReverse                               C09F      19      25       1   .text       
+     initializePulseAccumulator                C0B8       C      12       2   .text       
+     distanceToPulses                          C0C4       1       1       2   .text       
+     motionCompleted                           C0C5       3       3       1   .text       
 - VARIABLES:
-     FORWARD_MOTION                            C03B       1       1       1   .rodata     
-     REVERSE_MOTION                            C03C       1       1       1   .rodata     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
@@ -529,8 +529,8 @@ MODULE:                 -- Start12.c.o --
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
 - VARIABLES:
-     False                                     C03D       1       1       3   .rodata     
-     True                                      C03E       1       1       4   .rodata     
+     False                                     C03B       1       1       1   .rodata     
+     True                                      C03C       1       1       4   .rodata     
      RoverInMotionFlag                          500       1       1       5   .bss        
 
 *********************************************************************************************
@@ -538,8 +538,8 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   MC9S12C128.c.o                             260      0      0
-  main.c.o                                     0     62      0
-  MotorControlSystem.c.o                       0    119      4
+  main.c.o                                     0     35      0
+  MotorControlSystem.c.o                       0    104      2
   Start12.c.o                                  0     49      0
   Rover.c.o                                    1      0      2
   other                                      256     12      2
@@ -548,14 +548,14 @@ MODULE STATISTIC
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  main initializeMotorControlSystem stopMotion move distanceToPulses 
-  motionCompleted 
+  main initializeMotorControlSystem stopMotion moveForward moveReverse 
+  initializePulseAccumulator distanceToPulses motionCompleted 
 SECTION: ".bss"
   RoverInMotionFlag 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata"
-  FORWARD_MOTION REVERSE_MOTION False True 
+  False True 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1070,7 +1070,7 @@ OBJECT LIST SORTED BY ADDRESS
      _TC5                                        5A       2       2       0   .abs_section_5a
      _TC6                                        5C       2       2       0   .abs_section_5c
      _TC7                                        5E       2       2       0   .abs_section_5e
-     _PACTL                                      60       1       1       7   .abs_section_60
+     _PACTL                                      60       1       1       2   .abs_section_60
      _PAFLG                                      61       1       1       1   .abs_section_61
      _PACNT                                      62       2       2       1   .abs_section_62
      _ATDCTL23                                   82       2       2       0   .abs_section_82
@@ -1229,16 +1229,16 @@ OBJECT LIST SORTED BY ADDRESS
      RoverInMotionFlag                          500       1       1       5   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     FORWARD_MOTION                            C03B       1       1       1   .rodata     
-     REVERSE_MOTION                            C03C       1       1       1   .rodata     
-     False                                     C03D       1       1       3   .rodata     
-     True                                      C03E       1       1       4   .rodata     
-     main                                      C03F      3E      62       1   .text       
-     initializeMotorControlSystem              C07D       8       8       1   .text       
-     stopMotion                                C085      1C      28       2   .text       
-     move                                      C0A1      4F      79       2   .text       
-     distanceToPulses                          C0F0       1       1       1   .text       
-     motionCompleted                           C0F1       3       3       1   .text       
+     False                                     C03B       1       1       1   .rodata     
+     True                                      C03C       1       1       4   .rodata     
+     main                                      C03D      23      35       1   .text       
+     initializeMotorControlSystem              C060       A      10       1   .text       
+     stopMotion                                C06A      1C      28       2   .text       
+     moveForward                               C086      19      25       1   .text       
+     moveReverse                               C09F      19      25       1   .text       
+     initializePulseAccumulator                C0B8       C      12       2   .text       
+     distanceToPulses                          C0C4       1       1       2   .text       
+     motionCompleted                           C0C5       3       3       1   .text       
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 
 *********************************************************************************************
@@ -1246,12 +1246,13 @@ UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
 NOT USED VARIABLES
 MotorControlSystem.c.o:
-  PULSES_PER_FOOT FEET_PER_GRID_UNIT PULSES_PER_GRID_UNIT STOP_MOTION 
+  PULSES_PER_FOOT FEET_PER_GRID_UNIT PULSES_PER_GRID_UNIT FORWARD_MOTION 
+  REVERSE_MOTION STOP_MOTION 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC0F4 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC0C8 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1260,13 +1261,16 @@ OBJECT-DEPENDENCIES SECTION
 ---------------------------------------------------------------------------------------------
 Init                      USES _startupData 
 _Startup                  USES __SEG_END_SSTACK Init main 
-main                      USES initializeMotorControlSystem REVERSE_MOTION 
-                                move RoverInMotionFlag True FORWARD_MOTION False 
-initializeMotorControlSystem USES _TSCR1 _DDRAB 
+main                      USES initializeMotorControlSystem moveForward 
+                                RoverInMotionFlag True moveReverse 
+initializeMotorControlSystem USES _TSCR1 _DDRAB stopMotion 
 stopMotion                USES _PORTAB _PACTL _TSCR1 _PAFLG False 
                                 RoverInMotionFlag 
-move                      USES distanceToPulses _PACNT _PACTL _PORTAB True 
-                                RoverInMotionFlag stopMotion False 
+moveForward               USES distanceToPulses initializePulseAccumulator 
+                                _PORTAB True RoverInMotionFlag 
+moveReverse               USES distanceToPulses initializePulseAccumulator 
+                                _PORTAB True RoverInMotionFlag 
+initializePulseAccumulator USES _PACNT _PACTL 
 motionCompleted           USES stopMotion 
 _Vector_17                USES motionCompleted 
 
@@ -1278,13 +1282,21 @@ DEPENDENCY TREE
  +- main                
  |  | 
  |  +- initializeMotorControlSystem
- |  |    
- |  +- move                
+ |  |  | 
+ |  |  +- stopMotion          
+ |  |       
+ |  +- moveForward         
+ |  |  | 
+ |  |  +- distanceToPulses    
+ |  |  |    
+ |  |  +- initializePulseAccumulator
+ |  |       
+ |  +- moveReverse         
  |     | 
- |     +- distanceToPulses    
- |     |    
- |     +- stopMotion          
- |          
+ |     +- distanceToPulses     (see above)
+ |     |  
+ |     +- initializePulseAccumulator (see above)
+ |        
  +- _Startup            
     | 
     +- Init                
@@ -1303,6 +1315,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 6
-Total size of all blocks to be downloaded: 250
+Number of blocks to be downloaded: 7
+Total size of all blocks to be downloaded: 206
 
