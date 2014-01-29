@@ -4,13 +4,11 @@
 #include "main.h"
 #include "MC9S12C128.h"
 
-
-
 static const pulseCount_t PULSES_PER_FOOT = 58;
 
-const direction_t FORWARD_MOTION = 0x1;
-const direction_t REVERSE_MOTION = 0x2;
-const direction_t STOP_MOTION = 0x3;
+const direction_t FORWARD_MOTION = 0;
+const direction_t REVERSE_MOTION = 1;
+const direction_t STOP_MOTION = 2;
 
 void initializeMotorControlSystem();
 

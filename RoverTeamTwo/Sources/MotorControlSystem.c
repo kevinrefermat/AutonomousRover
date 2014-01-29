@@ -1,6 +1,6 @@
 #include "MC9S12C128.h"
-#include "MotorControlSystem.h"
 #include "main.h"
+#include "MotorControlSystem.h"
 
 // need to implement a flag to indicate when current motion operation is done.
 // Currently, calling moveForward() will start motion and then return. Forward motion
@@ -15,7 +15,10 @@ void initializeMotorControlSystem()
 
 void stopMotion()
 {
-	PORTA = STOP_MOTION;
+	MOTOR_DRIVE_LEFT_IN_0 = 1;
+	MOTOR_DRIVE_LEFT_IN_1 = 1;
+	MOTOR_DRIVE_RIGHT_IN_0 = 1;
+	MOTOR_DRIVE_RIGHT_IN_1 = 1;
 	
 	// Disable pulse accumulator
 	PACTL_PAEN = 0;
@@ -44,11 +47,17 @@ boolean_t move( direction_t direction, gridUnit_t distance )
 	// initialize motor drivers
 	if ( direction == FORWARD_MOTION )
 	{
-		PORTA = FORWARD_MOTION;
+		MOTOR_DRIVE_LEFT_IN_0 = 0;
+		MOTOR_DRIVE_LEFT_IN_1 = 0;
+		MOTOR_DRIVE_RIGHT_IN_0 = 1;
+		MOTOR_DRIVE_RIGHT_IN_1 = 1;
 	}
 	else if ( direction == REVERSE_MOTION )
 	{
-		PORTA = REVERSE_MOTION;
+		MOTOR_DRIVE_LEFT_IN_0 = 1;
+		MOTOR_DRIVE_LEFT_IN_1 = 1;
+		MOTOR_DRIVE_RIGHT_IN_0 = 0;
+		MOTOR_DRIVE_RIGHT_IN_1 = 0;
 	}
 	else
 	{
