@@ -15,6 +15,12 @@ int main()
       
       moveReverse( 8 );
       while( RoverInMotionFlag == True );
+      
+      rotate( 10 );
+      while( RoverInMotionFlag == True );
+      
+      rotate( -10 );
+      while( RoverInMotionFlag == True );
     }
     return 0;
 }

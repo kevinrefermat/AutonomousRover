@@ -14,13 +14,15 @@ void moveForward( gridUnit_t distance );
 
 void moveReverse( gridUnit_t distance );
 
-//void rotate( degree_t degrees );
+void rotate( degree_t degrees );
 
 void stopMotion( void );
 
 static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt );
 
 static pulseCount_t distanceToPulses( gridUnit_t distance );
+
+static pulseCount_t degreesToPulses( degree_t degrees );
 
 interrupt VectorNumber_Vtimpaovf void motionCompleted();
 

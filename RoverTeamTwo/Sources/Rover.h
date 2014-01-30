@@ -6,7 +6,7 @@
 
 typedef unsigned char boolean_t;
 typedef unsigned short gridUnit_t;
-typedef unsigned short degree_t;
+typedef signed short degree_t;
 typedef unsigned short pulseCount_t;
 typedef unsigned char direction_t;
 

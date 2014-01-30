@@ -9,6 +9,8 @@ static const pulseCount_t PULSES_PER_FOOT = 1;//58;
 static const unsigned char FEET_PER_GRID_UNIT = 1; 
 static const pulseCount_t PULSES_PER_GRID_UNIT = PULSES_PER_FOOT * FEET_PER_GRID_UNIT;
 
+static const pulseCount_t PULSES_PER_DEGREE = 2;
+
 const direction_t FORWARD_MOTION = 0x0;
 const direction_t REVERSE_MOTION = 0x1;
 const direction_t STOP_MOTION = 0x2;
@@ -48,9 +50,9 @@ void moveForward( gridUnit_t distance )
 { 
   initializePulseAccumulator( distanceToPulses( distance ) );
 	
-	MOTOR_DRIVE_LEFT_IN_0 = 0; 
+	MOTOR_DRIVE_LEFT_IN_0 = 0;
+	MOTOR_DRIVE_LEFT_IN_1 = 1; 
 	MOTOR_DRIVE_RIGHT_IN_0 = 0;
-	MOTOR_DRIVE_LEFT_IN_1 = 1;
 	MOTOR_DRIVE_RIGHT_IN_1 = 1;
 	
  	RoverInMotionFlag = True;	
@@ -61,12 +63,41 @@ void moveReverse( gridUnit_t distance )
   initializePulseAccumulator( distanceToPulses( distance ) );
 	
 	MOTOR_DRIVE_LEFT_IN_0 = 1; 
+	MOTOR_DRIVE_LEFT_IN_1 = 0; 
 	MOTOR_DRIVE_RIGHT_IN_0 = 1;
-	MOTOR_DRIVE_LEFT_IN_1 = 0;
 	MOTOR_DRIVE_RIGHT_IN_1 = 0;
 	
  	RoverInMotionFlag = True;	
 }
+
+void rotate( degree_t degrees )
+{
+  initializePulseAccumulator( degreesToPulses( degrees ) );
+  
+  if ( degrees > 0 )
+  {
+    MOTOR_DRIVE_LEFT_IN_0 = 1; 
+	  MOTOR_DRIVE_LEFT_IN_1 = 0;
+	  MOTOR_DRIVE_RIGHT_IN_0 = 0;
+	  MOTOR_DRIVE_RIGHT_IN_1 = 1;
+	  
+	  RoverInMotionFlag = True;
+  }
+  else if ( degrees < 0 )
+  {    
+    MOTOR_DRIVE_LEFT_IN_0 = 0; 
+	  MOTOR_DRIVE_LEFT_IN_1 = 1;
+	  MOTOR_DRIVE_RIGHT_IN_0 = 1;
+	  MOTOR_DRIVE_RIGHT_IN_1 = 0;
+	          
+    RoverInMotionFlag = True;   
+  }
+  else
+  {
+    stopMotion();
+  }                            
+}
+  
 
 static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt )
 {
@@ -80,6 +111,18 @@ static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt
 static pulseCount_t distanceToPulses( gridUnit_t distance ) 
 {
 	return PULSES_PER_FOOT * distance;
+}
+
+static pulseCount_t degreesToPulses( degree_t degrees) 
+{
+	if ( degrees >= 0 ) 
+	{
+	  return PULSES_PER_DEGREE * degrees;
+	}
+	else
+	{
+	  return -1 * PULSES_PER_DEGREE * degrees;
+	}
 }
 
 
