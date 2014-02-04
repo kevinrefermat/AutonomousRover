@@ -5,7 +5,7 @@
 
 /*** Constant Definitions ***/
 
-static const pulseCount_t PULSES_PER_FOOT = 1;//58;
+static const pulseCount_t PULSES_PER_FOOT = 58;
 static const unsigned char FEET_PER_GRID_UNIT = 1; 
 static const pulseCount_t PULSES_PER_GRID_UNIT = PULSES_PER_FOOT * FEET_PER_GRID_UNIT;
 

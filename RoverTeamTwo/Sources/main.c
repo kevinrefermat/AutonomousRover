@@ -10,16 +10,16 @@ int main()
     initializeMotorControlSystem();
     for ( ; ; )
     { 
-      moveForward( 4 );
+      moveForward( 1 );
       while( RoverInMotionFlag == True );
       
-      moveReverse( 8 );
+      moveReverse( 1 );
       while( RoverInMotionFlag == True );
       
-      rotate( 10 );
+      rotate( 1 );
       while( RoverInMotionFlag == True );
       
-      rotate( -10 );
+      rotate( -1 );
       while( RoverInMotionFlag == True );
     }
     return 0;
