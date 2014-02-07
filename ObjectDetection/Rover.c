@@ -8,4 +8,4 @@ const unsigned char True = 1;
 
 /*** Flags ***/ 
 
-boolean_t RoverInMotionFlag = False;
+boolean_t RoverInMotionFlag = False;	
