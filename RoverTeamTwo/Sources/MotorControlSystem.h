@@ -29,9 +29,7 @@ static void rightTreadForward();
 
 static void rightTreadReverse();   
 
-static void rightTreadBrake();
-
-static void rightTreadBrake();
+static void brakeTreads();
 
 static void disableTreads();
 

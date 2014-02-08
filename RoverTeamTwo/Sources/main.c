@@ -6,21 +6,30 @@
 
 int main()
 {   
+    inches_t distance;
     EnableInterrupts;
+    initializeTimers();
+    
     initializeMotorControlSystem();
+     
+    /*
     for ( ; ; )
     { 
-      moveForward( 1 );
+      moveForward( 2 );
       while( RoverInMotionFlag == True );
       
-      moveReverse( 1 );
+      moveReverse( 2 );
       while( RoverInMotionFlag == True );
       
-      rotate( 1 );
+      rotate( 90 );
       while( RoverInMotionFlag == True );
       
-      rotate( -1 );
+      rotate( -90 );
       while( RoverInMotionFlag == True );
     }
+     */     
+    
+    distance = detectClosestObstacle();
+    for (;;);
     return 0;
 }

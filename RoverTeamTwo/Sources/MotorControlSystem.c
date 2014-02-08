@@ -1,13 +1,14 @@
-#include "MC9S12C128.h"
+#include "MC9S12C128.h"     
+#include <hidef.h>
+
 #include "Rover.h"
 #include "MotorControlSystem.h"
-#include <hidef.h>
 
 
 /*** Constant Definitions ***/
 
-static const pulseCount_t PULSES_PER_FOOT = 1; //58;
-static const unsigned char FEET_PER_GRID_UNIT = 1; 
+static const pulseCount_t PULSES_PER_FOOT = 58;
+static const Byte FEET_PER_GRID_UNIT = 1; 
 static const pulseCount_t PULSES_PER_GRID_UNIT = PULSES_PER_FOOT * FEET_PER_GRID_UNIT;
 
 static const pulseCount_t PULSES_PER_DEGREE = 1;
@@ -19,20 +20,16 @@ const direction_t STOP_MOTION = 0x2;
 
 /*** Functions ***/
 
-void initializeMotorControlSystem( void )
+void initializeMotorControlSystem()
 {
-  // TEN must be set to allow flag clearing
-  TSCR1_TEN = 1;
-	
-	// Set pins for output
 	DDRA = 0xFF;
 	stopMotion();
 }
 
 static void leftTreadForward()
 {
-  MOTOR_DRIVE_LEFT_IN_0 = 0;
-	MOTOR_DRIVE_LEFT_IN_1 = 1;
+  MOTOR_DRIVE_LEFT_IN_0 = 1;
+	MOTOR_DRIVE_LEFT_IN_1 = 0;
 }
 
 static void rightTreadForward()
@@ -43,8 +40,8 @@ static void rightTreadForward()
 
 static void leftTreadReverse()
 {
-  MOTOR_DRIVE_LEFT_IN_0 = 1;
-	MOTOR_DRIVE_LEFT_IN_1 = 0;
+  MOTOR_DRIVE_LEFT_IN_0 = 0;
+	MOTOR_DRIVE_LEFT_IN_1 = 1;
 }
 
 static void rightTreadReverse()
@@ -53,49 +50,42 @@ static void rightTreadReverse()
 	MOTOR_DRIVE_RIGHT_IN_1 = 0;
 }
 
-
-static void leftTreadBrake()
+static void brakeTreads()
 {
-	MOTOR_DRIVE_LEFT_IN_0 = 1;
-	MOTOR_DRIVE_LEFT_IN_1 = 1;
-}
-
-static void rightTreadBrake()
-{
-	MOTOR_DRIVE_RIGHT_IN_0 = 1;
-	MOTOR_DRIVE_RIGHT_IN_1 = 1;
+  MOTOR_DRIVE_IO |= 0x0F; 
 }
 
 static void disableTreads()
 {
-  PORTA &= 0xCF;
+  MOTOR_DRIVE_IO &= 0xCF;
 }
 
 static void enableTreads()
 {
-  PORTA |= 0x30;
+  MOTOR_DRIVE_IO |= 0x30;
 }
+
 
 void moveForward( gridUnit_t distance )
 { 
-  initializePulseAccumulator( distanceToPulses( distance ) );
-	
-	DisableInterrupts;
+ 	DisableInterrupts;
+  initializePulseAccumulator( distanceToPulses( distance ) ); 
+  disableTreads();
 	
 	leftTreadForward();
 	rightTreadForward();
 	
  	RoverInMotionFlag = True;	
- 	
+ 	                    
+ 	enableTreads();
  	EnableInterrupts;
 }
 
 void moveReverse( gridUnit_t distance )
 { 
-  initializePulseAccumulator( distanceToPulses( distance ) );
-	
 	DisableInterrupts;
-	disableTreads();
+  initializePulseAccumulator( distanceToPulses( distance ) ); 
+  disableTreads();
 	
 	leftTreadReverse();
 	rightTreadReverse();
@@ -108,11 +98,9 @@ void moveReverse( gridUnit_t distance )
 
 void rotate( degree_t degrees )
 {
-  initializePulseAccumulator( degreesToPulses( degrees ) );
-  
   DisableInterrupts;
+  initializePulseAccumulator( degreesToPulses( degrees ) );
   disableTreads();
-  
   if ( degrees > 0 )
   {
     leftTreadForward();
@@ -138,23 +126,21 @@ void rotate( degree_t degrees )
 
 void stopMotion( void )
 {
-  DisableInterrupts;
+	DisableInterrupts;
+	
   disableTreads();
-  
-	rightTreadBrake();
-	leftTreadBrake();
+  brakeTreads();
+  enableTreads();
+  delay( WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY );
 	
 	// Clear the PA overflow flag and stop the PA
 	// Writing a 1 to the PAOVF flag clears it but TEN in TSCR1 must be enabled.
 	// Page 320 68HC12 book and 456 of the HCS12 manual.    
 	// Disable pulse accumulator and PA interrupts
 	PACTL_PAEN = 0;
-	TSCR1_TEN = 1;
 	PAFLG_PAOVF = 1;
 	
 	RoverInMotionFlag = False;
-	
-	enableTreads();
 	EnableInterrupts;
 }
 
