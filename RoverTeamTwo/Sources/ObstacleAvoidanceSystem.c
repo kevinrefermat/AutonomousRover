@@ -13,18 +13,15 @@ void initializePeriodicObjectDetection( milliseconds_t period )
 inches_t detectClosestObstacle()
 {
    timerCount_t lengthOfEcho;
-   LWord distance;
    
    DisableInterrupts;
    
    outputPulseToPing();
-   lengthOfEcho = measureReturnPulseFromPing();
-   distance = ( LWord ) lengthOfEcho * 13506;
-   distance = distance / CLOCK_SPEED_HZ;
-   distance = distance / 2;
+   lengthOfEchoInClockCycles = measureReturnPulseFromPing();
    
    EnableInterrupts;
-   return ( inches_t ) distance;
+  
+   return ( inches_t ) lengthOfEchoInClockCycles / CLOCK_CYCLES_PER_INCH / 2;
 }
 
 static void outputPulseToPing()

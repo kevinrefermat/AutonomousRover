@@ -50,7 +50,7 @@ extern const boolean_t True;
 
 extern const LWord CLOCK_SPEED_HZ;
 extern const Word SPEED_OF_SOUND_INCH_PER_SEC;
-
+extern const timerCount_t CLOCK_CYCLES_PER_INCH;
 
 /*** FLAGS ***/
 

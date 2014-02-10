@@ -7,7 +7,7 @@ const Byte True = 1;
 
 const LWord CLOCK_SPEED_HZ = 2000000;
 const Word SPEED_OF_SOUND_INCH_PER_SEC = 13506;
-
+const timerCount_t CLOCK_CYCLES_PER_INCH = CLOCK_SPEED_HZ / SPEED_OF_SOUND_INCH_PER_SEC;
 
 // At 100000 with no load at all it works. With load it must be higher
 const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY = 200000;
