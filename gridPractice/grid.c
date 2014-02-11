@@ -62,7 +62,7 @@ void printGrid( struct grid* environment )
       for ( x = 0; x < environment->m_Size.m_X; x++ )
       {
          if ( environment->m_Map[ environment->m_Size.m_X - x - 1][ environment->m_Size.m_Y - y - 1 ].m_IsOccupied == false )
-            printf( "  " );
+            printf( ".." );
          else
             printf( "HH" );
       }

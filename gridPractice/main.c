@@ -9,7 +9,11 @@ int main()
    struct grid* environment;
    environment = createEnvironment( xSize, ySize );
    
-   addRectangle( environment, 12, 7, 2, 10 );
+   addRectangle( environment, 4, 2, 12, 16 );
+   addRectangle( environment, 18, 13, 8, 15 );
+   addRectangle( environment, 6, 2, 1, 5 );
+   addRectangle( environment, 27, 23, 3, 18 );
+   addRectangle( environment, 27, 5, 24, 28 );
    printGrid( environment );
 
    destroyEnvironment( environment );
