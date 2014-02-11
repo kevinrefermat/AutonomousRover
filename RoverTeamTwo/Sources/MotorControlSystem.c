@@ -5,13 +5,14 @@
 #include "MotorControlSystem.h"
 
 
-/*** Constant Definitions ***/
+/*** Static Constant Definitions ***/
 
+static const pulseCount_t PULSES_PER_INCH = 5;
 static const pulseCount_t PULSES_PER_FOOT = 58;
-static const Byte FEET_PER_GRID_UNIT = 1; 
-static const pulseCount_t PULSES_PER_GRID_UNIT = PULSES_PER_FOOT * FEET_PER_GRID_UNIT;
-
 static const pulseCount_t PULSES_PER_DEGREE = 1;
+
+
+/*** Constant Definitions ***/
 
 const direction_t FORWARD_MOTION = 0x0;
 const direction_t REVERSE_MOTION = 0x1;
@@ -66,7 +67,7 @@ static void enableTreads()
 }
 
 
-void moveForward( gridUnit_t distance )
+void moveForward( inches_t distance )
 { 
  	DisableInterrupts;
   initializePulseAccumulator( distanceToPulses( distance ) ); 
@@ -81,7 +82,7 @@ void moveForward( gridUnit_t distance )
  	EnableInterrupts;
 }
 
-void moveReverse( gridUnit_t distance )
+void moveReverse( inches_t distance )
 { 
 	DisableInterrupts;
   initializePulseAccumulator( distanceToPulses( distance ) ); 
@@ -153,9 +154,9 @@ static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt
 	PACTL = 0x52;
 }
 
-static pulseCount_t distanceToPulses( gridUnit_t distance ) 
+static pulseCount_t distanceToPulses( inches_t distance ) 
 {
-	return PULSES_PER_FOOT * distance;
+	return ( distance / INCHES_PER_FOOT ) * PULSES_PER_FOOT + ( distance % INCHES_PER_FOOT ) * PULSES_PER_INCH;
 }
 
 static pulseCount_t degreesToPulses( degree_t degrees) 

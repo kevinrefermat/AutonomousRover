@@ -10,9 +10,9 @@
 
 void initializeMotorControlSystem( void );
 
-void moveForward( gridUnit_t distance );
+void moveForward( inches_t distance );
 
-void moveReverse( gridUnit_t distance );
+void moveReverse( inches_t distance );
 
 void rotate( degree_t degrees );
 
@@ -37,7 +37,7 @@ static void enableTreads();
 
 static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt );
 
-static pulseCount_t distanceToPulses( gridUnit_t distance );
+static pulseCount_t distanceToPulses( inches_t distance );
 
 static pulseCount_t degreesToPulses( degree_t degrees );
 
