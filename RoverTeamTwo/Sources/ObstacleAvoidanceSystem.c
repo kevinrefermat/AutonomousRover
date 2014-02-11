@@ -5,22 +5,42 @@
 #include "Rover.h"
 #include "ObstacleAvoidanceSystem.h"
 
-void initializePeriodicObjectDetection( milliseconds_t period )
+static registerValue_t LOOK_LEFT_PWM = 18;
+static registerValue_t LOOK_RIGHT_PWM = 3;
+
+static timerCount_t PING_UPDATE_DELAY_CLOCK_CYCLES = 62000;
+
+void initializePeriodicObjectDetection()
 {
-  
+   updatePingDelay();  
 } 
+
+static void updatePingDelay()
+{
+  TC1 = TCNT + PING_UPDATE_DELAY_CLOCK_CYCLES; 
+}
 
 inches_t detectClosestObstacle()
 {
+<<<<<<< HEAD
    timerCount_t lengthOfEcho;
+=======
+   timerCount_t lengthOfEchoInClockCycles;
+>>>>>>> Motors work and ping servo works. last commit before faculty review
    
    DisableInterrupts;
    
    outputPulseToPing();
+<<<<<<< HEAD
    lengthOfEchoInClockCycles = measureReturnPulseFromPing();
    
    EnableInterrupts;
   
+=======
+   lengthOfEchoInClockCycles = measureReturnPulseFromPing() * TIMER_COUNTER_PRESCALE;
+   
+   EnableInterrupts;
+>>>>>>> Motors work and ping servo works. last commit before faculty review
    return ( inches_t ) lengthOfEchoInClockCycles / CLOCK_CYCLES_PER_INCH / 2;
 }
 
@@ -50,31 +70,9 @@ static timerCount_t measureReturnPulseFromPing()
    OBJECT_DETECTION_DDR = 0;
 
 
-/*
-// This section can be in a global initialization
-
-   // enable timer and fast flag clear
-   TSCR1 = 0x90;
-   
-   // disable timer overflow interrupt; ch0 = simple modulus counter; clock prescale = 1
-   TSCR2 = 0x00;                            
-   
-   // disable interrupt caused by channel 0
-   TIE &= 0xFE;
-   
-   // pull up or down device enabled
-   PERT |= 0x01;
-   
-   PPST |= 0x01;
-
-
-*/
-
    // enable channel 0 to be input capture
    TIOS &= 0xFE;
    
-   
-   // ************ MAKE THIS VVVVV SO THAT BITS 1 and 0 are affected but no others
    // capture rising edge
    TCTL4_EDG0x = 0x01;
    
@@ -97,3 +95,43 @@ static timerCount_t measureReturnPulseFromPing()
       return ( ~risingEdge + 1 ) + TC0;
    }
 }
+<<<<<<< HEAD
+=======
+
+void setPingRotationalPosition( degree_t degrees )
+{
+  PWMPOL_PPOL0 = 1;
+  PWMCLK_PCLK0 = 1;
+  PWMPRCLK_PCKA = 0x0;
+  PWMCAE_CAE0 = 0;
+  PWMCTL_CON01 = 0;
+  
+  //Divide unscaled bus clock by (128)*(2)
+  PWMSCLA = 0x80;
+  PWMPER0 = 167;
+  
+  PWMDTY0 = degreesToClockCycles( degrees );
+  
+  PWME_PWME0 = 1;
+}
+
+static registerValue_t degreesToClockCycles( degree_t degrees )
+{ 
+  registerValue_t clockCycles;
+  degrees += 90;
+  clockCycles = degrees;
+  clockCycles = clockCycles * ( LOOK_LEFT_PWM - LOOK_RIGHT_PWM ) / 180 + LOOK_RIGHT_PWM;
+  return clockCycles;
+}
+
+interrupt VectorNumber_Vtimch1 void updateAndUseThePing()
+{
+	//detectClosestObstacle();
+	updatePingDelay();
+	setPingRotationalPosition( pingAngle );
+	pingAngle += 10;
+}
+  
+
+
+>>>>>>> Motors work and ping servo works. last commit before faculty review

@@ -11,6 +11,7 @@ typedef Byte boolean_t;
 typedef sWord degree_t;
 typedef Word pulseCount_t;
 typedef Byte direction_t;
+typedef Byte registerValue_t;
 
 // Time  
 typedef Word milliseconds_t;
@@ -18,8 +19,8 @@ typedef LWord microseconds_t;
 typedef Word timerCount_t;
 
 // Distance
-typedef Byte inches_t; 
-typedef Word gridUnit_t;
+typedef Word inches_t; 
+typedef Byte feet_t; 
 
 
 /*** ROVER IO CONTROL ***/
@@ -41,7 +42,6 @@ extern const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY;
 #define OBJECT_DETECTION_PIN PTT_PTT0
 #define OBJECT_DETECTION_DDR DDRT_DDRT0
 
-#define DELAY_TIMER_PIN 
 
 /*** CONSTANTS ***/
 
@@ -51,6 +51,20 @@ extern const boolean_t True;
 extern const LWord CLOCK_SPEED_HZ;
 extern const Word SPEED_OF_SOUND_INCH_PER_SEC;
 extern const timerCount_t CLOCK_CYCLES_PER_INCH;
+<<<<<<< HEAD
+=======
+extern const Byte INCHES_PER_FOOT;
+
+extern const Byte TIMER_COUNTER_PRESCALE;
+
+extern const Byte PING_FREQUENCY;
+
+
+/*** GLOBAL VARIABLE ***/
+
+extern degree_t pingAngle;
+
+>>>>>>> Motors work and ping servo works. last commit before faculty review
 
 /*** FLAGS ***/
 

@@ -27,8 +27,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x500     1
-  _Copy    *toCopyDownBeg 0xC23B
+  _Range   pZeroOut       0x500     7
+  _Copy    *toCopyDownBeg 0xC35D
 } _startupData;
 
 *********************************************************************************************
@@ -37,10 +37,11 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata                            9     R     0xC03B     0xC043   ROM_C000
-.text                            294     R     0xC044     0xC169   ROM_C000
-.copy                              2     R     0xC23B     0xC23C   ROM_C000
+.rodata                           10     R     0xC03B     0xC044   ROM_C000
+.text                            583     R     0xC045     0xC28B   ROM_C000
+.copy                             12     R     0xC35D     0xC368   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
+.data                              6   R/W      0x500      0x505   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -263,13 +264,14 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_16e                   2   N/I      0x16E      0x16F   .absSeg219
 .abs_section_17e                   2   N/I      0x17E      0x17F   .absSeg220
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
-.bss                               1   R/W      0x500      0x500   RAM
-RUNTIME                          209     R     0xC16A     0xC23A   ROM_C000
-.vectSeg222_vect                   2     R     0xFFFE     0xFFFF   .vectSeg222
+.abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg222
+.bss                               1   R/W      0x506      0x506   RAM
+RUNTIME                          209     R     0xC28C     0xC35C   ROM_C000
+.vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):         241 (dec:      577)
-READ_WRITE (R/W):      101 (dec:      257)
+READ_ONLY (R):         36F (dec:      879)
+READ_WRITE (R/W):      107 (dec:      263)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -320,21 +322,21 @@ MODULE:                 -- MC9S12C128.c.o --
      _RTICTL                                     3B       1       1       0   .abs_section_3b
      _COPCTL                                     3C       1       1       0   .abs_section_3c
      _ARMCOP                                     3F       1       1       0   .abs_section_3f
-     _TIOS                                       40       1       1       1   .abs_section_40
+     _TIOS                                       40       1       1       3   .abs_section_40
      _CFORC                                      41       1       1       0   .abs_section_41
      _OC7M                                       42       1       1       0   .abs_section_42
      _OC7D                                       43       1       1       0   .abs_section_43
      _TSCR1                                      46       1       1       1   .abs_section_46
      _TTOV                                       47       1       1       0   .abs_section_47
      _TCTL1                                      48       1       1       0   .abs_section_48
-     _TCTL2                                      49       1       1       0   .abs_section_49
+     _TCTL2                                      49       1       1       1   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
      _TCTL4                                      4B       1       1       4   .abs_section_4b
-     _TIE                                        4C       1       1       1   .abs_section_4c
+     _TIE                                        4C       1       1       2   .abs_section_4c
      _TSCR2                                      4D       1       1       1   .abs_section_4d
      _TFLG1                                      4E       1       1       4   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
-     _PACTL                                      60       1       1       1   .abs_section_60
+     _PACTL                                      60       1       1       2   .abs_section_60
      _PAFLG                                      61       1       1       1   .abs_section_61
      _ATDSTAT0                                   86       1       1       0   .abs_section_86
      _ATDTEST1                                   89       1       1       0   .abs_section_89
@@ -352,13 +354,13 @@ MODULE:                 -- MC9S12C128.c.o --
      _SPIBR                                      DA       1       1       0   .abs_section_da
      _SPISR                                      DB       1       1       0   .abs_section_db
      _SPIDR                                      DD       1       1       0   .abs_section_dd
-     _PWME                                       E0       1       1       0   .abs_section_e0
-     _PWMPOL                                     E1       1       1       0   .abs_section_e1
-     _PWMCLK                                     E2       1       1       0   .abs_section_e2
-     _PWMPRCLK                                   E3       1       1       0   .abs_section_e3
-     _PWMCAE                                     E4       1       1       0   .abs_section_e4
-     _PWMCTL                                     E5       1       1       0   .abs_section_e5
-     _PWMSCLA                                    E8       1       1       0   .abs_section_e8
+     _PWME                                       E0       1       1       1   .abs_section_e0
+     _PWMPOL                                     E1       1       1       1   .abs_section_e1
+     _PWMCLK                                     E2       1       1       1   .abs_section_e2
+     _PWMPRCLK                                   E3       1       1       1   .abs_section_e3
+     _PWMCAE                                     E4       1       1       1   .abs_section_e4
+     _PWMCTL                                     E5       1       1       1   .abs_section_e5
+     _PWMSCLA                                    E8       1       1       1   .abs_section_e8
      _PWMSCLB                                    E9       1       1       0   .abs_section_e9
      _PWMSDN                                     FE       1       1       0   .abs_section_fe
      _FCLKDIV                                   100       1       1       0   .abs_section_100
@@ -467,23 +469,23 @@ MODULE:                 -- MC9S12C128.c.o --
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     _PORTAB                                      0       2       2       3   .abs_section_0
+     _PORTAB                                      0       2       2      11   .abs_section_0
      _DDRAB                                       2       2       2       1   .abs_section_2
      _PARTID                                     1A       2       2       0   .abs_section_1a
      _DBGTB                                      22       2       2       0   .abs_section_22
      _DBGCC                                      26       2       2       0   .abs_section_26
      _DBGCA                                      2B       2       2       0   .abs_section_2b
      _DBGCB                                      2E       2       2       0   .abs_section_2e
-     _TCNT                                       44       2       2       0   .abs_section_44
+     _TCNT                                       44       2       2       1   .abs_section_44
      _TC0                                        50       2       2       4   .abs_section_50
-     _TC1                                        52       2       2       0   .abs_section_52
+     _TC1                                        52       2       2       1   .abs_section_52
      _TC2                                        54       2       2       0   .abs_section_54
      _TC3                                        56       2       2       0   .abs_section_56
      _TC4                                        58       2       2       0   .abs_section_58
      _TC5                                        5A       2       2       0   .abs_section_5a
      _TC6                                        5C       2       2       0   .abs_section_5c
      _TC7                                        5E       2       2       0   .abs_section_5e
-     _PACNT                                      62       2       2       0   .abs_section_62
+     _PACNT                                      62       2       2       1   .abs_section_62
      _ATDCTL23                                   82       2       2       0   .abs_section_82
      _ATDCTL45                                   84       2       2       0   .abs_section_84
      _ATDDR0                                     90       2       2       0   .abs_section_90
@@ -498,26 +500,34 @@ MODULE:                 -- MC9S12C128.c.o --
      _PWMCNT01                                   EC       2       2       0   .abs_section_ec
      _PWMCNT23                                   EE       2       2       0   .abs_section_ee
      _PWMCNT45                                   F0       2       2       0   .abs_section_f0
-     _PWMPER01                                   F2       2       2       0   .abs_section_f2
+     _PWMPER01                                   F2       2       2       1   .abs_section_f2
      _PWMPER23                                   F4       2       2       0   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       0   .abs_section_f8
+     _PWMDTY01                                   F8       2       2       1   .abs_section_f8
      _PWMDTY23                                   FA       2       2       0   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _CANRXTSR                                  16E       2       2       0   .abs_section_16e
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C044      10      16       1   .text       
+     main                                      C045      5E      94       1   .text       
 - VARIABLES:
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     initializeMotorControlSystem              C054       7       7       1   .text       
-     brakeTreads                               C05B       4       4       1   .text       
-     disableTreads                             C05F       4       4       1   .text       
-     enableTreads                              C063       4       4       1   .text       
-     stopMotion                                C067      20      32       2   .text       
-     motionCompleted                           C087       3       3       1   .text       
+     initializeMotorControlSystem              C0A3       7       7       1   .text       
+     leftTreadForward                          C0AA       7       7       1   .text       
+     rightTreadForward                         C0B1       7       7       1   .text       
+     leftTreadReverse                          C0B8       7       7       1   .text       
+     rightTreadReverse                         C0BF       7       7       1   .text       
+     brakeTreads                               C0C6       4       4       1   .text       
+     disableTreads                             C0CA       4       4       3   .text       
+     enableTreads                              C0CE       4       4       3   .text       
+     moveForward                               C0D2      19      25       1   .text       
+     moveReverse                               C0EB      19      25       1   .text       
+     stopMotion                                C104      20      32       3   .text       
+     initializePulseAccumulator                C124       C      12       2   .text       
+     distanceToPulses                          C130      23      35       2   .text       
+     motionCompleted                           C153       3       3       1   .text       
 - VARIABLES:
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- Start12.c.o --
@@ -530,52 +540,70 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           500       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LINC                                     C16A       5       5       1   RUNTIME     
-     _lDivMod                                  C16F      BE     190       1   RUNTIME     
-     _LDIVU                                    C22D       E      14       2   RUNTIME     
+     _LINC                                     C28C       5       5       1   RUNTIME     
+     _lDivMod                                  C291      BE     190       1   RUNTIME     
+     _LDIVU                                    C34F       E      14       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
-     delay                                     C08A      3C      60       1   .text       
-     initializeTimers                          C0C6      13      19       1   .text       
+     delay                                     C156      3C      60       3   .text       
+     initializeTimers                          C192      1F      31       1   .text       
 - VARIABLES:
      False                                     C03B       1       1       1   .rodata     
-     CLOCK_SPEED_HZ                            C03C       4       4       2   .rodata     
-     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C040       4       4       2   .rodata     
-     RoverInMotionFlag                          500       1       1       1   .bss        
+     True                                      C03C       1       1       2   .rodata     
+     CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
+     INCHES_PER_FOOT                           C03F       1       1       1   .rodata     
+     TIMER_COUNTER_PRESCALE                    C040       1       1       1   .rodata     
+     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C041       4       4       2   .rodata     
+     pingAngle                                  500       2       2       3   .data       
+     RoverInMotionFlag                          506       1       1       3   .bss        
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
 - PROCEDURES:
-     detectClosestObstacle                     C0D9      37      55       1   .text       
-     outputPulseToPing                         C110      17      23       1   .text       
-     measureReturnPulseFromPing                C127      43      67       1   .text       
+     updatePingDelay                           C1B1       8       8       1   .text       
+     detectClosestObstacle                     C1B9      1E      30       2   .text       
+     outputPulseToPing                         C1D7      17      23       1   .text       
+     measureReturnPulseFromPing                C1EE      43      67       1   .text       
+     setPingRotationalPosition                 C231      23      35       3   .text       
+     degreesToClockCycles                      C254      27      39       1   .text       
+     updateAndUseThePing                       C27B      11      17       1   .text       
 - VARIABLES:
+     LOOK_LEFT_PWM                              502       1       1       1   .data       
+     LOOK_RIGHT_PWM                             503       1       1       2   .data       
+     PING_UPDATE_DELAY_CLOCK_CYCLES             504       2       2       1   .data       
+     _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
 *********************************************************************************************
 MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   MC9S12C128.c.o                             260      0      0
-  main.c.o                                     0     16      0
-  MotorControlSystem.c.o                       0     54      2
+  main.c.o                                     0     94      0
+  MotorControlSystem.c.o                       0    179      2
   Start12.c.o                                  0     49      0
   rtshc12.c.o (ansisf.lib)                     0    209      0
-  Rover.c.o                                    1     79      9
-  ObstacleAvoidanceSystem.c.o                  0    145      0
-  other                                      256     12      2
+  Rover.c.o                                    3     91     10
+  ObstacleAvoidanceSystem.c.o                  4    219      2
+  other                                      256     12     12
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  main initializeMotorControlSystem brakeTreads disableTreads enableTreads 
-  stopMotion motionCompleted delay initializeTimers detectClosestObstacle 
-  outputPulseToPing measureReturnPulseFromPing 
+  main initializeMotorControlSystem leftTreadForward rightTreadForward 
+  leftTreadReverse rightTreadReverse brakeTreads disableTreads enableTreads 
+  moveForward moveReverse stopMotion initializePulseAccumulator 
+  distanceToPulses motionCompleted delay initializeTimers updatePingDelay 
+  detectClosestObstacle outputPulseToPing measureReturnPulseFromPing 
+  setPingRotationalPosition degreesToClockCycles updateAndUseThePing 
+SECTION: ".data"
+  pingAngle LOOK_LEFT_PWM LOOK_RIGHT_PWM PING_UPDATE_DELAY_CLOCK_CYCLES 
 SECTION: ".bss"
   RoverInMotionFlag 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata"
-  False CLOCK_SPEED_HZ WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY 
+  False True CLOCK_CYCLES_PER_INCH INCHES_PER_FOOT TIMER_COUNTER_PRESCALE 
+  WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1022,12 +1050,14 @@ SECTION: ".abs_section_ffdc"
   _Vector_17 
 SECTION: "RUNTIME"
   _LINC _lDivMod _LDIVU 
+SECTION: ".abs_section_ffec"
+  _Vector_9 
 
 *********************************************************************************************
 OBJECT LIST SORTED BY ADDRESS
      Name                                      Addr   hSize   dSize     Ref    Section   RLIB
 ---------------------------------------------------------------------------------------------
-     _PORTAB                                      0       2       2       3   .abs_section_0
+     _PORTAB                                      0       2       2      11   .abs_section_0
      _DDRAB                                       2       2       2       1   .abs_section_2
      _PORTE                                       8       1       1       0   .abs_section_8
      _DDRE                                        9       1       1       0   .abs_section_9
@@ -1069,32 +1099,32 @@ OBJECT LIST SORTED BY ADDRESS
      _RTICTL                                     3B       1       1       0   .abs_section_3b
      _COPCTL                                     3C       1       1       0   .abs_section_3c
      _ARMCOP                                     3F       1       1       0   .abs_section_3f
-     _TIOS                                       40       1       1       1   .abs_section_40
+     _TIOS                                       40       1       1       3   .abs_section_40
      _CFORC                                      41       1       1       0   .abs_section_41
      _OC7M                                       42       1       1       0   .abs_section_42
      _OC7D                                       43       1       1       0   .abs_section_43
-     _TCNT                                       44       2       2       0   .abs_section_44
+     _TCNT                                       44       2       2       1   .abs_section_44
      _TSCR1                                      46       1       1       1   .abs_section_46
      _TTOV                                       47       1       1       0   .abs_section_47
      _TCTL1                                      48       1       1       0   .abs_section_48
-     _TCTL2                                      49       1       1       0   .abs_section_49
+     _TCTL2                                      49       1       1       1   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
      _TCTL4                                      4B       1       1       4   .abs_section_4b
-     _TIE                                        4C       1       1       1   .abs_section_4c
+     _TIE                                        4C       1       1       2   .abs_section_4c
      _TSCR2                                      4D       1       1       1   .abs_section_4d
      _TFLG1                                      4E       1       1       4   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
      _TC0                                        50       2       2       4   .abs_section_50
-     _TC1                                        52       2       2       0   .abs_section_52
+     _TC1                                        52       2       2       1   .abs_section_52
      _TC2                                        54       2       2       0   .abs_section_54
      _TC3                                        56       2       2       0   .abs_section_56
      _TC4                                        58       2       2       0   .abs_section_58
      _TC5                                        5A       2       2       0   .abs_section_5a
      _TC6                                        5C       2       2       0   .abs_section_5c
      _TC7                                        5E       2       2       0   .abs_section_5e
-     _PACTL                                      60       1       1       1   .abs_section_60
+     _PACTL                                      60       1       1       2   .abs_section_60
      _PAFLG                                      61       1       1       1   .abs_section_61
-     _PACNT                                      62       2       2       0   .abs_section_62
+     _PACNT                                      62       2       2       1   .abs_section_62
      _ATDCTL23                                   82       2       2       0   .abs_section_82
      _ATDCTL45                                   84       2       2       0   .abs_section_84
      _ATDSTAT0                                   86       1       1       0   .abs_section_86
@@ -1122,21 +1152,21 @@ OBJECT LIST SORTED BY ADDRESS
      _SPIBR                                      DA       1       1       0   .abs_section_da
      _SPISR                                      DB       1       1       0   .abs_section_db
      _SPIDR                                      DD       1       1       0   .abs_section_dd
-     _PWME                                       E0       1       1       0   .abs_section_e0
-     _PWMPOL                                     E1       1       1       0   .abs_section_e1
-     _PWMCLK                                     E2       1       1       0   .abs_section_e2
-     _PWMPRCLK                                   E3       1       1       0   .abs_section_e3
-     _PWMCAE                                     E4       1       1       0   .abs_section_e4
-     _PWMCTL                                     E5       1       1       0   .abs_section_e5
-     _PWMSCLA                                    E8       1       1       0   .abs_section_e8
+     _PWME                                       E0       1       1       1   .abs_section_e0
+     _PWMPOL                                     E1       1       1       1   .abs_section_e1
+     _PWMCLK                                     E2       1       1       1   .abs_section_e2
+     _PWMPRCLK                                   E3       1       1       1   .abs_section_e3
+     _PWMCAE                                     E4       1       1       1   .abs_section_e4
+     _PWMCTL                                     E5       1       1       1   .abs_section_e5
+     _PWMSCLA                                    E8       1       1       1   .abs_section_e8
      _PWMSCLB                                    E9       1       1       0   .abs_section_e9
      _PWMCNT01                                   EC       2       2       0   .abs_section_ec
      _PWMCNT23                                   EE       2       2       0   .abs_section_ee
      _PWMCNT45                                   F0       2       2       0   .abs_section_f0
-     _PWMPER01                                   F2       2       2       0   .abs_section_f2
+     _PWMPER01                                   F2       2       2       1   .abs_section_f2
      _PWMPER23                                   F4       2       2       0   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       0   .abs_section_f8
+     _PWMDTY01                                   F8       2       2       1   .abs_section_f8
      _PWMDTY23                                   FA       2       2       0   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _PWMSDN                                     FE       1       1       0   .abs_section_fe
@@ -1248,37 +1278,55 @@ OBJECT LIST SORTED BY ADDRESS
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     RoverInMotionFlag                          500       1       1       1   .bss        
+     pingAngle                                  500       2       2       3   .data       
+     LOOK_LEFT_PWM                              502       1       1       1   .data       
+     LOOK_RIGHT_PWM                             503       1       1       2   .data       
+     PING_UPDATE_DELAY_CLOCK_CYCLES             504       2       2       1   .data       
+     RoverInMotionFlag                          506       1       1       3   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
      False                                     C03B       1       1       1   .rodata     
-     CLOCK_SPEED_HZ                            C03C       4       4       2   .rodata     
-     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C040       4       4       2   .rodata     
-     main                                      C044      10      16       1   .text       
-     initializeMotorControlSystem              C054       7       7       1   .text       
-     brakeTreads                               C05B       4       4       1   .text       
-     disableTreads                             C05F       4       4       1   .text       
-     enableTreads                              C063       4       4       1   .text       
-     stopMotion                                C067      20      32       2   .text       
-     motionCompleted                           C087       3       3       1   .text       
-     delay                                     C08A      3C      60       1   .text       
-     initializeTimers                          C0C6      13      19       1   .text       
-     detectClosestObstacle                     C0D9      37      55       1   .text       
-     outputPulseToPing                         C110      17      23       1   .text       
-     measureReturnPulseFromPing                C127      43      67       1   .text       
-     _LINC                                     C16A       5       5       1   RUNTIME     
-     _lDivMod                                  C16F      BE     190       1   RUNTIME     
-     _LDIVU                                    C22D       E      14       2   RUNTIME     
+     True                                      C03C       1       1       2   .rodata     
+     CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
+     INCHES_PER_FOOT                           C03F       1       1       1   .rodata     
+     TIMER_COUNTER_PRESCALE                    C040       1       1       1   .rodata     
+     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C041       4       4       2   .rodata     
+     main                                      C045      5E      94       1   .text       
+     initializeMotorControlSystem              C0A3       7       7       1   .text       
+     leftTreadForward                          C0AA       7       7       1   .text       
+     rightTreadForward                         C0B1       7       7       1   .text       
+     leftTreadReverse                          C0B8       7       7       1   .text       
+     rightTreadReverse                         C0BF       7       7       1   .text       
+     brakeTreads                               C0C6       4       4       1   .text       
+     disableTreads                             C0CA       4       4       3   .text       
+     enableTreads                              C0CE       4       4       3   .text       
+     moveForward                               C0D2      19      25       1   .text       
+     moveReverse                               C0EB      19      25       1   .text       
+     stopMotion                                C104      20      32       3   .text       
+     initializePulseAccumulator                C124       C      12       2   .text       
+     distanceToPulses                          C130      23      35       2   .text       
+     motionCompleted                           C153       3       3       1   .text       
+     delay                                     C156      3C      60       3   .text       
+     initializeTimers                          C192      1F      31       1   .text       
+     updatePingDelay                           C1B1       8       8       1   .text       
+     detectClosestObstacle                     C1B9      1E      30       2   .text       
+     outputPulseToPing                         C1D7      17      23       1   .text       
+     measureReturnPulseFromPing                C1EE      43      67       1   .text       
+     setPingRotationalPosition                 C231      23      35       3   .text       
+     degreesToClockCycles                      C254      27      39       1   .text       
+     updateAndUseThePing                       C27B      11      17       1   .text       
+     _LINC                                     C28C       5       5       1   RUNTIME     
+     _lDivMod                                  C291      BE     190       1   RUNTIME     
+     _LDIVU                                    C34F       E      14       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
+     _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
 *********************************************************************************************
 UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
 NOT USED PROCEDURES
 MotorControlSystem.c.o:
-  leftTreadForward rightTreadForward leftTreadReverse rightTreadReverse 
-  moveForward moveReverse rotate initializePulseAccumulator distanceToPulses 
-  degreesToPulses 
+  rotate degreesToPulses 
 rtshc12.c.o (ansisf.lib):
   _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
   _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP _LCMP_P _LCMP_PP _LNEG _LCOM _LDEC 
@@ -1289,17 +1337,32 @@ ObstacleAvoidanceSystem.c.o:
   initializePeriodicObjectDetection 
 NOT USED VARIABLES
 MotorControlSystem.c.o:
-  PULSES_PER_FOOT FEET_PER_GRID_UNIT PULSES_PER_GRID_UNIT PULSES_PER_DEGREE 
-  FORWARD_MOTION REVERSE_MOTION STOP_MOTION True 
+  PULSES_PER_INCH PULSES_PER_FOOT PULSES_PER_DEGREE FORWARD_MOTION 
+  REVERSE_MOTION STOP_MOTION 
 rtshc12.c.o (ansisf.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
 Rover.c.o:
-  True SPEED_OF_SOUND_INCH_PER_SEC 
+  CLOCK_SPEED_HZ SPEED_OF_SOUND_INCH_PER_SEC PING_FREQUENCY 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC23B ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC35D ---- SIZE       4 ---
+Filling bytes inserted
+ 00060500
+------- ROM-ADDRESS: 0xC361 ---- RAM-ADDRESS: 0x500 ---- SIZE       2 ---
+Name of initialized Object : pingAngle
+ FFB5
+------- ROM-ADDRESS: 0xC363 ---- RAM-ADDRESS: 0x502 ---- SIZE       1 ---
+Name of initialized Object : LOOK_LEFT_PWM
+ 12
+------- ROM-ADDRESS: 0xC364 ---- RAM-ADDRESS: 0x503 ---- SIZE       1 ---
+Name of initialized Object : LOOK_RIGHT_PWM
+ 03
+------- ROM-ADDRESS: 0xC365 ---- RAM-ADDRESS: 0x504 ---- SIZE       2 ---
+Name of initialized Object : PING_UPDATE_DELAY_CLOCK_CYCLES
+ F230
+------- ROM-ADDRESS: 0xC367 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1309,22 +1372,42 @@ OBJECT-DEPENDENCIES SECTION
 Init                      USES _startupData 
 _Startup                  USES __SEG_END_SSTACK Init main 
 main                      USES initializeTimers initializeMotorControlSystem 
-                                detectClosestObstacle 
+                                moveForward setPingRotationalPosition delay stopMotion 
+                                moveReverse detectClosestObstacle 
 initializeMotorControlSystem USES _DDRAB stopMotion 
+leftTreadForward          USES _PORTAB 
+rightTreadForward         USES _PORTAB 
+leftTreadReverse          USES _PORTAB 
+rightTreadReverse         USES _PORTAB 
 brakeTreads               USES _PORTAB 
 disableTreads             USES _PORTAB 
 enableTreads              USES _PORTAB 
+moveForward               USES distanceToPulses initializePulseAccumulator 
+                                disableTreads leftTreadForward rightTreadForward True 
+                                RoverInMotionFlag enableTreads 
+moveReverse               USES distanceToPulses initializePulseAccumulator 
+                                disableTreads leftTreadReverse rightTreadReverse True 
+                                RoverInMotionFlag enableTreads 
 stopMotion                USES disableTreads brakeTreads enableTreads 
                                 WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY delay _PACTL _PAFLG False RoverInMotionFlag 
+initializePulseAccumulator USES _PACNT _PACTL 
+distanceToPulses          USES INCHES_PER_FOOT 
 motionCompleted           USES stopMotion 
 delay                     USES _LDIVU _LINC 
-initializeTimers          USES _TSCR1 _TSCR2 _TIE _PERT _PPST 
+initializeTimers          USES _TSCR1 _TSCR2 _TIE _TIOS _PERT _PPST _TCTL2 
+updatePingDelay           USES _TCNT PING_UPDATE_DELAY_CLOCK_CYCLES _TC1 
 detectClosestObstacle     USES outputPulseToPing measureReturnPulseFromPing 
-                                CLOCK_SPEED_HZ _LDIVU 
+                                TIMER_COUNTER_PRESCALE CLOCK_CYCLES_PER_INCH 
 outputPulseToPing         USES _DDRT _PTT 
 measureReturnPulseFromPing USES _DDRT _TIOS _TCTL4 _TFLG1 _TC0 
+setPingRotationalPosition USES _PWMPOL _PWMCLK _PWMPRCLK _PWMCAE _PWMCTL 
+                                _PWMSCLA _PWMPER01 degreesToClockCycles _PWMDTY01 _PWME 
+degreesToClockCycles      USES LOOK_LEFT_PWM LOOK_RIGHT_PWM 
+updateAndUseThePing       USES updatePingDelay pingAngle 
+                                setPingRotationalPosition 
 _LDIVU                    USES _lDivMod 
 _Vector_17                USES motionCompleted 
+_Vector_9                 USES updateAndUseThePing 
 
 *********************************************************************************************
 DEPENDENCY TREE
@@ -1353,14 +1436,48 @@ DEPENDENCY TREE
  |  |        |       
  |  |        +- _LINC               
  |  |             
+ |  +- moveForward         
+ |  |  | 
+ |  |  +- distanceToPulses    
+ |  |  |    
+ |  |  +- initializePulseAccumulator
+ |  |  |    
+ |  |  +- disableTreads        (see above)
+ |  |  |  
+ |  |  +- leftTreadForward    
+ |  |  |    
+ |  |  +- rightTreadForward   
+ |  |  |    
+ |  |  +- enableTreads         (see above)
+ |  |     
+ |  +- setPingRotationalPosition
+ |  |  | 
+ |  |  +- degreesToClockCycles
+ |  |       
+ |  +- delay                (see above)
+ |  |  
+ |  +- stopMotion           (see above)
+ |  |  
+ |  +- moveReverse         
+ |  |  | 
+ |  |  +- distanceToPulses     (see above)
+ |  |  |  
+ |  |  +- initializePulseAccumulator (see above)
+ |  |  |  
+ |  |  +- disableTreads        (see above)
+ |  |  |  
+ |  |  +- leftTreadReverse    
+ |  |  |    
+ |  |  +- rightTreadReverse   
+ |  |  |    
+ |  |  +- enableTreads         (see above)
+ |  |     
  |  +- detectClosestObstacle
  |     | 
  |     +- outputPulseToPing   
  |     |    
  |     +- measureReturnPulseFromPing
- |     |    
- |     +- _LDIVU               (see above)
- |        
+ |          
  +- _Startup            
     | 
     +- Init                
@@ -1373,12 +1490,20 @@ DEPENDENCY TREE
     | 
     +- stopMotion           (see above)
        
+ _Vector_9           
+ | 
+ +- updateAndUseThePing 
+    | 
+    +- updatePingDelay     
+    |    
+    +- setPingRotationalPosition (see above)
+       
 *********************************************************************************************
 STATISTIC SECTION
 ---------------------------------------------------------------------------------------------
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 8
-Total size of all blocks to be downloaded: 577
+Number of blocks to be downloaded: 9
+Total size of all blocks to be downloaded: 879
 
