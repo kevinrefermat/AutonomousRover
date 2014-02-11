@@ -22,25 +22,14 @@ static void updatePingDelay()
 
 inches_t detectClosestObstacle()
 {
-<<<<<<< HEAD
-   timerCount_t lengthOfEcho;
-=======
    timerCount_t lengthOfEchoInClockCycles;
->>>>>>> Motors work and ping servo works. last commit before faculty review
    
    DisableInterrupts;
    
    outputPulseToPing();
-<<<<<<< HEAD
-   lengthOfEchoInClockCycles = measureReturnPulseFromPing();
-   
-   EnableInterrupts;
-  
-=======
    lengthOfEchoInClockCycles = measureReturnPulseFromPing() * TIMER_COUNTER_PRESCALE;
    
    EnableInterrupts;
->>>>>>> Motors work and ping servo works. last commit before faculty review
    return ( inches_t ) lengthOfEchoInClockCycles / CLOCK_CYCLES_PER_INCH / 2;
 }
 
@@ -95,8 +84,6 @@ static timerCount_t measureReturnPulseFromPing()
       return ( ~risingEdge + 1 ) + TC0;
    }
 }
-<<<<<<< HEAD
-=======
 
 void setPingRotationalPosition( degree_t degrees )
 {
@@ -134,4 +121,3 @@ interrupt VectorNumber_Vtimch1 void updateAndUseThePing()
   
 
 
->>>>>>> Motors work and ping servo works. last commit before faculty review
