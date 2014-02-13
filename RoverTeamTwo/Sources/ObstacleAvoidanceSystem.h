@@ -1,7 +1,5 @@
 #include "Rover.h"
 
-// PULL DOWN RESISTOR REQUIRED AT THE PING))) SENSOR
-
 void initializePeriodicObjectDetection();
 
 inches_t detectClosestObstacle();
