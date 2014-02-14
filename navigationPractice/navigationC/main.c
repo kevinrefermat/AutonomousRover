@@ -1,20 +1,24 @@
 #include "Graph.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int main( int argc, char** argv )
 {
+   graphSize_t source, target;
+   graph_t* graph;
+   clock_t start, end;
+
    if ( argc != 3 )
    {
       printf( "Syntax: <executable> <source node ID number> <target node ID number>\n" );
       exit( 1 );
    }
 
-   graphSize_t source, target;
    source = atoi( argv[ 1 ] );
    target = atoi( argv[ 2 ] );
     
-   graph_t* graph = CreateGraph( 12 );
+   graph = CreateGraph( 12 );
 
    AddEdge( graph, 0, 1, 23);
    AddEdge( graph, 0, 3, 5);
@@ -37,8 +41,13 @@ int main( int argc, char** argv )
    AddEdge( graph, 9, 10, 6);
    AddEdge( graph, 10, 11, 5);
    
+   start = clock();
    Dijkstra( graph, source, target ); 
-   
+   end = clock();
+
+   printf( "It took %d clock cycles.\n", end - start );
+
    DestroyGraph( graph ); 
+
    return 0;
 }
