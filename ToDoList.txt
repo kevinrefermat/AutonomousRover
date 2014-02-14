@@ -1,1 +1,3 @@
 Remove all instances of gridUnit_t and replace with inches_t. Also make sure that inches_t is a 16 bit value.
+
+Change all unsigned numbers to signed numbers.
