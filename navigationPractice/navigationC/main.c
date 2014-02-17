@@ -15,11 +15,10 @@ int main( int argc, char** argv )
       exit( 1 );
    }
 
-   source = atoi( argv[ 1 ] );
-   target = atoi( argv[ 2 ] );
-    
-   graph = CreateGraph( 12 );
-
+   source = atoi( argv[ 2 ] );
+   target = atoi( argv[ 1 ] );
+   graph = CreateGraphEELab();
+/*
    AddEdge( graph, 0, 1, 23);
    AddEdge( graph, 0, 3, 5);
    AddEdge( graph, 0, 2, 8);
@@ -40,7 +39,7 @@ int main( int argc, char** argv )
    AddEdge( graph, 8, 10, 22);
    AddEdge( graph, 9, 10, 6);
    AddEdge( graph, 10, 11, 5);
-   
+  */ 
    start = clock();
    Dijkstra( graph, source, target ); 
    end = clock();

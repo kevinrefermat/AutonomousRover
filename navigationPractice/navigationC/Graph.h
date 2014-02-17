@@ -20,4 +20,6 @@ void DestroyGraph( graph_t* graph );
 void AddEdge( graph_t* graph, graphSize_t firstNodeId, graphSize_t secondNodeId, inches_t distance );
 bool Dijkstra( graph_t* graph, graphSize_t sourceNodeId, graphSize_t targetNodeId );
 
+graph_t* CreateGraphEELab();
+
 #endif

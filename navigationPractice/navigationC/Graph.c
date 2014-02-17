@@ -24,6 +24,62 @@ graph_t* CreateGraph( graphSize_t numberOfNodes )
    return graph;
 }
 
+graph_t* CreateGraphEELab()
+{
+   graph_t* graph = CreateGraph( 18 );
+   AddEdge( graph, 0, 3, 218 );
+   AddEdge( graph, 0, 9, 444 );
+   AddEdge( graph, 0, 17, 634 );
+   AddEdge( graph, 1, 2, 84 );
+   AddEdge( graph, 1, 4, 83 );
+   AddEdge( graph, 1, 5, 99 );
+   AddEdge( graph, 2, 6, 99 );
+   AddEdge( graph, 2, 8, 101 );
+   AddEdge( graph, 3, 17, 422 );
+   AddEdge( graph, 3, 9, 228 );
+   AddEdge( graph, 3, 4, 102 );
+   AddEdge( graph, 4, 5, 59 );
+   AddEdge( graph, 4, 7, 98 );
+   AddEdge( graph, 4, 10, 228 );
+   AddEdge( graph, 4, 11, 240 );
+   AddEdge( graph, 5, 6, 117 );
+   AddEdge( graph, 5, 7, 38) ;
+   AddEdge( graph, 5, 10, 208 );
+   AddEdge( graph, 5, 11, 198);
+   AddEdge( graph, 6, 7, 82 );
+   AddEdge( graph, 6, 8, 22 );
+   AddEdge( graph, 7, 8, 99 );
+   AddEdge( graph, 7, 10, 209 );
+   AddEdge( graph, 7, 11, 183 );
+   AddEdge( graph, 8, 12, 183 );
+   AddEdge( graph, 9, 10, 102 );
+   AddEdge( graph, 9, 11, 192 );
+   AddEdge( graph, 9, 12, 291 );
+   AddEdge( graph, 9, 13, 107 );
+   AddEdge( graph, 9, 14, 281 );
+   AddEdge( graph, 9, 15, 182 );
+   AddEdge( graph, 9, 17, 195 );
+   AddEdge( graph, 10, 11, 90 );
+   AddEdge( graph, 10, 12, 189 );
+   AddEdge( graph, 10, 13, 67 );
+   AddEdge( graph, 10, 14, 183 );
+   AddEdge( graph, 10, 17, 236 );
+   AddEdge( graph, 11, 12, 99 );
+   AddEdge( graph, 11, 13, 125 );
+   AddEdge( graph, 11, 14, 108 );
+   AddEdge( graph, 12, 13, 213 );
+   AddEdge( graph, 12, 14, 74 );
+   AddEdge( graph, 12, 16, 169 );
+   AddEdge( graph, 13, 14, 179 );
+   AddEdge( graph, 13, 15, 96 );
+   AddEdge( graph, 13, 17, 178 );
+   AddEdge( graph, 14, 16, 96 );
+   AddEdge( graph, 15, 16, 179 );
+   AddEdge( graph, 15, 17, 130 );
+   AddEdge( graph, 16, 17, 310 );
+   return graph;
+}
+
 void DestroyGraph( graph_t* graph )
 {
    graphSize_t x;
