@@ -40,7 +40,7 @@ graph_t* CreateGraph( graphSize_t numberOfNodes )
 
 graph_t* CreateGraphEELab()
 {
-   graph_t* graph = CreateGraph( 18 );
+   graph_t* graph = CreateGraph( 30 );
    
    AddObstacle( graph, 96, 450, BOTTOM_OF_ROOM, 36 );          // x axis shit collecting wall
    AddObstacle( graph, 420, 450, BOTTOM_OF_ROOM, 336 );        // right side low cabinets
@@ -53,56 +53,26 @@ graph_t* CreateGraphEELab()
    AddObstacle( graph, 222, 390, 570, TOP_OF_ROOM );           // RF room
    AddObstacle( graph, 612, RIGHT_OF_ROOM, 612, TOP_OF_ROOM ); // high right corner
   
-   AddEdge( graph, 0, 3, 218 );
-   AddEdge( graph, 0, 9, 444 );
-   AddEdge( graph, 0, 17, 634 );
-   AddEdge( graph, 1, 2, 84 );
-   AddEdge( graph, 1, 4, 83 );
-   AddEdge( graph, 1, 5, 99 );
-   AddEdge( graph, 2, 6, 99 );
-   AddEdge( graph, 2, 8, 101 );
-   AddEdge( graph, 3, 17, 422 );
-   AddEdge( graph, 3, 9, 228 );
-   AddEdge( graph, 3, 4, 102 );
-   AddEdge( graph, 4, 5, 59 );
-   AddEdge( graph, 4, 7, 98 );
-   AddEdge( graph, 4, 10, 228 );
-   AddEdge( graph, 4, 11, 240 );
-   AddEdge( graph, 5, 6, 117 );
-   AddEdge( graph, 5, 7, 38) ;
-   AddEdge( graph, 5, 10, 208 );
-   AddEdge( graph, 5, 11, 198);
-   AddEdge( graph, 6, 7, 82 );
-   AddEdge( graph, 6, 8, 22 );
-   AddEdge( graph, 7, 8, 99 );
-   AddEdge( graph, 7, 10, 209 );
-   AddEdge( graph, 7, 11, 183 );
-   AddEdge( graph, 8, 12, 183 );
-   AddEdge( graph, 9, 10, 102 );
-   AddEdge( graph, 9, 11, 192 );
-   AddEdge( graph, 9, 12, 291 );
-   AddEdge( graph, 9, 13, 107 );
-   AddEdge( graph, 9, 14, 281 );
-   AddEdge( graph, 9, 15, 182 );
-   AddEdge( graph, 9, 17, 195 );
-   AddEdge( graph, 10, 11, 90 );
-   AddEdge( graph, 10, 12, 189 );
-   AddEdge( graph, 10, 13, 67 );
-   AddEdge( graph, 10, 14, 183 );
-   AddEdge( graph, 10, 17, 236 );
-   AddEdge( graph, 11, 12, 99 );
-   AddEdge( graph, 11, 13, 125 );
-   AddEdge( graph, 11, 14, 108 );
-   AddEdge( graph, 12, 13, 213 );
-   AddEdge( graph, 12, 14, 74 );
-   AddEdge( graph, 12, 16, 169 );
-   AddEdge( graph, 13, 14, 179 );
-   AddEdge( graph, 13, 15, 96 );
-   AddEdge( graph, 13, 17, 178 );
-   AddEdge( graph, 14, 16, 96 );
-   AddEdge( graph, 15, 16, 179 );
-   AddEdge( graph, 15, 17, 130 );
-   AddEdge( graph, 16, 17, 310 );
+   SetNodeCoordinates( graph, 2, 30, 670 );
+   SetNodeCoordinates( graph, 3, 228, 528 );
+   SetNodeCoordinates( graph, 4, 345, 528 );
+   SetNodeCoordinates( graph, 5, 72, 456 );
+   SetNodeCoordinates( graph, 6, 174, 456 );
+   SetNodeCoordinates( graph, 7, 228, 429 );
+   SetNodeCoordinates( graph, 8, 345, 429 );
+   SetNodeCoordinates( graph, 9, 264, 417 );
+   SetNodeCoordinates( graph, 10, 363, 417 );
+   SetNodeCoordinates( graph, 11, 72, 228 );
+   SetNodeCoordinates( graph, 12, 174, 228 );
+   SetNodeCoordinates( graph, 13, 264, 234 );
+   SetNodeCoordinates( graph, 14, 363, 234 );
+   SetNodeCoordinates( graph, 15, 162, 162 );
+   SetNodeCoordinates( graph, 16, 345, 162 );
+   SetNodeCoordinates( graph, 17, 162, 66 );
+   SetNodeCoordinates( graph, 18, 345, 66 );
+   SetNodeCoordinates( graph, 19, 36, 36 );
+   SetNodeCoordinates( graph, 20, 408, 558 );
+
    return graph;
 }
 
@@ -194,7 +164,7 @@ bool Dijkstra( graph_t* graph, graphSize_t sourceNodeId, graphSize_t targetNodeI
 }
 
 // change int32_t so that big numbers aren't used
-inline bool isAbove( segment_t* segment, coordinates_t* point )
+inline bool IsAbove( segment_t* segment, coordinates_t* point )
 {
    int32_t BxAx, PyAy, ByAy, PxAx;
    BxAx = segment->rightPoint.x - segment->leftPoint.x;
@@ -204,16 +174,16 @@ inline bool isAbove( segment_t* segment, coordinates_t* point )
    return ( BxAx * PyAy - ByAy * PxAx ) > 0;
 }
 
-inline bool intersectWithSegment( segment_t* segment0, segment_t* segment1 )
+inline bool IntersectWithSegment( segment_t* segment0, segment_t* segment1 )
 {
-   return ( isAbove( segment0, &( segment1->leftPoint ) ) + isAbove( segment0, &( segment1->rightPoint ) ) == 1 ) &&
-          ( isAbove( segment1, &( segment0->leftPoint ) ) + isAbove( segment1, &( segment0->rightPoint ) ) == 1 );
+   return ( IsAbove( segment0, &( segment1->leftPoint ) ) + IsAbove( segment0, &( segment1->rightPoint ) ) == 1 ) &&
+          ( IsAbove( segment1, &( segment0->leftPoint ) ) + IsAbove( segment1, &( segment0->rightPoint ) ) == 1 );
 }
 
-bool intersectWithShape( tetragon_t* tetragon, segment_t* segment )
+bool IntersectWithShape( tetragon_t* tetragon, segment_t* segment )
 {
-   return intersectWithSegment( &( tetragon->forwardDiagonal ), segment ) ||
-          intersectWithSegment( &( tetragon->backDiagonal ), segment );
+   return IntersectWithSegment( &( tetragon->forwardDiagonal ), segment ) ||
+          IntersectWithSegment( &( tetragon->backDiagonal ), segment );
 }
 
 void AddObstacle( graph_t* graph, inches_t leftX, inches_t rightX, inches_t lowY, inches_t highY )
@@ -230,21 +200,108 @@ void AddObstacle( graph_t* graph, inches_t leftX, inches_t rightX, inches_t lowY
    graph->m_NumberOfObstacles++;
 }
 
-bool intersectWithObstacle( graph_t* graph, segment_t* segment )
+bool IntersectWithObstacle( graph_t* graph, segment_t* segment )
 {
    obstacleNumber_t i;
    for ( i = 0; i < graph->m_NumberOfObstacles; i++ )
-   {
-      if ( intersectWithShape( &( graph->m_ObstacleList[ i ] ), segment ) ) 
-      {
-         printf( "true at obstacle %d\n", i );
+      if ( IntersectWithShape( &( graph->m_ObstacleList[ i ] ), segment ) ) 
          return true;
-      }
-   }
    return false;
 }
 
-void printVisibleNodes( coordinates_t* location )
+void printVisibleNodes( graph_t* graph, coordinates_t* location )
 {
+   obstacleNumber_t i;
+   coordinates_t targetNode;
+   segment_t segment;
+   printf( "Nodes visible from (%d,%d):\n", location->x, location->y );
+   for ( i = 2; i < graph->m_NumberOfNodes; i++ )
+   {
+      targetNode.x = graph->m_NodeCoordinateList[ i ].x;
+      targetNode.y = graph->m_NodeCoordinateList[ i ].y;
+      if ( location->x < targetNode.x )
+      {
+         segment.leftPoint.x = location->x;
+         segment.leftPoint.y = location->y;
+         segment.rightPoint.x = targetNode.x;
+         segment.rightPoint.y = targetNode.y;
+      }
+      else
+      {
+         segment.leftPoint.x = targetNode.x;
+         segment.leftPoint.y = targetNode.y;
+         segment.rightPoint.x = location->x;
+         segment.rightPoint.y = location->y;
+      }
+      if ( !IntersectWithObstacle( graph, &segment ) )
+         printf( "%d\n", i );
+   }
+}
+
+void SetNodeCoordinates( graph_t* graph, graphSize_t nodeId, inches_t x, inches_t y )
+{
+   graph->m_NodeCoordinateList[ nodeId ].x = x;
+   graph->m_NodeCoordinateList[ nodeId ].y = y;
+}
+
+inline inches_t SquareRoot( int32_t operand )
+{
+   int32_t guess, lastGuess;
+   if ( operand < 0 )
+   {
+      fprintf( stderr, "Error in SquareRoot() in Graph.c: operand was negative\n" );
+      exit( 1 );
+   }
+   guess = 40000;       
+   for ( ; ; ) 
+   {  
+      lastGuess = guess;
+      guess = guess - ( ( guess * guess ) - operand ) / ( 2 * guess );
+      if ( lastGuess == guess ) break;
+   }   
+   return ( inches_t ) guess;
+}
+
+inches_t Distance( coordinates_t A, coordinates_t B )
+{
+   int32_t Ax, Bx, Ay, By;
+   Ax = A.x;
+   Bx = B.x;
+   Ay = A.y;
+   By = B.y;
+   return SquareRoot( ( Ax - Bx ) * ( Ax - Bx ) + ( Ay - By ) * ( Ay - By ) );
+}
+
+void UpdateNodeVisibilityAndDistances( graph_t* graph )
+{
+   graphSize_t currentNode, otherNode, numberOfNodes, x, y;
+   inches_t** adjacencyMatrix;
+   coordinates_t* nodeCoordinateList;
+   adjacencyMatrix = graph->m_AdjacencyMatrix;
+   numberOfNodes = graph->m_NumberOfNodes;
+   nodeCoordinateList = graph->m_NodeCoordinateList;;
    
+   for ( x = 0; x < graph->m_NumberOfNodes; x++ )
+      for ( y = 0; y < graph->m_NumberOfNodes; y++ )
+         adjacencyMatrix[ x ][ y ] = -1;
+
+   for ( currentNode = 2; currentNode < numberOfNodes; currentNode++ )
+      for ( otherNode = currentNode + 1; otherNode < numberOfNodes; otherNode++ )
+      {
+         if ( NodesAreVisibleToEachOther( graph, currentNode, otherNode ) )
+         {
+            adjacencyMatrix[ currentNode ][ otherNode ] = Distance( nodeCoordinateList[ currentNode ], nodeCoordinateList[ otherNode ] );
+            adjacencyMatrix[ otherNode ][ currentNode ] = adjacencyMatrix[ currentNode ][ otherNode ];
+         }
+      }
+}
+
+bool NodesAreVisibleToEachOther( graph_t* graph, graphSize_t nodeId1, graphSize_t nodeId2 )
+{
+   segment_t segment;
+   segment.leftPoint.x = graph->m_NodeCoordinateList[ nodeId1 ].x;
+   segment.leftPoint.y = graph->m_NodeCoordinateList[ nodeId1 ].y;
+   segment.rightPoint.x = graph->m_NodeCoordinateList[ nodeId2 ].x;
+   segment.rightPoint.y = graph->m_NodeCoordinateList[ nodeId2 ].y;
+   return !IntersectWithObstacle( graph, &segment );
 }

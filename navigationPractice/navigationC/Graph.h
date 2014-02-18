@@ -52,6 +52,10 @@ bool intersectWithShape( tetragon_t* tetragon, segment_t* segment );
 
 void AddObstacle( graph_t* graph, inches_t leftX, inches_t rightX, inches_t lowY, inches_t highY );
 bool intersectWithObstacle( graph_t* graph, segment_t* segment );
-void printVisibleNodes( coordinates_t* location );
+void printVisibleNodes( graph_t* graph, coordinates_t* location );
+void SetNodeCoordinates( graph_t* graph, graphSize_t nodeId, inches_t x, inches_t y );
+void UpdateNodeVisibilityAndDistances( graph_t* graph );
+inches_t Distance( coordinates_t A, coordinates_t B );
+bool NodesAreVisibleToEachOther( graph_t* graph, graphSize_t nodeId1, graphSize_t nodeId2 );
 
 #endif
