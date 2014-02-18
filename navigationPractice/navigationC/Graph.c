@@ -6,13 +6,23 @@
 #include "Graph.h"
 
 static const inches_t NO_CONNECTION = -1;
+static const obstacleNumber_t MAX_NUMBER_OF_OBSTACLES = 30;
+static const inches_t BOTTOM_OF_ROOM = 0;
+static const inches_t TOP_OF_ROOM = 696;
+static const inches_t LEFT_OF_ROOM = 0;
+static const inches_t RIGHT_OF_ROOM = 450;
+static const graphSize_t CURRENT_LOCATION = 0;
+static const graphSize_t TARGET_LOCATION = 1;
 
 graph_t* CreateGraph( graphSize_t numberOfNodes )
 {
    graphSize_t x, y;
+   
    graph_t* graph;
    graph = malloc( sizeof( graph_t ) );
-   graph->m_NumberOfNodes = numberOfNodes;
+   
+   graph->m_NumberOfNodes = numberOfNodes + 2; //one extra for target and one extra for current location
+   graph->m_NumberOfObstacles = 0;
 
    graph->m_AdjacencyMatrix = malloc( sizeof( inches_t* ) * graph->m_NumberOfNodes );
    for ( x = 0; x < graph->m_NumberOfNodes; x++ )
@@ -21,12 +31,28 @@ graph_t* CreateGraph( graphSize_t numberOfNodes )
       for ( y = 0; y < graph->m_NumberOfNodes; y++ )
          graph->m_AdjacencyMatrix[ x ][ y ] = NO_CONNECTION;
    }
+
+   graph->m_NodeCoordinateList = malloc( graph->m_NumberOfNodes * sizeof( coordinates_t ) );
+
+   graph->m_ObstacleList = malloc( MAX_NUMBER_OF_OBSTACLES * sizeof( tetragon_t ) );
    return graph;
 }
 
 graph_t* CreateGraphEELab()
 {
    graph_t* graph = CreateGraph( 18 );
+   
+   AddObstacle( graph, 96, 450, BOTTOM_OF_ROOM, 36 );          // x axis shit collecting wall
+   AddObstacle( graph, 420, 450, BOTTOM_OF_ROOM, 336 );        // right side low cabinets
+   AddObstacle( graph, 420, 450, 444, 534 );                   // right side high cabinets
+   AddObstacle( graph, 174, 330, 78, 156 );                    // right low desk
+   AddObstacle( graph, 84, 156, 246, 438 );                    // left center desk
+   AddObstacle( graph, 276, 348, 246, 408 );                   // right center desk
+   AddObstacle( graph, 246, 330, 444, 516 );                   // right high desk
+   AddObstacle( graph, 66, 222, 516, TOP_OF_ROOM );            // desk area
+   AddObstacle( graph, 222, 390, 570, TOP_OF_ROOM );           // RF room
+   AddObstacle( graph, 612, RIGHT_OF_ROOM, 612, TOP_OF_ROOM ); // high right corner
+  
    AddEdge( graph, 0, 3, 218 );
    AddEdge( graph, 0, 9, 444 );
    AddEdge( graph, 0, 17, 634 );
@@ -83,6 +109,8 @@ graph_t* CreateGraphEELab()
 void DestroyGraph( graph_t* graph )
 {
    graphSize_t x;
+   free( graph->m_ObstacleList );
+   free( graph->m_NodeCoordinateList );
    for ( x = 0; x < graph->m_NumberOfNodes; x++ )
       free( graph->m_AdjacencyMatrix[ x ] );
    free( graph->m_AdjacencyMatrix );
@@ -163,4 +191,60 @@ bool Dijkstra( graph_t* graph, graphSize_t sourceNodeId, graphSize_t targetNodeI
       currentNodeId = previousNode[ currentNodeId ];
    }
    return true;
+}
+
+// change int32_t so that big numbers aren't used
+inline bool isAbove( segment_t* segment, coordinates_t* point )
+{
+   int32_t BxAx, PyAy, ByAy, PxAx;
+   BxAx = segment->rightPoint.x - segment->leftPoint.x;
+   PyAy = point->y - segment->leftPoint.y;
+   ByAy = segment->rightPoint.y - segment->leftPoint.y;
+   PxAx = point->x - segment->leftPoint.x;
+   return ( BxAx * PyAy - ByAy * PxAx ) > 0;
+}
+
+inline bool intersectWithSegment( segment_t* segment0, segment_t* segment1 )
+{
+   return ( isAbove( segment0, &( segment1->leftPoint ) ) + isAbove( segment0, &( segment1->rightPoint ) ) == 1 ) &&
+          ( isAbove( segment1, &( segment0->leftPoint ) ) + isAbove( segment1, &( segment0->rightPoint ) ) == 1 );
+}
+
+bool intersectWithShape( tetragon_t* tetragon, segment_t* segment )
+{
+   return intersectWithSegment( &( tetragon->forwardDiagonal ), segment ) ||
+          intersectWithSegment( &( tetragon->backDiagonal ), segment );
+}
+
+void AddObstacle( graph_t* graph, inches_t leftX, inches_t rightX, inches_t lowY, inches_t highY )
+{
+   obstacleNumber_t i = graph->m_NumberOfObstacles;
+   graph->m_ObstacleList[ i ].backDiagonal.leftPoint.x = leftX;
+   graph->m_ObstacleList[ i ].backDiagonal.leftPoint.y = highY;
+   graph->m_ObstacleList[ i ].backDiagonal.rightPoint.x = rightX;
+   graph->m_ObstacleList[ i ].backDiagonal.rightPoint.y = lowY;
+   graph->m_ObstacleList[ i ].forwardDiagonal.leftPoint.x = leftX;
+   graph->m_ObstacleList[ i ].forwardDiagonal.leftPoint.y = lowY;
+   graph->m_ObstacleList[ i ].forwardDiagonal.rightPoint.x = rightX;
+   graph->m_ObstacleList[ i ].forwardDiagonal.rightPoint.y = highY;
+   graph->m_NumberOfObstacles++;
+}
+
+bool intersectWithObstacle( graph_t* graph, segment_t* segment )
+{
+   obstacleNumber_t i;
+   for ( i = 0; i < graph->m_NumberOfObstacles; i++ )
+   {
+      if ( intersectWithShape( &( graph->m_ObstacleList[ i ] ), segment ) ) 
+      {
+         printf( "true at obstacle %d\n", i );
+         return true;
+      }
+   }
+   return false;
+}
+
+void printVisibleNodes( coordinates_t* location )
+{
+   
 }
