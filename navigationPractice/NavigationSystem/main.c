@@ -19,7 +19,7 @@ int main( int argc, char** argv )
 
    start = clock();
    graph = CreateGraphEELab();
-   SetRoverPosition( graph, 240, 360 );
+   SetRoverPosition( graph, 84, 120 );
    UpdateNodeVisibilityAndDistances( graph );
    
    printf( "%d inches of travel\n", Dijkstra( graph, source, target ) ); 
