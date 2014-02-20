@@ -18,7 +18,7 @@
 		        INCLUDE 'MC9S12C128.inc' 
 
 ROMStart    EQU   $4000  ; absolute address to place my code/constant data
-Number      EQU   $0f
+Number      EQU   $00
 
 ; variable/data section
             ORG   RAMStart
@@ -27,22 +27,24 @@ Number      EQU   $0f
             ORG   ROMStart            
 Entry:
 _Startup:
- 	;The Goal here will be to transmit the number $55 to another board.
+
+            ;preapre PORTB0 to take input
+            MOVB  #$00, DDRB
+
           	MOVW  #52, SCIBDH
           	MOVB  #%00000000, SCICR1
           	MOVB  #%00001000, SCICR2
           	LDAA  #Number
 Here        BRCLR SCISR1, %10000000, Here
            	STAA  SCIDRL
-            ;movb  #$ff,DDRB
-            ;movb  #$ff,PORTB
-            ;clr   PORTB
+ 
             ldy   #20
 delay       dey
             bne   delay
+;notPressed  brset  PORTB, %00000001, notPressed
+;pressed     brclr  PORTB, %00000001, pressed
           	BRA   Here
-;NotYetTx    BRCLR SCISR1, %01000000, NotYetTx          	
-;          	SWI
+ 
 	          
 ;**************************************************************
 ;*                 Interrupt Vectors                          *

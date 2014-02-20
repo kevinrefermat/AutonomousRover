@@ -7,7 +7,7 @@ const Byte True = 1;
 
 const LWord CLOCK_SPEED_KHZ = 2000;
 const Word SPEED_OF_SOUND_INCH_PER_SEC = 13506;
-const timerCount_t CLOCK_CYCLES_PER_INCH = CLOCK_SPEED_HZ / SPEED_OF_SOUND_INCH_PER_SEC;
+const timerCount_t CLOCK_CYCLES_PER_INCH = 148;
 const Byte INCHES_PER_FOOT = 12;
 
 const Byte TIMER_COUNTER_PRESCALE = 32;

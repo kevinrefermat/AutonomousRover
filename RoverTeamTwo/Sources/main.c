@@ -1,5 +1,6 @@
 #include <hidef.h>
 #include "derivative.h"
+#include <libdefs.h>
 
 #include "Rover.h"
 #include "MotorControlSystem.h"
@@ -11,6 +12,8 @@ int main()
     initializeTimers();
     //initializePeriodicObjectDetection();
     initializeMotorControlSystem();
+    
+    printf( "helloWorld" );
     
     moveForward( 10000 );
     for( ; ; )

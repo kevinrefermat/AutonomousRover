@@ -1,4 +1,13 @@
-*** EVALUATION ***
+*** EVALUATION ************************************************************************************************
+*********************************************************************************************
+LINKING FAILED
+The linking process failed in some stage.
+Depending on the phase the linker failed, part of the information contained in this map file may be inaccurate or wrong.
+If the linking failed before the allocation phase finished, then the addresses might be inaccurate.
+Also summary information like the code size is likely to be misleading.
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+
 PROGRAM "F:\RoverTeamTwo\RoverTeamTwo\bin\Project.abs"
 
 *********************************************************************************************
@@ -6,7 +15,7 @@ TARGET SECTION
 ---------------------------------------------------------------------------------------------
 Processor   : Freescale HC12
 Memory Model: SMALL
-File Format : ELF\DWARF 2.0
+File Format : ELF (no debug info)
 Linker      : SmartLinker V-5.0.40 Build 10203, Jul 23 2010
 
 *********************************************************************************************
@@ -16,32 +25,27 @@ MC9S12C128.c.o                          Model: SMALL,         Lang: ANSI-C
 main.c.o                                Model: SMALL,         Lang: ANSI-C
 MotorControlSystem.c.o                  Model: SMALL,         Lang: ANSI-C
 Start12.c.o                             Model: SMALL,         Lang: ANSI-C
+EMBEDDED.C.o (ansisf.lib)               Model: SMALL,         Lang: ANSI-C
+PRINTF.C.o (ansisf.lib)                 Model: SMALL,         Lang: ANSI-C
+DADD.C.o (ansisf.lib)                   Model: SMALL,         Lang: ANSI-C
+DANSI.C.o (ansisf.lib)                  Model: SMALL,         Lang: ANSI-C
+DCMP.C.o (ansisf.lib)                   Model: SMALL,         Lang: ANSI-C
+DCONV.C.o (ansisf.lib)                  Model: SMALL,         Lang: ANSI-C
+DMUL.C.o (ansisf.lib)                   Model: SMALL,         Lang: ANSI-C
+DREGS.C.o (ansisf.lib)                  Model: SMALL,         Lang: ANSI-C
 rtshc12.c.o (ansisf.lib)                Model: SMALL,         Lang: ANSI-C
+VREGS.C.o (ansisf.lib)                  Model: SMALL,         Lang: ANSI-C
 Rover.c.o                               Model: SMALL,         Lang: ANSI-C
 ObstacleAvoidanceSystem.c.o             Model: SMALL,         Lang: ANSI-C
 
 *********************************************************************************************
 STARTUP SECTION
 ---------------------------------------------------------------------------------------------
-Entry point: 0xC029 (_Startup)
-_startupData is allocated at 0xC031 and uses 6 Bytes
-extern struct _tagStartup {
-  unsigned nofZeroOut     1
-  _Range   pZeroOut       0x500     7
-  _Copy    *toCopyDownBeg 0xC35D
-} _startupData;
 
 *********************************************************************************************
 SECTION-ALLOCATION SECTION
 Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
-.init                             49     R     0xC000     0xC030   ROM_C000
-.startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata                           10     R     0xC03B     0xC044   ROM_C000
-.text                            583     R     0xC045     0xC28B   ROM_C000
-.copy                             12     R     0xC35D     0xC368   ROM_C000
-.stack                           256   R/W      0x400      0x4FF   RAM
-.data                              6   R/W      0x500      0x505   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -265,20 +269,15 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_17e                   2   N/I      0x17E      0x17F   .absSeg220
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg222
-.bss                               1   R/W      0x506      0x506   RAM
-RUNTIME                          209     R     0xC28C     0xC35C   ROM_C000
-.vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):         36F (dec:      879)
-READ_WRITE (R/W):      107 (dec:      263)
+READ_ONLY (R):           4 (dec:        4)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
 VECTOR-ALLOCATION SECTION
     Address     InitValue   InitFunction
 ---------------------------------------------------------------------------------------------
-     0xFFFE        0xC029   _Startup
 
 *********************************************************************************************
 OBJECT-ALLOCATION SECTION
@@ -322,22 +321,22 @@ MODULE:                 -- MC9S12C128.c.o --
      _RTICTL                                     3B       1       1       0   .abs_section_3b
      _COPCTL                                     3C       1       1       0   .abs_section_3c
      _ARMCOP                                     3F       1       1       0   .abs_section_3f
-     _TIOS                                       40       1       1       3   .abs_section_40
+     _TIOS                                       40       1       1       0   .abs_section_40
      _CFORC                                      41       1       1       0   .abs_section_41
      _OC7M                                       42       1       1       0   .abs_section_42
      _OC7D                                       43       1       1       0   .abs_section_43
-     _TSCR1                                      46       1       1       1   .abs_section_46
+     _TSCR1                                      46       1       1       0   .abs_section_46
      _TTOV                                       47       1       1       0   .abs_section_47
      _TCTL1                                      48       1       1       0   .abs_section_48
-     _TCTL2                                      49       1       1       1   .abs_section_49
+     _TCTL2                                      49       1       1       0   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
-     _TCTL4                                      4B       1       1       4   .abs_section_4b
-     _TIE                                        4C       1       1       2   .abs_section_4c
-     _TSCR2                                      4D       1       1       1   .abs_section_4d
-     _TFLG1                                      4E       1       1       4   .abs_section_4e
+     _TCTL4                                      4B       1       1       0   .abs_section_4b
+     _TIE                                        4C       1       1       0   .abs_section_4c
+     _TSCR2                                      4D       1       1       0   .abs_section_4d
+     _TFLG1                                      4E       1       1       0   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
-     _PACTL                                      60       1       1       2   .abs_section_60
-     _PAFLG                                      61       1       1       1   .abs_section_61
+     _PACTL                                      60       1       1       0   .abs_section_60
+     _PAFLG                                      61       1       1       0   .abs_section_61
      _ATDSTAT0                                   86       1       1       0   .abs_section_86
      _ATDTEST1                                   89       1       1       0   .abs_section_89
      _ATDSTAT1                                   8B       1       1       0   .abs_section_8b
@@ -354,13 +353,13 @@ MODULE:                 -- MC9S12C128.c.o --
      _SPIBR                                      DA       1       1       0   .abs_section_da
      _SPISR                                      DB       1       1       0   .abs_section_db
      _SPIDR                                      DD       1       1       0   .abs_section_dd
-     _PWME                                       E0       1       1       1   .abs_section_e0
-     _PWMPOL                                     E1       1       1       1   .abs_section_e1
-     _PWMCLK                                     E2       1       1       1   .abs_section_e2
-     _PWMPRCLK                                   E3       1       1       1   .abs_section_e3
-     _PWMCAE                                     E4       1       1       1   .abs_section_e4
-     _PWMCTL                                     E5       1       1       1   .abs_section_e5
-     _PWMSCLA                                    E8       1       1       1   .abs_section_e8
+     _PWME                                       E0       1       1       0   .abs_section_e0
+     _PWMPOL                                     E1       1       1       0   .abs_section_e1
+     _PWMCLK                                     E2       1       1       0   .abs_section_e2
+     _PWMPRCLK                                   E3       1       1       0   .abs_section_e3
+     _PWMCAE                                     E4       1       1       0   .abs_section_e4
+     _PWMCTL                                     E5       1       1       0   .abs_section_e5
+     _PWMSCLA                                    E8       1       1       0   .abs_section_e8
      _PWMSCLB                                    E9       1       1       0   .abs_section_e9
      _PWMSDN                                     FE       1       1       0   .abs_section_fe
      _FCLKDIV                                   100       1       1       0   .abs_section_100
@@ -426,12 +425,12 @@ MODULE:                 -- MC9S12C128.c.o --
      _CANTXDSR7                                 17B       1       1       0   .abs_section_17b
      _CANTXDLR                                  17C       1       1       0   .abs_section_17c
      _CANTXTBPR                                 17D       1       1       0   .abs_section_17d
-     _PTT                                       240       1       1       3   .abs_section_240
+     _PTT                                       240       1       1       0   .abs_section_240
      _PTIT                                      241       1       1       0   .abs_section_241
-     _DDRT                                      242       1       1       2   .abs_section_242
+     _DDRT                                      242       1       1       0   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
-     _PERT                                      244       1       1       1   .abs_section_244
-     _PPST                                      245       1       1       1   .abs_section_245
+     _PERT                                      244       1       1       0   .abs_section_244
+     _PPST                                      245       1       1       0   .abs_section_245
      _MODRR                                     247       1       1       0   .abs_section_247
      _PTS                                       248       1       1       0   .abs_section_248
      _PTIS                                      249       1       1       0   .abs_section_249
@@ -469,23 +468,23 @@ MODULE:                 -- MC9S12C128.c.o --
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     _PORTAB                                      0       2       2      11   .abs_section_0
-     _DDRAB                                       2       2       2       1   .abs_section_2
+     _PORTAB                                      0       2       2       0   .abs_section_0
+     _DDRAB                                       2       2       2       0   .abs_section_2
      _PARTID                                     1A       2       2       0   .abs_section_1a
      _DBGTB                                      22       2       2       0   .abs_section_22
      _DBGCC                                      26       2       2       0   .abs_section_26
      _DBGCA                                      2B       2       2       0   .abs_section_2b
      _DBGCB                                      2E       2       2       0   .abs_section_2e
-     _TCNT                                       44       2       2       1   .abs_section_44
-     _TC0                                        50       2       2       4   .abs_section_50
-     _TC1                                        52       2       2       1   .abs_section_52
+     _TCNT                                       44       2       2       0   .abs_section_44
+     _TC0                                        50       2       2       0   .abs_section_50
+     _TC1                                        52       2       2       0   .abs_section_52
      _TC2                                        54       2       2       0   .abs_section_54
      _TC3                                        56       2       2       0   .abs_section_56
      _TC4                                        58       2       2       0   .abs_section_58
      _TC5                                        5A       2       2       0   .abs_section_5a
      _TC6                                        5C       2       2       0   .abs_section_5c
      _TC7                                        5E       2       2       0   .abs_section_5e
-     _PACNT                                      62       2       2       1   .abs_section_62
+     _PACNT                                      62       2       2       0   .abs_section_62
      _ATDCTL23                                   82       2       2       0   .abs_section_82
      _ATDCTL45                                   84       2       2       0   .abs_section_84
      _ATDDR0                                     90       2       2       0   .abs_section_90
@@ -500,826 +499,168 @@ MODULE:                 -- MC9S12C128.c.o --
      _PWMCNT01                                   EC       2       2       0   .abs_section_ec
      _PWMCNT23                                   EE       2       2       0   .abs_section_ee
      _PWMCNT45                                   F0       2       2       0   .abs_section_f0
-     _PWMPER01                                   F2       2       2       1   .abs_section_f2
+     _PWMPER01                                   F2       2       2       0   .abs_section_f2
      _PWMPER23                                   F4       2       2       0   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       1   .abs_section_f8
+     _PWMDTY01                                   F8       2       2       0   .abs_section_f8
      _PWMDTY23                                   FA       2       2       0   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _CANRXTSR                                  16E       2       2       0   .abs_section_16e
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C045      5E      94       1   .text       
+     main                                         0'Error      64     100       0   .text       
 - VARIABLES:
+     STRING.helloWorld.1                          0'Error       B      11       0   .rodata1    
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     initializeMotorControlSystem              C0A3       7       7       1   .text       
-     leftTreadForward                          C0AA       7       7       1   .text       
-     rightTreadForward                         C0B1       7       7       1   .text       
-     leftTreadReverse                          C0B8       7       7       1   .text       
-     rightTreadReverse                         C0BF       7       7       1   .text       
-     brakeTreads                               C0C6       4       4       1   .text       
-     disableTreads                             C0CA       4       4       3   .text       
-     enableTreads                              C0CE       4       4       3   .text       
-     moveForward                               C0D2      19      25       1   .text       
-     moveReverse                               C0EB      19      25       1   .text       
-     stopMotion                                C104      20      32       3   .text       
-     initializePulseAccumulator                C124       C      12       2   .text       
-     distanceToPulses                          C130      23      35       2   .text       
-     motionCompleted                           C153       3       3       1   .text       
+     initializeMotorControlSystem                 0'Error       7       7       0   .text       
+     leftTreadForward                             0'Error       7       7       0   .text       
+     rightTreadForward                            0'Error       7       7       0   .text       
+     leftTreadReverse                             0'Error       7       7       0   .text       
+     rightTreadReverse                            0'Error       7       7       0   .text       
+     brakeTreads                                  0'Error       4       4       0   .text       
+     disableTreads                                0'Error       4       4       0   .text       
+     enableTreads                                 0'Error       4       4       0   .text       
+     moveForward                                  0'Error      19      25       0   .text       
+     moveReverse                                  0'Error      19      25       0   .text       
+     stopMotion                                   0'Error      20      32       0   .text       
+     initializePulseAccumulator                   0'Error       C      12       0   .text       
+     distanceToPulses                             0'Error      23      35       0   .text       
+     motionCompleted                              0'Error       3       3       0   .text       
 - VARIABLES:
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
-     Init                                      C000      29      41       1   .init       
-     _Startup                                  C029       8       8       0   .init       
+     Init                                         0'Error      29      41       0   .text       
+     _Startup                                     0'Error       8       8       0   .text       
 - VARIABLES:
-     _startupData                              C031       6       6       3   .startData  
+     _startupData                                 0'Error       6       6       0   STARTUP_DATA
 - LABELS:
-     __SEG_END_SSTACK                           500       0       0       1               
+     __SEG_END_SSTACK                             0'Error       0       0       0               
+MODULE:                 -- EMBEDDED.C.o (ansisf.lib) --
+- PROCEDURES:
+     printf                                       0'Error      13      19       0   .text       
+- VARIABLES:
+MODULE:                 -- PRINTF.C.o (ansisf.lib) --
+- PROCEDURES:
+     Ten                                          0'Error      F6     246       0   .text       
+     vprintf                                      0'Error     AAC    2732       0   .text       
+     _out                                         0'Error       C      12       0   .text       
+     set_printf                                   0'Error       C      12       0   .text       
+- VARIABLES:
+     pow10                                        0'Error      28      40       0   .rodata     
+     pow16                                        0'Error      20      32       0   .rodata     
+     pow8                                         0'Error      2C      44       0   .rodata     
+     fpow10                                       0'Error      60      96       0   .rodata     
+     fpow_10                                      0'Error      60      96       0   .rodata     
+     pbuf                                         0'Error       6       6       0   .bss        
+MODULE:                 -- DADD.C.o (ansisf.lib) --
+- PROCEDURES:
+     D_ADDKL                                      0'Error      BC     188       0   RUNTIME     
+     _DADD                                        0'Error      11      17       0   RUNTIME     
+     _DSUB                                        0'Error      19      25       0   RUNTIME     
+     _DNEG                                        0'Error      17      23       0   RUNTIME     
+- VARIABLES:
+MODULE:                 -- DANSI.C.o (ansisf.lib) --
+- PROCEDURES:
+     D_FREXP                                      0'Error      20      32       0   RUNTIME     
+     frexp                                        0'Error      1F      31       0   RUNTIME     
+- VARIABLES:
+MODULE:                 -- DCMP.C.o (ansisf.lib) --
+- PROCEDURES:
+     _DCMP                                        0'Error      30      48       0   RUNTIME     
+- VARIABLES:
+MODULE:                 -- DCONV.C.o (ansisf.lib) --
+- PROCEDURES:
+     D_TOLONGK                                    0'Error      33      51       0   RUNTIME     
+     D_FRLONGK                                    0'Error      19      25       0   RUNTIME     
+     _DUFLOAT                                     0'Error      14      20       0   RUNTIME     
+     _DSTRUNC                                     0'Error      19      25       0   RUNTIME     
+     _DUTRUNC                                     0'Error       3       3       0   RUNTIME     
+     D_PSHK_UNARY                                 0'Error      1E      30       0   RUNTIME     
+     D_CLRK_UNARY                                 0'Error       D      13       0   RUNTIME     
+     D_MAXK_UNARY                                 0'Error       A      10       0   RUNTIME     
+     D_NORMK_UNARY                                0'Error      5C      92       0   RUNTIME     
+- VARIABLES:
+MODULE:                 -- DMUL.C.o (ansisf.lib) --
+- PROCEDURES:
+     D_MULKL                                      0'Error      90     144       0   RUNTIME     
+     _DMUL                                        0'Error      11      17       0   RUNTIME     
+- VARIABLES:
+MODULE:                 -- DREGS.C.o (ansisf.lib) --
+- PROCEDURES:
+     D_PULK                                       0'Error      29      41       0   RUNTIME     
+     D_PULL                                       0'Error      25      37       0   RUNTIME     
+     D_PSHK                                       0'Error      23      35       0   RUNTIME     
+     D_STAL                                       0'Error      2A      42       0   RUNTIME     
+     D_XGKL                                       0'Error      39      57       0   RUNTIME     
+     D_CLRK                                       0'Error      13      19       0   RUNTIME     
+     D_MAXK                                       0'Error       A      10       0   RUNTIME     
+     D_NORMK                                      0'Error      8F     143       0   RUNTIME     
+- VARIABLES:
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LINC                                     C28C       5       5       1   RUNTIME     
-     _lDivMod                                  C291      BE     190       1   RUNTIME     
-     _LDIVU                                    C34F       E      14       1   RUNTIME     
+     _LCMP_P                                      0'Error      15      21       0   RUNTIME     
+     _LNEG                                        0'Error       D      13       0   RUNTIME     
+     _LINC                                        0'Error       5       5       0   RUNTIME     
+     _lDivMod                                     0'Error      BE     190       0   RUNTIME     
+     _LDIVU                                       0'Error       E      14       0   RUNTIME     
+     _NEG_P                                       0'Error       F      15       0   RUNTIME     
+     _LMODU                                       0'Error      11      17       0   RUNTIME     
+     _ILSEXT                                      0'Error       7       7       0   RUNTIME     
+     _COPY                                        0'Error       8       8       0   RUNTIME     
+     _CASE_DIRECT_BYTE                            0'Error       5       5       0   RUNTIME     
+     _CASE_SEARCH_8                               0'Error      17      23       0   RUNTIME     
+     _CASE_SEARCH_8_BYTE                          0'Error      1A      26       0   RUNTIME     
+- VARIABLES:
+MODULE:                 -- VREGS.C.o (ansisf.lib) --
+- PROCEDURES:
+     L_NEGK                                       0'Error       7       7       0   RUNTIME     
+     L_PSHK                                       0'Error       8       8       0   RUNTIME     
+     UL_PULK                                      0'Error       3       3       0   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
-     delay                                     C156      3C      60       3   .text       
-     initializeTimers                          C192      1F      31       1   .text       
+     delay                                        0'Error      3C      60       0   .text       
+     initializeTimers                             0'Error      1F      31       0   .text       
 - VARIABLES:
-     False                                     C03B       1       1       1   .rodata     
-     True                                      C03C       1       1       2   .rodata     
-     CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
-     INCHES_PER_FOOT                           C03F       1       1       1   .rodata     
-     TIMER_COUNTER_PRESCALE                    C040       1       1       1   .rodata     
-     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C041       4       4       2   .rodata     
-     pingAngle                                  500       2       2       3   .data       
-     RoverInMotionFlag                          506       1       1       3   .bss        
+     False                                        0'Error       1       1       0   .rodata     
+     True                                         0'Error       1       1       0   .rodata     
+     CLOCK_CYCLES_PER_INCH                        0'Error       2       2       0   .rodata     
+     INCHES_PER_FOOT                              0'Error       1       1       0   .rodata     
+     TIMER_COUNTER_PRESCALE                       0'Error       1       1       0   .rodata     
+     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY          0'Error       4       4       0   .rodata     
+     pingAngle                                    0'Error       2       2       0   .data       
+     RoverInMotionFlag                            0'Error       1       1       0   .bss        
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
 - PROCEDURES:
-     updatePingDelay                           C1B1       8       8       1   .text       
-     detectClosestObstacle                     C1B9      1E      30       2   .text       
-     outputPulseToPing                         C1D7      17      23       1   .text       
-     measureReturnPulseFromPing                C1EE      43      67       1   .text       
-     setPingRotationalPosition                 C231      23      35       3   .text       
-     degreesToClockCycles                      C254      27      39       1   .text       
-     updateAndUseThePing                       C27B      11      17       1   .text       
+     updatePingDelay                              0'Error       8       8       0   .text       
+     detectClosestObstacle                        0'Error      1E      30       0   .text       
+     outputPulseToPing                            0'Error      17      23       0   .text       
+     measureReturnPulseFromPing                   0'Error      43      67       0   .text       
+     setPingRotationalPosition                    0'Error      23      35       0   .text       
+     degreesToClockCycles                         0'Error      27      39       0   .text       
+     updateAndUseThePing                          0'Error      11      17       0   .text       
 - VARIABLES:
-     LOOK_LEFT_PWM                              502       1       1       1   .data       
-     LOOK_RIGHT_PWM                             503       1       1       2   .data       
-     PING_UPDATE_DELAY_CLOCK_CYCLES             504       2       2       1   .data       
+     LOOK_LEFT_PWM                                0'Error       1       1       0   .data       
+     LOOK_RIGHT_PWM                               0'Error       1       1       0   .data       
+     PING_UPDATE_DELAY_CLOCK_CYCLES               0'Error       2       2       0   .data       
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
 *********************************************************************************************
 MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
-  MC9S12C128.c.o                             260      0      0
-  main.c.o                                     0     94      0
-  MotorControlSystem.c.o                       0    179      2
-  Start12.c.o                                  0     49      0
-  rtshc12.c.o (ansisf.lib)                     0    209      0
-  Rover.c.o                                    3     91     10
-  ObstacleAvoidanceSystem.c.o                  4    219      2
-  other                                      256     12     12
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
-SECTION: ".text"
-  main initializeMotorControlSystem leftTreadForward rightTreadForward 
-  leftTreadReverse rightTreadReverse brakeTreads disableTreads enableTreads 
-  moveForward moveReverse stopMotion initializePulseAccumulator 
-  distanceToPulses motionCompleted delay initializeTimers updatePingDelay 
-  detectClosestObstacle outputPulseToPing measureReturnPulseFromPing 
-  setPingRotationalPosition degreesToClockCycles updateAndUseThePing 
-SECTION: ".data"
-  pingAngle LOOK_LEFT_PWM LOOK_RIGHT_PWM PING_UPDATE_DELAY_CLOCK_CYCLES 
-SECTION: ".bss"
-  RoverInMotionFlag 
-SECTION: ".init"
-  Init _Startup 
-SECTION: ".rodata"
-  False True CLOCK_CYCLES_PER_INCH INCHES_PER_FOOT TIMER_COUNTER_PRESCALE 
-  WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY 
-SECTION: ".abs_section_8"
-  _PORTE 
-SECTION: ".abs_section_9"
-  _DDRE 
-SECTION: ".abs_section_a"
-  _PEAR 
-SECTION: ".abs_section_b"
-  _MODE 
-SECTION: ".abs_section_c"
-  _PUCR 
-SECTION: ".abs_section_d"
-  _RDRIV 
-SECTION: ".abs_section_e"
-  _EBICTL 
-SECTION: ".abs_section_10"
-  _INITRM 
-SECTION: ".abs_section_11"
-  _INITRG 
-SECTION: ".abs_section_13"
-  _MISC 
-SECTION: ".abs_section_15"
-  _ITCR 
-SECTION: ".abs_section_16"
-  _ITEST 
-SECTION: ".abs_section_19"
-  _VREGCTRL 
-SECTION: ".abs_section_1c"
-  _MEMSIZ0 
-SECTION: ".abs_section_1d"
-  _MEMSIZ1 
-SECTION: ".abs_section_1e"
-  _INTCR 
-SECTION: ".abs_section_1f"
-  _HPRIO 
-SECTION: ".abs_section_20"
-  _DBGC1 
-SECTION: ".abs_section_21"
-  _DBGSC 
-SECTION: ".abs_section_24"
-  _DBGCNT 
-SECTION: ".abs_section_25"
-  _DBGCCX 
-SECTION: ".abs_section_28"
-  _DBGC2 
-SECTION: ".abs_section_29"
-  _DBGC3 
-SECTION: ".abs_section_2a"
-  _DBGCAX 
-SECTION: ".abs_section_2d"
-  _DBGCBX 
-SECTION: ".abs_section_30"
-  _PPAGE 
-SECTION: ".abs_section_34"
-  _SYNR 
-SECTION: ".abs_section_35"
-  _REFDV 
-SECTION: ".abs_section_37"
-  _CRGFLG 
-SECTION: ".abs_section_38"
-  _CRGINT 
-SECTION: ".abs_section_39"
-  _CLKSEL 
-SECTION: ".abs_section_3a"
-  _PLLCTL 
-SECTION: ".abs_section_3b"
-  _RTICTL 
-SECTION: ".abs_section_3c"
-  _COPCTL 
-SECTION: ".abs_section_3f"
-  _ARMCOP 
-SECTION: ".abs_section_40"
-  _TIOS 
-SECTION: ".abs_section_41"
-  _CFORC 
-SECTION: ".abs_section_42"
-  _OC7M 
-SECTION: ".abs_section_43"
-  _OC7D 
-SECTION: ".abs_section_46"
-  _TSCR1 
-SECTION: ".abs_section_47"
-  _TTOV 
-SECTION: ".abs_section_48"
-  _TCTL1 
-SECTION: ".abs_section_49"
-  _TCTL2 
-SECTION: ".abs_section_4a"
-  _TCTL3 
-SECTION: ".abs_section_4b"
-  _TCTL4 
-SECTION: ".abs_section_4c"
-  _TIE 
-SECTION: ".abs_section_4d"
-  _TSCR2 
-SECTION: ".abs_section_4e"
-  _TFLG1 
-SECTION: ".abs_section_4f"
-  _TFLG2 
-SECTION: ".abs_section_60"
-  _PACTL 
-SECTION: ".abs_section_61"
-  _PAFLG 
-SECTION: ".abs_section_86"
-  _ATDSTAT0 
-SECTION: ".abs_section_89"
-  _ATDTEST1 
-SECTION: ".abs_section_8b"
-  _ATDSTAT1 
-SECTION: ".abs_section_8d"
-  _ATDDIEN 
-SECTION: ".abs_section_8f"
-  _PORTAD0 
-SECTION: ".abs_section_ca"
-  _SCICR1 
-SECTION: ".abs_section_cb"
-  _SCICR2 
-SECTION: ".abs_section_cc"
-  _SCISR1 
-SECTION: ".abs_section_cd"
-  _SCISR2 
-SECTION: ".abs_section_ce"
-  _SCIDRH 
-SECTION: ".abs_section_cf"
-  _SCIDRL 
-SECTION: ".abs_section_d8"
-  _SPICR1 
-SECTION: ".abs_section_d9"
-  _SPICR2 
-SECTION: ".abs_section_da"
-  _SPIBR 
-SECTION: ".abs_section_db"
-  _SPISR 
-SECTION: ".abs_section_dd"
-  _SPIDR 
-SECTION: ".abs_section_e0"
-  _PWME 
-SECTION: ".abs_section_e1"
-  _PWMPOL 
-SECTION: ".abs_section_e2"
-  _PWMCLK 
-SECTION: ".abs_section_e3"
-  _PWMPRCLK 
-SECTION: ".abs_section_e4"
-  _PWMCAE 
-SECTION: ".abs_section_e5"
-  _PWMCTL 
-SECTION: ".abs_section_e8"
-  _PWMSCLA 
-SECTION: ".abs_section_e9"
-  _PWMSCLB 
-SECTION: ".abs_section_fe"
-  _PWMSDN 
-SECTION: ".abs_section_100"
-  _FCLKDIV 
-SECTION: ".abs_section_101"
-  _FSEC 
-SECTION: ".abs_section_103"
-  _FCNFG 
-SECTION: ".abs_section_104"
-  _FPROT 
-SECTION: ".abs_section_105"
-  _FSTAT 
-SECTION: ".abs_section_106"
-  _FCMD 
-SECTION: ".abs_section_140"
-  _CANCTL0 
-SECTION: ".abs_section_141"
-  _CANCTL1 
-SECTION: ".abs_section_142"
-  _CANBTR0 
-SECTION: ".abs_section_143"
-  _CANBTR1 
-SECTION: ".abs_section_144"
-  _CANRFLG 
-SECTION: ".abs_section_145"
-  _CANRIER 
-SECTION: ".abs_section_146"
-  _CANTFLG 
-SECTION: ".abs_section_147"
-  _CANTIER 
-SECTION: ".abs_section_148"
-  _CANTARQ 
-SECTION: ".abs_section_149"
-  _CANTAAK 
-SECTION: ".abs_section_14a"
-  _CANTBSEL 
-SECTION: ".abs_section_14b"
-  _CANIDAC 
-SECTION: ".abs_section_14e"
-  _CANRXERR 
-SECTION: ".abs_section_14f"
-  _CANTXERR 
-SECTION: ".abs_section_150"
-  _CANIDAR0 
-SECTION: ".abs_section_151"
-  _CANIDAR1 
-SECTION: ".abs_section_152"
-  _CANIDAR2 
-SECTION: ".abs_section_153"
-  _CANIDAR3 
-SECTION: ".abs_section_154"
-  _CANIDMR0 
-SECTION: ".abs_section_155"
-  _CANIDMR1 
-SECTION: ".abs_section_156"
-  _CANIDMR2 
-SECTION: ".abs_section_157"
-  _CANIDMR3 
-SECTION: ".abs_section_158"
-  _CANIDAR4 
-SECTION: ".abs_section_159"
-  _CANIDAR5 
-SECTION: ".abs_section_15a"
-  _CANIDAR6 
-SECTION: ".abs_section_15b"
-  _CANIDAR7 
-SECTION: ".abs_section_15c"
-  _CANIDMR4 
-SECTION: ".abs_section_15d"
-  _CANIDMR5 
-SECTION: ".abs_section_15e"
-  _CANIDMR6 
-SECTION: ".abs_section_15f"
-  _CANIDMR7 
-SECTION: ".abs_section_160"
-  _CANRXIDR0 
-SECTION: ".abs_section_161"
-  _CANRXIDR1 
-SECTION: ".abs_section_162"
-  _CANRXIDR2 
-SECTION: ".abs_section_163"
-  _CANRXIDR3 
-SECTION: ".abs_section_164"
-  _CANRXDSR0 
-SECTION: ".abs_section_165"
-  _CANRXDSR1 
-SECTION: ".abs_section_166"
-  _CANRXDSR2 
-SECTION: ".abs_section_167"
-  _CANRXDSR3 
-SECTION: ".abs_section_168"
-  _CANRXDSR4 
-SECTION: ".abs_section_169"
-  _CANRXDSR5 
-SECTION: ".abs_section_16a"
-  _CANRXDSR6 
-SECTION: ".abs_section_16b"
-  _CANRXDSR7 
-SECTION: ".abs_section_16c"
-  _CANRXDLR 
-SECTION: ".abs_section_170"
-  _CANTXIDR0 
-SECTION: ".abs_section_171"
-  _CANTXIDR1 
-SECTION: ".abs_section_172"
-  _CANTXIDR2 
-SECTION: ".abs_section_173"
-  _CANTXIDR3 
-SECTION: ".abs_section_174"
-  _CANTXDSR0 
-SECTION: ".abs_section_175"
-  _CANTXDSR1 
-SECTION: ".abs_section_176"
-  _CANTXDSR2 
-SECTION: ".abs_section_177"
-  _CANTXDSR3 
-SECTION: ".abs_section_178"
-  _CANTXDSR4 
-SECTION: ".abs_section_179"
-  _CANTXDSR5 
-SECTION: ".abs_section_17a"
-  _CANTXDSR6 
-SECTION: ".abs_section_17b"
-  _CANTXDSR7 
-SECTION: ".abs_section_17c"
-  _CANTXDLR 
-SECTION: ".abs_section_17d"
-  _CANTXTBPR 
-SECTION: ".abs_section_240"
-  _PTT 
-SECTION: ".abs_section_241"
-  _PTIT 
-SECTION: ".abs_section_242"
-  _DDRT 
-SECTION: ".abs_section_243"
-  _RDRT 
-SECTION: ".abs_section_244"
-  _PERT 
-SECTION: ".abs_section_245"
-  _PPST 
-SECTION: ".abs_section_247"
-  _MODRR 
-SECTION: ".abs_section_248"
-  _PTS 
-SECTION: ".abs_section_249"
-  _PTIS 
-SECTION: ".abs_section_24a"
-  _DDRS 
-SECTION: ".abs_section_24b"
-  _RDRS 
-SECTION: ".abs_section_24c"
-  _PERS 
-SECTION: ".abs_section_24d"
-  _PPSS 
-SECTION: ".abs_section_24e"
-  _WOMS 
-SECTION: ".abs_section_250"
-  _PTM 
-SECTION: ".abs_section_251"
-  _PTIM 
-SECTION: ".abs_section_252"
-  _DDRM 
-SECTION: ".abs_section_253"
-  _RDRM 
-SECTION: ".abs_section_254"
-  _PERM 
-SECTION: ".abs_section_255"
-  _PPSM 
-SECTION: ".abs_section_256"
-  _WOMM 
-SECTION: ".abs_section_258"
-  _PTP 
-SECTION: ".abs_section_259"
-  _PTIP 
-SECTION: ".abs_section_25a"
-  _DDRP 
-SECTION: ".abs_section_25b"
-  _RDRP 
-SECTION: ".abs_section_25c"
-  _PERP 
-SECTION: ".abs_section_25d"
-  _PPSP 
-SECTION: ".abs_section_25e"
-  _PIEP 
-SECTION: ".abs_section_25f"
-  _PIFP 
-SECTION: ".abs_section_268"
-  _PTJ 
-SECTION: ".abs_section_269"
-  _PTIJ 
-SECTION: ".abs_section_26a"
-  _DDRJ 
-SECTION: ".abs_section_26b"
-  _RDRJ 
-SECTION: ".abs_section_26c"
-  _PERJ 
-SECTION: ".abs_section_26d"
-  _PPSJ 
-SECTION: ".abs_section_26e"
-  _PIEJ 
-SECTION: ".abs_section_26f"
-  _PIFJ 
-SECTION: ".abs_section_270"
-  _PTAD 
-SECTION: ".abs_section_271"
-  _PTIAD 
-SECTION: ".abs_section_272"
-  _DDRAD 
-SECTION: ".abs_section_273"
-  _RDRAD 
-SECTION: ".abs_section_274"
-  _PERAD 
-SECTION: ".abs_section_275"
-  _PPSAD 
-SECTION: ".abs_section_0"
-  _PORTAB 
-SECTION: ".abs_section_2"
-  _DDRAB 
-SECTION: ".abs_section_1a"
-  _PARTID 
-SECTION: ".abs_section_22"
-  _DBGTB 
-SECTION: ".abs_section_26"
-  _DBGCC 
-SECTION: ".abs_section_2b"
-  _DBGCA 
-SECTION: ".abs_section_2e"
-  _DBGCB 
-SECTION: ".abs_section_44"
-  _TCNT 
-SECTION: ".abs_section_50"
-  _TC0 
-SECTION: ".abs_section_52"
-  _TC1 
-SECTION: ".abs_section_54"
-  _TC2 
-SECTION: ".abs_section_56"
-  _TC3 
-SECTION: ".abs_section_58"
-  _TC4 
-SECTION: ".abs_section_5a"
-  _TC5 
-SECTION: ".abs_section_5c"
-  _TC6 
-SECTION: ".abs_section_5e"
-  _TC7 
-SECTION: ".abs_section_62"
-  _PACNT 
-SECTION: ".abs_section_82"
-  _ATDCTL23 
-SECTION: ".abs_section_84"
-  _ATDCTL45 
-SECTION: ".abs_section_90"
-  _ATDDR0 
-SECTION: ".abs_section_92"
-  _ATDDR1 
-SECTION: ".abs_section_94"
-  _ATDDR2 
-SECTION: ".abs_section_96"
-  _ATDDR3 
-SECTION: ".abs_section_98"
-  _ATDDR4 
-SECTION: ".abs_section_9a"
-  _ATDDR5 
-SECTION: ".abs_section_9c"
-  _ATDDR6 
-SECTION: ".abs_section_9e"
-  _ATDDR7 
-SECTION: ".abs_section_c8"
-  _SCIBD 
-SECTION: ".abs_section_ec"
-  _PWMCNT01 
-SECTION: ".abs_section_ee"
-  _PWMCNT23 
-SECTION: ".abs_section_f0"
-  _PWMCNT45 
-SECTION: ".abs_section_f2"
-  _PWMPER01 
-SECTION: ".abs_section_f4"
-  _PWMPER23 
-SECTION: ".abs_section_f6"
-  _PWMPER45 
-SECTION: ".abs_section_f8"
-  _PWMDTY01 
-SECTION: ".abs_section_fa"
-  _PWMDTY23 
-SECTION: ".abs_section_fc"
-  _PWMDTY45 
-SECTION: ".abs_section_16e"
-  _CANRXTSR 
-SECTION: ".abs_section_17e"
-  _CANTXTSR 
-SECTION: ".abs_section_ffdc"
-  _Vector_17 
-SECTION: "RUNTIME"
-  _LINC _lDivMod _LDIVU 
-SECTION: ".abs_section_ffec"
-  _Vector_9 
 
 *********************************************************************************************
 OBJECT LIST SORTED BY ADDRESS
      Name                                      Addr   hSize   dSize     Ref    Section   RLIB
 ---------------------------------------------------------------------------------------------
-     _PORTAB                                      0       2       2      11   .abs_section_0
-     _DDRAB                                       2       2       2       1   .abs_section_2
-     _PORTE                                       8       1       1       0   .abs_section_8
-     _DDRE                                        9       1       1       0   .abs_section_9
-     _PEAR                                        A       1       1       0   .abs_section_a
-     _MODE                                        B       1       1       0   .abs_section_b
-     _PUCR                                        C       1       1       0   .abs_section_c
-     _RDRIV                                       D       1       1       0   .abs_section_d
-     _EBICTL                                      E       1       1       0   .abs_section_e
-     _INITRM                                     10       1       1       0   .abs_section_10
-     _INITRG                                     11       1       1       0   .abs_section_11
-     _MISC                                       13       1       1       0   .abs_section_13
-     _ITCR                                       15       1       1       0   .abs_section_15
-     _ITEST                                      16       1       1       0   .abs_section_16
-     _VREGCTRL                                   19       1       1       0   .abs_section_19
-     _PARTID                                     1A       2       2       0   .abs_section_1a
-     _MEMSIZ0                                    1C       1       1       0   .abs_section_1c
-     _MEMSIZ1                                    1D       1       1       0   .abs_section_1d
-     _INTCR                                      1E       1       1       0   .abs_section_1e
-     _HPRIO                                      1F       1       1       0   .abs_section_1f
-     _DBGC1                                      20       1       1       0   .abs_section_20
-     _DBGSC                                      21       1       1       0   .abs_section_21
-     _DBGTB                                      22       2       2       0   .abs_section_22
-     _DBGCNT                                     24       1       1       0   .abs_section_24
-     _DBGCCX                                     25       1       1       0   .abs_section_25
-     _DBGCC                                      26       2       2       0   .abs_section_26
-     _DBGC2                                      28       1       1       0   .abs_section_28
-     _DBGC3                                      29       1       1       0   .abs_section_29
-     _DBGCAX                                     2A       1       1       0   .abs_section_2a
-     _DBGCA                                      2B       2       2       0   .abs_section_2b
-     _DBGCBX                                     2D       1       1       0   .abs_section_2d
-     _DBGCB                                      2E       2       2       0   .abs_section_2e
-     _PPAGE                                      30       1       1       0   .abs_section_30
-     _SYNR                                       34       1       1       0   .abs_section_34
-     _REFDV                                      35       1       1       0   .abs_section_35
-     _CRGFLG                                     37       1       1       0   .abs_section_37
-     _CRGINT                                     38       1       1       0   .abs_section_38
-     _CLKSEL                                     39       1       1       0   .abs_section_39
-     _PLLCTL                                     3A       1       1       0   .abs_section_3a
-     _RTICTL                                     3B       1       1       0   .abs_section_3b
-     _COPCTL                                     3C       1       1       0   .abs_section_3c
-     _ARMCOP                                     3F       1       1       0   .abs_section_3f
-     _TIOS                                       40       1       1       3   .abs_section_40
-     _CFORC                                      41       1       1       0   .abs_section_41
-     _OC7M                                       42       1       1       0   .abs_section_42
-     _OC7D                                       43       1       1       0   .abs_section_43
-     _TCNT                                       44       2       2       1   .abs_section_44
-     _TSCR1                                      46       1       1       1   .abs_section_46
-     _TTOV                                       47       1       1       0   .abs_section_47
-     _TCTL1                                      48       1       1       0   .abs_section_48
-     _TCTL2                                      49       1       1       1   .abs_section_49
-     _TCTL3                                      4A       1       1       0   .abs_section_4a
-     _TCTL4                                      4B       1       1       4   .abs_section_4b
-     _TIE                                        4C       1       1       2   .abs_section_4c
-     _TSCR2                                      4D       1       1       1   .abs_section_4d
-     _TFLG1                                      4E       1       1       4   .abs_section_4e
-     _TFLG2                                      4F       1       1       0   .abs_section_4f
-     _TC0                                        50       2       2       4   .abs_section_50
-     _TC1                                        52       2       2       1   .abs_section_52
-     _TC2                                        54       2       2       0   .abs_section_54
-     _TC3                                        56       2       2       0   .abs_section_56
-     _TC4                                        58       2       2       0   .abs_section_58
-     _TC5                                        5A       2       2       0   .abs_section_5a
-     _TC6                                        5C       2       2       0   .abs_section_5c
-     _TC7                                        5E       2       2       0   .abs_section_5e
-     _PACTL                                      60       1       1       2   .abs_section_60
-     _PAFLG                                      61       1       1       1   .abs_section_61
-     _PACNT                                      62       2       2       1   .abs_section_62
-     _ATDCTL23                                   82       2       2       0   .abs_section_82
-     _ATDCTL45                                   84       2       2       0   .abs_section_84
-     _ATDSTAT0                                   86       1       1       0   .abs_section_86
-     _ATDTEST1                                   89       1       1       0   .abs_section_89
-     _ATDSTAT1                                   8B       1       1       0   .abs_section_8b
-     _ATDDIEN                                    8D       1       1       0   .abs_section_8d
-     _PORTAD0                                    8F       1       1       0   .abs_section_8f
-     _ATDDR0                                     90       2       2       0   .abs_section_90
-     _ATDDR1                                     92       2       2       0   .abs_section_92
-     _ATDDR2                                     94       2       2       0   .abs_section_94
-     _ATDDR3                                     96       2       2       0   .abs_section_96
-     _ATDDR4                                     98       2       2       0   .abs_section_98
-     _ATDDR5                                     9A       2       2       0   .abs_section_9a
-     _ATDDR6                                     9C       2       2       0   .abs_section_9c
-     _ATDDR7                                     9E       2       2       0   .abs_section_9e
-     _SCIBD                                      C8       2       2       0   .abs_section_c8
-     _SCICR1                                     CA       1       1       0   .abs_section_ca
-     _SCICR2                                     CB       1       1       0   .abs_section_cb
-     _SCISR1                                     CC       1       1       0   .abs_section_cc
-     _SCISR2                                     CD       1       1       0   .abs_section_cd
-     _SCIDRH                                     CE       1       1       0   .abs_section_ce
-     _SCIDRL                                     CF       1       1       0   .abs_section_cf
-     _SPICR1                                     D8       1       1       0   .abs_section_d8
-     _SPICR2                                     D9       1       1       0   .abs_section_d9
-     _SPIBR                                      DA       1       1       0   .abs_section_da
-     _SPISR                                      DB       1       1       0   .abs_section_db
-     _SPIDR                                      DD       1       1       0   .abs_section_dd
-     _PWME                                       E0       1       1       1   .abs_section_e0
-     _PWMPOL                                     E1       1       1       1   .abs_section_e1
-     _PWMCLK                                     E2       1       1       1   .abs_section_e2
-     _PWMPRCLK                                   E3       1       1       1   .abs_section_e3
-     _PWMCAE                                     E4       1       1       1   .abs_section_e4
-     _PWMCTL                                     E5       1       1       1   .abs_section_e5
-     _PWMSCLA                                    E8       1       1       1   .abs_section_e8
-     _PWMSCLB                                    E9       1       1       0   .abs_section_e9
-     _PWMCNT01                                   EC       2       2       0   .abs_section_ec
-     _PWMCNT23                                   EE       2       2       0   .abs_section_ee
-     _PWMCNT45                                   F0       2       2       0   .abs_section_f0
-     _PWMPER01                                   F2       2       2       1   .abs_section_f2
-     _PWMPER23                                   F4       2       2       0   .abs_section_f4
-     _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       1   .abs_section_f8
-     _PWMDTY23                                   FA       2       2       0   .abs_section_fa
-     _PWMDTY45                                   FC       2       2       0   .abs_section_fc
-     _PWMSDN                                     FE       1       1       0   .abs_section_fe
-     _FCLKDIV                                   100       1       1       0   .abs_section_100
-     _FSEC                                      101       1       1       0   .abs_section_101
-     _FCNFG                                     103       1       1       0   .abs_section_103
-     _FPROT                                     104       1       1       0   .abs_section_104
-     _FSTAT                                     105       1       1       0   .abs_section_105
-     _FCMD                                      106       1       1       0   .abs_section_106
-     _CANCTL0                                   140       1       1       0   .abs_section_140
-     _CANCTL1                                   141       1       1       0   .abs_section_141
-     _CANBTR0                                   142       1       1       0   .abs_section_142
-     _CANBTR1                                   143       1       1       0   .abs_section_143
-     _CANRFLG                                   144       1       1       0   .abs_section_144
-     _CANRIER                                   145       1       1       0   .abs_section_145
-     _CANTFLG                                   146       1       1       0   .abs_section_146
-     _CANTIER                                   147       1       1       0   .abs_section_147
-     _CANTARQ                                   148       1       1       0   .abs_section_148
-     _CANTAAK                                   149       1       1       0   .abs_section_149
-     _CANTBSEL                                  14A       1       1       0   .abs_section_14a
-     _CANIDAC                                   14B       1       1       0   .abs_section_14b
-     _CANRXERR                                  14E       1       1       0   .abs_section_14e
-     _CANTXERR                                  14F       1       1       0   .abs_section_14f
-     _CANIDAR0                                  150       1       1       0   .abs_section_150
-     _CANIDAR1                                  151       1       1       0   .abs_section_151
-     _CANIDAR2                                  152       1       1       0   .abs_section_152
-     _CANIDAR3                                  153       1       1       0   .abs_section_153
-     _CANIDMR0                                  154       1       1       0   .abs_section_154
-     _CANIDMR1                                  155       1       1       0   .abs_section_155
-     _CANIDMR2                                  156       1       1       0   .abs_section_156
-     _CANIDMR3                                  157       1       1       0   .abs_section_157
-     _CANIDAR4                                  158       1       1       0   .abs_section_158
-     _CANIDAR5                                  159       1       1       0   .abs_section_159
-     _CANIDAR6                                  15A       1       1       0   .abs_section_15a
-     _CANIDAR7                                  15B       1       1       0   .abs_section_15b
-     _CANIDMR4                                  15C       1       1       0   .abs_section_15c
-     _CANIDMR5                                  15D       1       1       0   .abs_section_15d
-     _CANIDMR6                                  15E       1       1       0   .abs_section_15e
-     _CANIDMR7                                  15F       1       1       0   .abs_section_15f
-     _CANRXIDR0                                 160       1       1       0   .abs_section_160
-     _CANRXIDR1                                 161       1       1       0   .abs_section_161
-     _CANRXIDR2                                 162       1       1       0   .abs_section_162
-     _CANRXIDR3                                 163       1       1       0   .abs_section_163
-     _CANRXDSR0                                 164       1       1       0   .abs_section_164
-     _CANRXDSR1                                 165       1       1       0   .abs_section_165
-     _CANRXDSR2                                 166       1       1       0   .abs_section_166
-     _CANRXDSR3                                 167       1       1       0   .abs_section_167
-     _CANRXDSR4                                 168       1       1       0   .abs_section_168
-     _CANRXDSR5                                 169       1       1       0   .abs_section_169
-     _CANRXDSR6                                 16A       1       1       0   .abs_section_16a
-     _CANRXDSR7                                 16B       1       1       0   .abs_section_16b
-     _CANRXDLR                                  16C       1       1       0   .abs_section_16c
-     _CANRXTSR                                  16E       2       2       0   .abs_section_16e
-     _CANTXIDR0                                 170       1       1       0   .abs_section_170
-     _CANTXIDR1                                 171       1       1       0   .abs_section_171
-     _CANTXIDR2                                 172       1       1       0   .abs_section_172
-     _CANTXIDR3                                 173       1       1       0   .abs_section_173
-     _CANTXDSR0                                 174       1       1       0   .abs_section_174
-     _CANTXDSR1                                 175       1       1       0   .abs_section_175
-     _CANTXDSR2                                 176       1       1       0   .abs_section_176
-     _CANTXDSR3                                 177       1       1       0   .abs_section_177
-     _CANTXDSR4                                 178       1       1       0   .abs_section_178
-     _CANTXDSR5                                 179       1       1       0   .abs_section_179
-     _CANTXDSR6                                 17A       1       1       0   .abs_section_17a
-     _CANTXDSR7                                 17B       1       1       0   .abs_section_17b
-     _CANTXDLR                                  17C       1       1       0   .abs_section_17c
-     _CANTXTBPR                                 17D       1       1       0   .abs_section_17d
-     _CANTXTSR                                  17E       2       2       0   .abs_section_17e
-     _PTT                                       240       1       1       3   .abs_section_240
-     _PTIT                                      241       1       1       0   .abs_section_241
-     _DDRT                                      242       1       1       2   .abs_section_242
-     _RDRT                                      243       1       1       0   .abs_section_243
-     _PERT                                      244       1       1       1   .abs_section_244
-     _PPST                                      245       1       1       1   .abs_section_245
-     _MODRR                                     247       1       1       0   .abs_section_247
-     _PTS                                       248       1       1       0   .abs_section_248
-     _PTIS                                      249       1       1       0   .abs_section_249
-     _DDRS                                      24A       1       1       0   .abs_section_24a
-     _RDRS                                      24B       1       1       0   .abs_section_24b
-     _PERS                                      24C       1       1       0   .abs_section_24c
-     _PPSS                                      24D       1       1       0   .abs_section_24d
-     _WOMS                                      24E       1       1       0   .abs_section_24e
-     _PTM                                       250       1       1       0   .abs_section_250
-     _PTIM                                      251       1       1       0   .abs_section_251
-     _DDRM                                      252       1       1       0   .abs_section_252
-     _RDRM                                      253       1       1       0   .abs_section_253
-     _PERM                                      254       1       1       0   .abs_section_254
-     _PPSM                                      255       1       1       0   .abs_section_255
-     _WOMM                                      256       1       1       0   .abs_section_256
-     _PTP                                       258       1       1       0   .abs_section_258
-     _PTIP                                      259       1       1       0   .abs_section_259
-     _DDRP                                      25A       1       1       0   .abs_section_25a
-     _RDRP                                      25B       1       1       0   .abs_section_25b
-     _PERP                                      25C       1       1       0   .abs_section_25c
-     _PPSP                                      25D       1       1       0   .abs_section_25d
-     _PIEP                                      25E       1       1       0   .abs_section_25e
-     _PIFP                                      25F       1       1       0   .abs_section_25f
-     _PTJ                                       268       1       1       0   .abs_section_268
-     _PTIJ                                      269       1       1       0   .abs_section_269
-     _DDRJ                                      26A       1       1       0   .abs_section_26a
-     _RDRJ                                      26B       1       1       0   .abs_section_26b
-     _PERJ                                      26C       1       1       0   .abs_section_26c
-     _PPSJ                                      26D       1       1       0   .abs_section_26d
-     _PIEJ                                      26E       1       1       0   .abs_section_26e
-     _PIFJ                                      26F       1       1       0   .abs_section_26f
-     _PTAD                                      270       1       1       0   .abs_section_270
-     _PTIAD                                     271       1       1       0   .abs_section_271
-     _DDRAD                                     272       1       1       0   .abs_section_272
-     _RDRAD                                     273       1       1       0   .abs_section_273
-     _PERAD                                     274       1       1       0   .abs_section_274
-     _PPSAD                                     275       1       1       0   .abs_section_275
-     pingAngle                                  500       2       2       3   .data       
-     LOOK_LEFT_PWM                              502       1       1       1   .data       
-     LOOK_RIGHT_PWM                             503       1       1       2   .data       
-     PING_UPDATE_DELAY_CLOCK_CYCLES             504       2       2       1   .data       
-     RoverInMotionFlag                          506       1       1       3   .bss        
-     Init                                      C000      29      41       1   .init       
-     _Startup                                  C029       8       8       0   .init       
-     False                                     C03B       1       1       1   .rodata     
-     True                                      C03C       1       1       2   .rodata     
-     CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
-     INCHES_PER_FOOT                           C03F       1       1       1   .rodata     
-     TIMER_COUNTER_PRESCALE                    C040       1       1       1   .rodata     
-     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C041       4       4       2   .rodata     
-     main                                      C045      5E      94       1   .text       
-     initializeMotorControlSystem              C0A3       7       7       1   .text       
-     leftTreadForward                          C0AA       7       7       1   .text       
-     rightTreadForward                         C0B1       7       7       1   .text       
-     leftTreadReverse                          C0B8       7       7       1   .text       
-     rightTreadReverse                         C0BF       7       7       1   .text       
-     brakeTreads                               C0C6       4       4       1   .text       
-     disableTreads                             C0CA       4       4       3   .text       
-     enableTreads                              C0CE       4       4       3   .text       
-     moveForward                               C0D2      19      25       1   .text       
-     moveReverse                               C0EB      19      25       1   .text       
-     stopMotion                                C104      20      32       3   .text       
-     initializePulseAccumulator                C124       C      12       2   .text       
-     distanceToPulses                          C130      23      35       2   .text       
-     motionCompleted                           C153       3       3       1   .text       
-     delay                                     C156      3C      60       3   .text       
-     initializeTimers                          C192      1F      31       1   .text       
-     updatePingDelay                           C1B1       8       8       1   .text       
-     detectClosestObstacle                     C1B9      1E      30       2   .text       
-     outputPulseToPing                         C1D7      17      23       1   .text       
-     measureReturnPulseFromPing                C1EE      43      67       1   .text       
-     setPingRotationalPosition                 C231      23      35       3   .text       
-     degreesToClockCycles                      C254      27      39       1   .text       
-     updateAndUseThePing                       C27B      11      17       1   .text       
-     _LINC                                     C28C       5       5       1   RUNTIME     
-     _lDivMod                                  C291      BE     190       1   RUNTIME     
-     _LDIVU                                    C34F       E      14       1   RUNTIME     
-     _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
-     _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
 *********************************************************************************************
 UNUSED-OBJECTS SECTION
@@ -1327,183 +668,57 @@ UNUSED-OBJECTS SECTION
 NOT USED PROCEDURES
 MotorControlSystem.c.o:
   rotate degreesToPulses 
+EMBEDDED.C.o (ansisf.lib):
+  scanf gets puts fopen fflush fclose fprintf fputs fputc fgetc remove clock 
+  abort exit 
+PRINTF.C.o (ansisf.lib):
+  deposit_char sprintf vsprintf 
+DADD.C.o (ansisf.lib):
+  _DINC _DDEC _DABS 
+DANSI.C.o (ansisf.lib):
+  D_MODF D_LDEXP modf RetErrDom ldexp 
+DCONV.C.o (ansisf.lib):
+  _DSFLOAT 
+DMUL.C.o (ansisf.lib):
+  D_DIVKL _DDIV 
+DREGS.C.o (ansisf.lib):
+  D_TLK D_TKL D_CLRL 
 rtshc12.c.o (ansisf.lib):
   _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
-  _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP _LCMP_P _LCMP_PP _LNEG _LCOM _LDEC 
-  _LMUL _LMULU16x32 _LMULS16x32 _NEG_P _LDIVS _LMODU _LMODS _ILSEXT _COPY 
-  _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE _CASE_SEARCH 
-  _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
+  _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP _LCMP_PP _LCOM _LDEC _LMUL 
+  _LMULU16x32 _LMULS16x32 _LDIVS _LMODS _CASE_DIRECT _CASE_CHECKED 
+  _CASE_CHECKED_BYTE _CASE_SEARCH _CASE_SEARCH_BYTE _FCALL _FPCMP 
+VREGS.C.o (ansisf.lib):
+  SL_PULK 
 ObstacleAvoidanceSystem.c.o:
   initializePeriodicObjectDetection 
 NOT USED VARIABLES
 MotorControlSystem.c.o:
   PULSES_PER_INCH PULSES_PER_FOOT PULSES_PER_DEGREE FORWARD_MOTION 
   REVERSE_MOTION STOP_MOTION 
+EMBEDDED.C.o (ansisf.lib):
+  STRING..1 
+DANSI.C.o (ansisf.lib):
+  infinity errno 
 rtshc12.c.o (ansisf.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
 Rover.c.o:
-  CLOCK_SPEED_HZ SPEED_OF_SOUND_INCH_PER_SEC PING_FREQUENCY 
+  CLOCK_SPEED_KHZ SPEED_OF_SOUND_INCH_PER_SEC PING_FREQUENCY 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC35D ---- SIZE       4 ---
-Filling bytes inserted
- 00060500
-------- ROM-ADDRESS: 0xC361 ---- RAM-ADDRESS: 0x500 ---- SIZE       2 ---
-Name of initialized Object : pingAngle
- FFB5
-------- ROM-ADDRESS: 0xC363 ---- RAM-ADDRESS: 0x502 ---- SIZE       1 ---
-Name of initialized Object : LOOK_LEFT_PWM
- 12
-------- ROM-ADDRESS: 0xC364 ---- RAM-ADDRESS: 0x503 ---- SIZE       1 ---
-Name of initialized Object : LOOK_RIGHT_PWM
- 03
-------- ROM-ADDRESS: 0xC365 ---- RAM-ADDRESS: 0x504 ---- SIZE       2 ---
-Name of initialized Object : PING_UPDATE_DELAY_CLOCK_CYCLES
- F230
-------- ROM-ADDRESS: 0xC367 ---- SIZE       2 ---
-Filling bytes inserted
- 0000
 
 *********************************************************************************************
 OBJECT-DEPENDENCIES SECTION
 ---------------------------------------------------------------------------------------------
-Init                      USES _startupData 
-_Startup                  USES __SEG_END_SSTACK Init main 
-main                      USES initializeTimers initializeMotorControlSystem 
-                                moveForward setPingRotationalPosition delay stopMotion 
-                                moveReverse detectClosestObstacle 
-initializeMotorControlSystem USES _DDRAB stopMotion 
-leftTreadForward          USES _PORTAB 
-rightTreadForward         USES _PORTAB 
-leftTreadReverse          USES _PORTAB 
-rightTreadReverse         USES _PORTAB 
-brakeTreads               USES _PORTAB 
-disableTreads             USES _PORTAB 
-enableTreads              USES _PORTAB 
-moveForward               USES distanceToPulses initializePulseAccumulator 
-                                disableTreads leftTreadForward rightTreadForward True 
-                                RoverInMotionFlag enableTreads 
-moveReverse               USES distanceToPulses initializePulseAccumulator 
-                                disableTreads leftTreadReverse rightTreadReverse True 
-                                RoverInMotionFlag enableTreads 
-stopMotion                USES disableTreads brakeTreads enableTreads 
-                                WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY delay _PACTL _PAFLG False RoverInMotionFlag 
-initializePulseAccumulator USES _PACNT _PACTL 
-distanceToPulses          USES INCHES_PER_FOOT 
-motionCompleted           USES stopMotion 
-delay                     USES _LDIVU _LINC 
-initializeTimers          USES _TSCR1 _TSCR2 _TIE _TIOS _PERT _PPST _TCTL2 
-updatePingDelay           USES _TCNT PING_UPDATE_DELAY_CLOCK_CYCLES _TC1 
-detectClosestObstacle     USES outputPulseToPing measureReturnPulseFromPing 
-                                TIMER_COUNTER_PRESCALE CLOCK_CYCLES_PER_INCH 
-outputPulseToPing         USES _DDRT _PTT 
-measureReturnPulseFromPing USES _DDRT _TIOS _TCTL4 _TFLG1 _TC0 
-setPingRotationalPosition USES _PWMPOL _PWMCLK _PWMPRCLK _PWMCAE _PWMCTL 
-                                _PWMSCLA _PWMPER01 degreesToClockCycles _PWMDTY01 _PWME 
-degreesToClockCycles      USES LOOK_LEFT_PWM LOOK_RIGHT_PWM 
-updateAndUseThePing       USES updatePingDelay pingAngle 
-                                setPingRotationalPosition 
-_LDIVU                    USES _lDivMod 
-_Vector_17                USES motionCompleted 
-_Vector_9                 USES updateAndUseThePing 
 
-*********************************************************************************************
-DEPENDENCY TREE
-*********************************************************************************************
- main and _Startup Group
- | 
- +- main                
- |  | 
- |  +- initializeTimers    
- |  |    
- |  +- initializeMotorControlSystem
- |  |  | 
- |  |  +- stopMotion          
- |  |     | 
- |  |     +- disableTreads       
- |  |     |    
- |  |     +- brakeTreads         
- |  |     |    
- |  |     +- enableTreads        
- |  |     |    
- |  |     +- delay               
- |  |        | 
- |  |        +- _LDIVU              
- |  |        |  | 
- |  |        |  +- _lDivMod            
- |  |        |       
- |  |        +- _LINC               
- |  |             
- |  +- moveForward         
- |  |  | 
- |  |  +- distanceToPulses    
- |  |  |    
- |  |  +- initializePulseAccumulator
- |  |  |    
- |  |  +- disableTreads        (see above)
- |  |  |  
- |  |  +- leftTreadForward    
- |  |  |    
- |  |  +- rightTreadForward   
- |  |  |    
- |  |  +- enableTreads         (see above)
- |  |     
- |  +- setPingRotationalPosition
- |  |  | 
- |  |  +- degreesToClockCycles
- |  |       
- |  +- delay                (see above)
- |  |  
- |  +- stopMotion           (see above)
- |  |  
- |  +- moveReverse         
- |  |  | 
- |  |  +- distanceToPulses     (see above)
- |  |  |  
- |  |  +- initializePulseAccumulator (see above)
- |  |  |  
- |  |  +- disableTreads        (see above)
- |  |  |  
- |  |  +- leftTreadReverse    
- |  |  |    
- |  |  +- rightTreadReverse   
- |  |  |    
- |  |  +- enableTreads         (see above)
- |  |     
- |  +- detectClosestObstacle
- |     | 
- |     +- outputPulseToPing   
- |     |    
- |     +- measureReturnPulseFromPing
- |          
- +- _Startup            
-    | 
-    +- Init                
-    |    
-    +- main                 (see above)
-       
- _Vector_17          
- | 
- +- motionCompleted     
-    | 
-    +- stopMotion           (see above)
-       
- _Vector_9           
- | 
- +- updateAndUseThePing 
-    | 
-    +- updatePingDelay     
-    |    
-    +- setPingRotationalPosition (see above)
-       
 *********************************************************************************************
 STATISTIC SECTION
 ---------------------------------------------------------------------------------------------
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 879
+Number of blocks to be downloaded: 0
+Total size of all blocks to be downloaded: 0
 
