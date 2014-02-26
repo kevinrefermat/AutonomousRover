@@ -13,7 +13,7 @@
 static const inches_t NO_CONNECTION = -1;
 
 #define MAX_RAM_NUMBER_OF_NODES 16
-#define ROM_NUMBER_OF_NODES 19
+#define ROM_NUMBER_OF_NODES 21
 #define MAX_TOTAL_NUMBER_OF_NODES ( MAX_RAM_NUMBER_OF_NODES + ROM_NUMBER_OF_NODES )
 
 #define MAX_RAM_NUMBER_OF_OBSTACLES 7
@@ -37,8 +37,9 @@ static nodeNumber_t NumberOfNodes = ROM_NUMBER_OF_NODES + 1;
 static obstacleNumber_t NumberOfObstacles = ROM_NUMBER_OF_OBSTACLES;
 
 static coordinates_t RamNodeCoordinateList[ MAX_RAM_NUMBER_OF_NODES ]; 
-static inches_t AdjacencyMatrix[ MAX_TOTAL_NUMBER_OF_NODES ][ MAX_TOTAL_NUMBER_OF_NODES ];
+static inches_t AdjacencyMatrixData[ MAX_TOTAL_NUMBER_OF_NODES * ( MAX_TOTAL_NUMBER_OF_NODES - 1 ) / 2 ];
 static tetragon_t RamObstacleList[ MAX_RAM_NUMBER_OF_OBSTACLES ];  
+static nodeNumber_t RamNodeSequence[ MAX_TOTAL_NUMBER_OF_NODES ];
 
 static const coordinates_t RomNodeCoordinateList[] = 
 {
@@ -60,7 +61,9 @@ static const coordinates_t RomNodeCoordinateList[] =
    { 162, 66 },
    { 345, 66 },
    { 36, 36 },
-   { 408, 558 }
+   { 408, 558 },
+   { 54, 510 },
+   { 239, 510 }
 };
 
 static const tetragon_t RomObstacleList[] =
@@ -84,11 +87,7 @@ static inches_t distanceFromSource[ MAX_TOTAL_NUMBER_OF_NODES ];
 
 void InitializeNavigationSystem()
 {
-   nodeNumber_t x, y;
-   
-   for ( x = 0; x < MaxTotalNumberOfNodes; x++ )
-      for ( y = 0; y < MaxTotalNumberOfNodes; y++ )
-         AdjacencyMatrix[ x ][ y ] = NO_CONNECTION;
+   UpdateAllNodeConnections();
 }
 
 inches_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
@@ -109,12 +108,12 @@ inches_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
    {
       shortestDistanceFromSource = 0x7FFF;
       for ( neighborNodeId = 0; neighborNodeId < NumberOfNodes; neighborNodeId++ )
-         if ( ( AdjacencyMatrix[ currentNodeId ][ neighborNodeId ] != NO_CONNECTION ) &&
+         if ( ( GetAdjacencyMatrixValue( currentNodeId, neighborNodeId ) != NO_CONNECTION ) &&
             ( !beenVisited[ neighborNodeId ] ) &&
-            ( distanceFromSource[ neighborNodeId ] > distanceFromSource[ currentNodeId ] + AdjacencyMatrix[ currentNodeId ][ neighborNodeId ] ) )
+            ( distanceFromSource[ neighborNodeId ] > distanceFromSource[ currentNodeId ] + GetAdjacencyMatrixValue( currentNodeId, neighborNodeId ) ) )
          {
             previousNode[ neighborNodeId ] = currentNodeId;
-            distanceFromSource[ neighborNodeId ] = distanceFromSource[ currentNodeId ] + AdjacencyMatrix[ currentNodeId ][ neighborNodeId ]; 
+            distanceFromSource[ neighborNodeId ] = distanceFromSource[ currentNodeId ] + GetAdjacencyMatrixValue( currentNodeId, neighborNodeId );
          }
       
       if ( currentNodeId == targetNodeId ) break;
@@ -145,18 +144,22 @@ void AddObstacle( inches_t left, inches_t right, inches_t top, inches_t bottom )
    RamObstacleList[ RamNumberOfObstacles ].right = right;
    RamObstacleList[ RamNumberOfObstacles ].top = top;
    RamObstacleList[ RamNumberOfObstacles ].bottom = bottom;
- 
+
    RamNumberOfObstacles++;
    NumberOfObstacles++;
+
+   UpdateAllNodeConnections();
 }
 
 void AddNode( inches_t x, inches_t y )
 {
    RamNodeCoordinateList[ RamNumberOfNodes ].x = x;
    RamNodeCoordinateList[ RamNumberOfNodes ].y = y;
-   
+
    RamNumberOfNodes++;
    NumberOfNodes++;
+
+   UpdateSingleNodeConnections( NumberOfNodes - 1 ); 
 }
 
 void SetRoverPosition( inches_t x, inches_t y )
@@ -164,26 +167,37 @@ void SetRoverPosition( inches_t x, inches_t y )
    // KILL MAGIC NUMBER 0 -- DEAL WITH ROVER IDENTIFICATION BETWEEN ROM AND RAM LISTS
    RamNodeCoordinateList[ 0 ].x = x;
    RamNodeCoordinateList[ 0 ].y = y;
+
+   // RomNumberOfNodes == roverId
+   UpdateSingleNodeConnections( RomNumberOfNodes );
 }
 
-void UpdateNodeVisibilityAndDistances()
+void UpdateSingleNodeConnections( nodeNumber_t node )
 {
-   nodeNumber_t currentNode, otherNode, x, y;
-   coordinates_t currentNodeCoordinates, otherNodeCoordinates;
+   nodeNumber_t otherNode;
+   coordinates_t nodeCoords, otherNodeCoords;
+   
+   for ( otherNode = 0; otherNode < NumberOfNodes; otherNode++ )
+   {
+      if ( node != otherNode && NodesAreVisibleToEachOther( node, otherNode ) )
+      {
+         nodeCoords = node < RomNumberOfNodes ? RomNodeCoordinateList[ node ] : RamNodeCoordinateList[ node - RomNumberOfNodes ];
+         otherNodeCoords = otherNode < RomNumberOfNodes ? RomNodeCoordinateList[ otherNode ] : RamNodeCoordinateList[ otherNode - RomNumberOfNodes ];
+         SetAdjacencyMatrixValue( node, otherNode, Distance( nodeCoords, otherNodeCoords ) );
+      }
+      else
+      {
+         SetAdjacencyMatrixValue( node, otherNode, NO_CONNECTION );
+      }
+   }
+}
 
-   for ( x = 0; x < NumberOfNodes; x++ )
-      for ( y = 0; y < NumberOfNodes; y++ )
-         AdjacencyMatrix[ x ][ y ] = NO_CONNECTION;
+void UpdateAllNodeConnections()
+{
+   nodeNumber_t currentNode, otherNode;
    
    for ( currentNode = 0; currentNode < NumberOfNodes; currentNode++ )
-      for ( otherNode = currentNode + 1; otherNode < NumberOfNodes; otherNode++ )
-         if ( NodesAreVisibleToEachOther( currentNode, otherNode ) )
-         {
-            currentNodeCoordinates = currentNode < RomNumberOfNodes ? RomNodeCoordinateList[ currentNode ] : RamNodeCoordinateList[ currentNode - RomNumberOfNodes ];
-            otherNodeCoordinates = otherNode < RomNumberOfNodes ? RomNodeCoordinateList[ otherNode ] : RamNodeCoordinateList[ otherNode - RomNumberOfNodes ];
-            AdjacencyMatrix[ currentNode ][ otherNode ] = Distance( currentNodeCoordinates, otherNodeCoordinates );
-            AdjacencyMatrix[ otherNode ][ currentNode ] = AdjacencyMatrix[ currentNode ][ otherNode ];
-         }
+      UpdateSingleNodeConnections( currentNode );
 }
 
 static inches_t Distance( coordinates_t A, coordinates_t B )
@@ -273,4 +287,35 @@ static bool IsAbove( segment_t* segment, coordinates_t* point )
    ByAy = segment->rightPoint.y - segment->leftPoint.y;
    PxAx = point->x - segment->leftPoint.x;
    return ( BxAx * PyAy - ByAy * PxAx ) > 0;
+}
+
+static void SetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column, inches_t value )
+{
+   if ( row == column ) return;
+   if ( row < column )
+   {   
+      // swap because row must be greater than column
+      row ^= column;
+      column ^= row;
+      row ^= column;
+   }   
+   AdjacencyMatrixData[ ( ( row - 1 ) * row ) / 2 + column ] = value;
+}
+
+static inches_t GetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column )
+{
+   if ( row == column ) return 0;
+   if ( row < column )
+   {   
+      // swap because row must be greater than column
+      row ^= column;
+      column ^= row;
+      row ^= column;
+   }   
+   return AdjacencyMatrixData[ ( ( row - 1 ) * row ) / 2 + column ];
+}
+
+void printRamSize()
+{
+   printf( "Ram used = %d Bytes\n", sizeof( RamObstacleList ) + sizeof( RamNumberOfObstacles ) + sizeof( RamNodeCoordinateList ) + sizeof( RamNumberOfNodes ) + sizeof( RamNodeSequence ) + sizeof( AdjacencyMatrixData ) );
 }

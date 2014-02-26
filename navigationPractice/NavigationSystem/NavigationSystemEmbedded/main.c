@@ -20,12 +20,14 @@ int main( int argc, char** argv )
    start = clock();
    InitializeNavigationSystem();
    SetRoverPosition(  84, 120 );
-   UpdateNodeVisibilityAndDistances();
+   // implement change such that when you change the rover's position nodes are auto updated but only rover's connections avoid redundancy
    
    printf( "%d inches of travel\n", Dijkstra( source, target ) ); 
 
    end = clock();
    printf( "It took %d clock cycles.\n", end - start );
+   
+   printRamSize();
 
    return 0;
 }

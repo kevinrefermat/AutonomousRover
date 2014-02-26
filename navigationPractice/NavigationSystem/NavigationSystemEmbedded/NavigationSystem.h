@@ -42,7 +42,8 @@ void SetRoverPosition( inches_t x, inches_t y );
 
 inches_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId );
 
-void UpdateNodeVisibilityAndDistances();
+void UpdateSingleNodeConnections( nodeNumber_t node );
+void UpdateAllNodeConnections();
 static inches_t Distance( coordinates_t A, coordinates_t B );
 static inches_t SquareRoot( int32_t operand );
 
@@ -51,5 +52,10 @@ static bool IntersectWithObstacle( segment_t* segment );
 static bool IntersectWithShape( tetragon_t* tetragon, segment_t* segment );
 static bool IntersectWithSegment( segment_t* segment0, segment_t* segment1 );
 static bool IsAbove( segment_t* segment, coordinates_t* point );
+
+static void SetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column, inches_t value );
+static inches_t GetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column );
+
+void printRamSize();
 
 #endif
