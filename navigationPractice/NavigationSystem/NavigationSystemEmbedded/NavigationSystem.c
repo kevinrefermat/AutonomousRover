@@ -1,7 +1,6 @@
-#include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
+
+#include "MockRover.h"
 
 #include "NavigationSystem.h"
 
@@ -84,7 +83,7 @@ static const tetragon_t RomObstacleList[] =
 };
 
 
-static bool beenVisited[ MAX_TOTAL_NUMBER_OF_NODES ];
+static boolean_t beenVisited[ MAX_TOTAL_NUMBER_OF_NODES ];
 static nodeNumber_t previousNode[ MAX_TOTAL_NUMBER_OF_NODES ];
 static inches_t distanceFromTarget[ MAX_TOTAL_NUMBER_OF_NODES ];
 
@@ -100,7 +99,7 @@ void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
    
    for ( i = 0; i < NumberOfNodes; i++ )
    {
-      beenVisited[ i ] = false;
+      beenVisited[ i ] = False;
       distanceFromTarget[ i ] = 0x7FFF;
    }
    
@@ -120,7 +119,7 @@ void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
          }
       
       if ( currentNodeId == sourceNodeId ) break;
-      beenVisited[ currentNodeId ] = true;
+      beenVisited[ currentNodeId ] = True;
 
       for ( j = 0; j < NumberOfNodes; j++ )
          if ( !beenVisited[ j ] &&
@@ -214,7 +213,7 @@ void UpdateAllNodeConnections()
 
 static inches_t Distance( coordinates_t A, coordinates_t B )
 {
-   int32_t Ax, Bx, Ay, By;
+   sLWord Ax, Bx, Ay, By;
    Ax = A.x;
    Bx = B.x;
    Ay = A.y;
@@ -222,13 +221,12 @@ static inches_t Distance( coordinates_t A, coordinates_t B )
    return SquareRoot( ( Ax - Bx ) * ( Ax - Bx ) + ( Ay - By ) * ( Ay - By ) );
 }
 
-static inches_t SquareRoot( int32_t operand )
+static inches_t SquareRoot( sLWord operand )
 {
-   int32_t guess, lastGuess;
+   sLWord guess, lastGuess;
    if ( operand < 0 )
    {
       fprintf( stderr, "Error in SquareRoot() in Graph.c: operand was negative\n" );
-      exit( 1 );
    }
    guess = 40000;       
    for ( ; ; ) 
@@ -241,7 +239,7 @@ static inches_t SquareRoot( int32_t operand )
 }
 
 
-bool NodesAreVisibleToEachOther( nodeNumber_t nodeId1, nodeNumber_t nodeId2 )
+boolean_t NodesAreVisibleToEachOther( nodeNumber_t nodeId1, nodeNumber_t nodeId2 )
 {
    segment_t segment;
    coordinates_t* nodeId1Coordinates, * nodeId2Coordinates;
@@ -257,19 +255,19 @@ bool NodesAreVisibleToEachOther( nodeNumber_t nodeId1, nodeNumber_t nodeId2 )
    return !IntersectWithObstacle( &segment );
 }
 
-static bool IntersectWithObstacle( segment_t* segment )
+static boolean_t IntersectWithObstacle( segment_t* segment )
 {
    obstacleNumber_t i;
    for ( i = 0; i < RomNumberOfObstacles; i++ )
       if ( IntersectWithShape( ( tetragon_t* )&( RomObstacleList[ i ] ), segment ) ) 
-         return true;
+         return True;
    for ( i = 0; i < RamNumberOfObstacles; i++ )
       if ( IntersectWithShape( &( RamObstacleList[ i ] ), segment ) ) 
-         return true;
-   return false;
+         return True;
+   return False;
 }
 
-static bool IntersectWithShape( tetragon_t* tetragon, segment_t* segment )
+static boolean_t IntersectWithShape( tetragon_t* tetragon, segment_t* segment )
 {
    segment_t forwardDiagonal, backDiagonal;
    forwardDiagonal.leftPoint.x = tetragon->left;
@@ -285,7 +283,7 @@ static bool IntersectWithShape( tetragon_t* tetragon, segment_t* segment )
           IntersectWithSegment( &backDiagonal, segment );
 }
 
-static bool IntersectWithSegment( segment_t* segment0, segment_t* segment1 )
+static boolean_t IntersectWithSegment( segment_t* segment0, segment_t* segment1 )
 {
    return ( IsAbove( segment0, &( segment1->leftPoint ) ) + IsAbove( segment0, &( segment1->rightPoint ) ) == 1 ) &&
           ( IsAbove( segment1, &( segment0->leftPoint ) ) + IsAbove( segment1, &( segment0->rightPoint ) ) == 1 );
@@ -293,12 +291,12 @@ static bool IntersectWithSegment( segment_t* segment0, segment_t* segment1 )
 
 
 /*** DIVIDING BY 6 ALLOWS BOTH SIDES OF INEQUALITY TO BE SCALED SO I CAN USE uin16_t instead of int32_t ***/
-static bool IsAbove( segment_t* segment, coordinates_t* point )
+static boolean_t IsAbove( segment_t* segment, coordinates_t* point )
 {
-   uint16_t BxAx, PyAy, ByAy, PxAx;
-   BxAx = ( segment->rightPoint.x - segment->leftPoint.x ) / 6;
+   sLWord BxAx, PyAy, ByAy, PxAx;
+   BxAx = ( segment->rightPoint.x - segment->leftPoint.x );
    PyAy = point->y - segment->leftPoint.y;
-   ByAy = ( segment->rightPoint.y - segment->leftPoint.y ) / 6;
+   ByAy = ( segment->rightPoint.y - segment->leftPoint.y );
    PxAx = point->x - segment->leftPoint.x;
    return BxAx * PyAy > ByAy * PxAx;
 }
@@ -352,7 +350,7 @@ void printNodeSequence()
 
 void printEnvironment()
 {
-   int16_t width, height, row, column, i, j, k, left, right, top, bottom;
+   sWord width, height, row, column, i, j, k, left, right, top, bottom;
    width = RIGHT_OF_ROOM * 2 / 6;
    height = TOP_OF_ROOM / 6;
    char MatrixOfRoom[ height ][ width ];

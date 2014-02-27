@@ -20,7 +20,7 @@ int main( int argc, char** argv )
    t1 = clock();
    InitializeNavigationSystem();
    t2 = clock();
-   SetRoverPosition(  84, 120 );
+   SetRoverPosition(  120, 180 );
    // implement change such that when you change the rover's position nodes are auto updated but only rover's connections avoid redundancy
    
    t3 = clock();
