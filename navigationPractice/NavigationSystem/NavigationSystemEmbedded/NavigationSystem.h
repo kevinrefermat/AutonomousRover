@@ -10,6 +10,7 @@
 typedef int8_t nodeNumber_t;
 typedef int8_t obstacleNumber_t;
 typedef int16_t inches_t;
+typedef int16_t degree_t;
 
 typedef struct
 {
@@ -40,7 +41,7 @@ void AddNode( inches_t x, inches_t y );
 void AddObstacle( inches_t left, inches_t right, inches_t top, inches_t bottom );
 void SetRoverPosition( inches_t x, inches_t y );
 
-inches_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId );
+void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId );
 
 void UpdateSingleNodeConnections( nodeNumber_t node );
 void UpdateAllNodeConnections();
@@ -56,6 +57,9 @@ static bool IsAbove( segment_t* segment, coordinates_t* point );
 static void SetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column, inches_t value );
 static inches_t GetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column );
 
+static void UpdateDegreesAndDistancesFromNodeSequence();
+
 void printRamSize();
+void printNodeSequence();
 
 #endif

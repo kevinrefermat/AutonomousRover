@@ -17,7 +17,7 @@ static const inches_t NO_CONNECTION = -1;
 #define MAX_TOTAL_NUMBER_OF_NODES ( MAX_RAM_NUMBER_OF_NODES + ROM_NUMBER_OF_NODES )
 
 #define MAX_RAM_NUMBER_OF_OBSTACLES 7
-#define ROM_NUMBER_OF_OBSTACLES 8
+#define ROM_NUMBER_OF_OBSTACLES 10
 #define MAX_TOTAL_NUMBER_OF_OBSTACLES ( MAX_RAM_NUMBER_OF_OBSTACLES + ROM_NUMBER_OF_OBSTACLES )
 
 static const nodeNumber_t MaxRamNumberOfNodes = MAX_RAM_NUMBER_OF_NODES;
@@ -31,15 +31,18 @@ static const obstacleNumber_t MaxTotalNumberOfObstacles = MAX_TOTAL_NUMBER_OF_OB
 // 1 for rover's current position
 static nodeNumber_t RamNumberOfNodes = 1;
 static obstacleNumber_t RamNumberOfObstacles = 0;
+static nodeNumber_t RamNodeSequenceSize = 0;
 
 // +1 for rover's current position
 static nodeNumber_t NumberOfNodes = ROM_NUMBER_OF_NODES + 1;
 static obstacleNumber_t NumberOfObstacles = ROM_NUMBER_OF_OBSTACLES;
 
 static coordinates_t RamNodeCoordinateList[ MAX_RAM_NUMBER_OF_NODES ]; 
-static inches_t AdjacencyMatrixData[ MAX_TOTAL_NUMBER_OF_NODES * ( MAX_TOTAL_NUMBER_OF_NODES - 1 ) / 2 ];
+static inches_t RamAdjacencyMatrixData[ MAX_TOTAL_NUMBER_OF_NODES * ( MAX_TOTAL_NUMBER_OF_NODES - 1 ) / 2 ];
 static tetragon_t RamObstacleList[ MAX_RAM_NUMBER_OF_OBSTACLES ];  
 static nodeNumber_t RamNodeSequence[ MAX_TOTAL_NUMBER_OF_NODES ];
+static degree_t RamDegreesSequence[ MAX_TOTAL_NUMBER_OF_NODES ];
+static inches_t RamDistanceSequence[ MAX_TOTAL_NUMBER_OF_NODES ];
 
 static const coordinates_t RomNodeCoordinateList[] = 
 {
@@ -63,79 +66,79 @@ static const coordinates_t RomNodeCoordinateList[] =
    { 36, 36 },
    { 408, 558 },
    { 54, 510 },
-   { 239, 510 }
+   { 234, 510 }
 };
 
 static const tetragon_t RomObstacleList[] =
 {
-   { 96, 450, BOTTOM_OF_ROOM, 36 },          // x axis shit collecting wall
-   { 420, 450, BOTTOM_OF_ROOM, 336 },        // right side low cabinets
-   { 420, 450, 444, 534 },                   // right side high cabinets
-   { 174, 330, 78, 156 },                    // right low desk
-   { 84, 156, 246, 438 },                    // left center desk
-   { 276, 348, 246, 408 },                   // right center desk
-   { 246, 330, 444, 516 },                   // right high desk
-   { 66, 222, 522, TOP_OF_ROOM },            // desk area
-   { 222, 390, 570, TOP_OF_ROOM },           // RF room
-   { 612, RIGHT_OF_ROOM, 612, TOP_OF_ROOM }  // high right corner
+   { 96, 450, 36, BOTTOM_OF_ROOM },          // x axis shit collecting wall
+   { 420, 450, 336, BOTTOM_OF_ROOM },        // right side low cabinets
+   { 420, 450, 534, 444 },                   // right side high cabinets
+   { 174, 330, 156, 78 },                    // right low desk
+   { 84, 156, 438, 246 },                    // left center desk
+   { 276, 348, 408, 246 },                   // right center desk
+   { 246, 330, 516, 444 },                   // right high desk
+   { 66, 222, TOP_OF_ROOM, 522 },            // desk area
+   { 222, 390, TOP_OF_ROOM, 570 },           // RF room
+   { 390, RIGHT_OF_ROOM, TOP_OF_ROOM, 612 }  // high right corner
 };
 
 
 static bool beenVisited[ MAX_TOTAL_NUMBER_OF_NODES ];
 static nodeNumber_t previousNode[ MAX_TOTAL_NUMBER_OF_NODES ];
-static inches_t distanceFromSource[ MAX_TOTAL_NUMBER_OF_NODES ];
+static inches_t distanceFromTarget[ MAX_TOTAL_NUMBER_OF_NODES ];
 
 void InitializeNavigationSystem()
 {
    UpdateAllNodeConnections();
 }
 
-inches_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
+void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
 { 
    nodeNumber_t i, j, neighborNodeId, currentNodeId;
-   inches_t shortestDistanceFromSource;
+   inches_t shortestDistanceFromTarget;
    
    for ( i = 0; i < NumberOfNodes; i++ )
    {
       beenVisited[ i ] = false;
-      distanceFromSource[ i ] = 0x7FFF;
+      distanceFromTarget[ i ] = 0x7FFF;
    }
    
-   distanceFromSource[ sourceNodeId ] = 0;
-   currentNodeId = sourceNodeId;
+   distanceFromTarget[ targetNodeId ] = 0;
+   currentNodeId = targetNodeId;
    
    for ( i = 0; i < NumberOfNodes; i++ )
    {
-      shortestDistanceFromSource = 0x7FFF;
+      shortestDistanceFromTarget = 0x7FFF;
       for ( neighborNodeId = 0; neighborNodeId < NumberOfNodes; neighborNodeId++ )
          if ( ( GetAdjacencyMatrixValue( currentNodeId, neighborNodeId ) != NO_CONNECTION ) &&
             ( !beenVisited[ neighborNodeId ] ) &&
-            ( distanceFromSource[ neighborNodeId ] > distanceFromSource[ currentNodeId ] + GetAdjacencyMatrixValue( currentNodeId, neighborNodeId ) ) )
+            ( distanceFromTarget[ neighborNodeId ] > distanceFromTarget[ currentNodeId ] + GetAdjacencyMatrixValue( currentNodeId, neighborNodeId ) ) )
          {
             previousNode[ neighborNodeId ] = currentNodeId;
-            distanceFromSource[ neighborNodeId ] = distanceFromSource[ currentNodeId ] + GetAdjacencyMatrixValue( currentNodeId, neighborNodeId );
+            distanceFromTarget[ neighborNodeId ] = distanceFromTarget[ currentNodeId ] + GetAdjacencyMatrixValue( currentNodeId, neighborNodeId );
          }
       
-      if ( currentNodeId == targetNodeId ) break;
+      if ( currentNodeId == sourceNodeId ) break;
       beenVisited[ currentNodeId ] = true;
 
       for ( j = 0; j < NumberOfNodes; j++ )
          if ( !beenVisited[ j ] &&
-            distanceFromSource[ j ] < shortestDistanceFromSource )
+            distanceFromTarget[ j ] < shortestDistanceFromTarget )
          {
-            shortestDistanceFromSource = distanceFromSource[ j ];
+            shortestDistanceFromTarget = distanceFromTarget[ j ];
             currentNodeId = j;
          }
       //********** Implement a catch for UNREACHABLE_TARGET;
    }
-
-   printf( "%d\n", targetNodeId );
-   while ( currentNodeId != sourceNodeId )
+   RamNodeSequence[ 0 ] = currentNodeId;
+   RamNodeSequenceSize = 1;
+   while ( currentNodeId != targetNodeId )
    {
-      printf( "%d\n", previousNode[ currentNodeId ] );
       currentNodeId = previousNode[ currentNodeId ];
+      RamNodeSequence[ RamNodeSequenceSize++ ] = currentNodeId;
    }
-   return distanceFromSource[ targetNodeId ];
+   UpdateDegreesAndDistancesFromNodeSequence();
 }
 
 void AddObstacle( inches_t left, inches_t right, inches_t top, inches_t bottom )
@@ -186,18 +189,27 @@ void UpdateSingleNodeConnections( nodeNumber_t node )
          SetAdjacencyMatrixValue( node, otherNode, Distance( nodeCoords, otherNodeCoords ) );
       }
       else
-      {
          SetAdjacencyMatrixValue( node, otherNode, NO_CONNECTION );
-      }
    }
 }
 
 void UpdateAllNodeConnections()
 {
    nodeNumber_t currentNode, otherNode;
+   coordinates_t nodeCoords, otherNodeCoords;
    
    for ( currentNode = 0; currentNode < NumberOfNodes; currentNode++ )
-      UpdateSingleNodeConnections( currentNode );
+      for ( otherNode = currentNode + 1; otherNode < NumberOfNodes; otherNode++ )
+      {
+         if ( NodesAreVisibleToEachOther( currentNode, otherNode ) )
+         {
+            nodeCoords = currentNode < RomNumberOfNodes ? RomNodeCoordinateList[ currentNode ] : RamNodeCoordinateList[ currentNode - RomNumberOfNodes ];
+            otherNodeCoords = otherNode < RomNumberOfNodes ? RomNodeCoordinateList[ otherNode ] : RamNodeCoordinateList[ otherNode - RomNumberOfNodes ];
+            SetAdjacencyMatrixValue( currentNode, otherNode, Distance( nodeCoords, otherNodeCoords ) );
+         }
+         else
+            SetAdjacencyMatrixValue( currentNode, otherNode, NO_CONNECTION );
+   }
 }
 
 static inches_t Distance( coordinates_t A, coordinates_t B )
@@ -279,14 +291,16 @@ static bool IntersectWithSegment( segment_t* segment0, segment_t* segment1 )
           ( IsAbove( segment1, &( segment0->leftPoint ) ) + IsAbove( segment1, &( segment0->rightPoint ) ) == 1 );
 }
 
+
+/*** DIVIDING BY 6 ALLOWS BOTH SIDES OF INEQUALITY TO BE SCALED SO I CAN USE uin16_t instead of int32_t ***/
 static bool IsAbove( segment_t* segment, coordinates_t* point )
 {
-   int32_t BxAx, PyAy, ByAy, PxAx;
-   BxAx = segment->rightPoint.x - segment->leftPoint.x;
+   uint16_t BxAx, PyAy, ByAy, PxAx;
+   BxAx = ( segment->rightPoint.x - segment->leftPoint.x ) / 6;
    PyAy = point->y - segment->leftPoint.y;
-   ByAy = segment->rightPoint.y - segment->leftPoint.y;
+   ByAy = ( segment->rightPoint.y - segment->leftPoint.y ) / 6;
    PxAx = point->x - segment->leftPoint.x;
-   return ( BxAx * PyAy - ByAy * PxAx ) > 0;
+   return BxAx * PyAy > ByAy * PxAx;
 }
 
 static void SetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column, inches_t value )
@@ -299,7 +313,7 @@ static void SetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column, inch
       column ^= row;
       row ^= column;
    }   
-   AdjacencyMatrixData[ ( ( row - 1 ) * row ) / 2 + column ] = value;
+   RamAdjacencyMatrixData[ ( ( row - 1 ) * row ) / 2 + column ] = value;
 }
 
 static inches_t GetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column )
@@ -312,10 +326,103 @@ static inches_t GetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column )
       column ^= row;
       row ^= column;
    }   
-   return AdjacencyMatrixData[ ( ( row - 1 ) * row ) / 2 + column ];
+   return RamAdjacencyMatrixData[ ( ( row - 1 ) * row ) / 2 + column ];
+}
+
+static void UpdateDegreesAndDistancesFromNodeSequence()
+{
+   nodeNumber_t i;
+   for ( i = 0; i < RamNodeSequenceSize - 1; i++ )
+      RamDistanceSequence[ i ] = distanceFromTarget[ RamNodeSequence[ i ] ] - distanceFromTarget[ RamNodeSequence[ i + 1 ] ];
 }
 
 void printRamSize()
 {
-   printf( "Ram used = %d Bytes\n", sizeof( RamObstacleList ) + sizeof( RamNumberOfObstacles ) + sizeof( RamNodeCoordinateList ) + sizeof( RamNumberOfNodes ) + sizeof( RamNodeSequence ) + sizeof( AdjacencyMatrixData ) );
+   printf( "Ram used = %d Bytes\n", sizeof( RamObstacleList ) + sizeof( RamNumberOfObstacles ) + sizeof( RamNodeCoordinateList ) + sizeof( RamNumberOfNodes ) + sizeof( RamNodeSequence ) + sizeof( RamAdjacencyMatrixData ) + sizeof( RamNodeSequenceSize ) + sizeof( RamDistanceSequence ) + sizeof( RamDegreesSequence ) );
+}
+
+void printNodeSequence()
+{
+   nodeNumber_t i;
+   for ( i = 0; i < RamNodeSequenceSize; i++ )
+      printf( "%d\n", RamNodeSequence[ i ] );
+   for ( i = 0; i < RamNodeSequenceSize - 1; i++ )
+      printf( "%d inches from %d to %d\n", RamDistanceSequence[ i ], RamNodeSequence[ i ], RamNodeSequence[ i + 1 ] );
+}
+
+void printEnvironment()
+{
+   int16_t width, height, row, column, i, j, k, left, right, top, bottom;
+   width = RIGHT_OF_ROOM * 2 / 6;
+   height = TOP_OF_ROOM / 6;
+   char MatrixOfRoom[ height ][ width ];
+
+   for ( row = 0; row < height; row++ )
+   {
+      MatrixOfRoom[ row ][ 0 ] = '|';
+      MatrixOfRoom[ row ][ 1 ] = ' ';
+      for ( column = 2; column < width - 2; column++ )
+      {
+         MatrixOfRoom[ row ][ column ] = ' ';
+      }
+      MatrixOfRoom[ row ][ width - 2 ] = ' ';
+      MatrixOfRoom[ row ][ width - 1 ] = '|';
+   }
+
+   for ( i = 0; i < RomNumberOfObstacles; i++ )
+   {
+      left = RomObstacleList[ i ].left * 2 / 6;
+      right = RomObstacleList[ i ].right * 2 / 6;
+      top = RomObstacleList[ i ].top / 6;
+      bottom = RomObstacleList[ i ].bottom / 6;
+      
+      printf( "left = %3d   right = %3d   top = %3d   bottom = %3d\n", left, right, top, bottom );
+
+      for ( j = bottom; j < top; j++ )
+      {
+         for ( k = left; k < right; k++ ) 
+         {
+            MatrixOfRoom[ j ][ k ] = 'H'; 
+         }
+      }
+   }
+   
+   for ( i = 0; i < RamNumberOfObstacles; i++ )
+   {
+      left = RamObstacleList[ i ].left * 2 / 6;
+      right = RamObstacleList[ i ].right * 2 / 6;
+      top = RamObstacleList[ i ].top / 6;
+      bottom = RamObstacleList[ i ].bottom / 6;
+      
+      printf( "left = %3d   right = %3d   top = %3d   bottom = %3d\n", left, right, top, bottom );
+
+      for ( j = bottom; j < top; j++ )
+      {
+         for ( k = left; k < right; k++ ) 
+         {
+            MatrixOfRoom[ j ][ k ] = 'H'; 
+         }
+      }
+   }
+
+   for ( i = 0; i < RomNumberOfNodes; i++ )
+   {
+      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / 6 ][ RomNodeCoordinateList[ i ].x * 2 / 6 ] = 'O';
+      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / 6 ][ RomNodeCoordinateList[ i ].x * 2 / 6 - 1 ] = 'O';
+   }
+   
+   for ( i = 0; i < RamNumberOfNodes; i++ )
+   {
+      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / 6 ][ RamNodeCoordinateList[ i ].x * 2 / 6 ] = 'O';
+      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / 6 ][ RamNodeCoordinateList[ i ].x * 2 / 6 - 1 ] = 'O';
+   }
+
+   for ( row = 0; row < height; row++ )
+   {
+      for ( column = 0; column < width; column++ )
+      {
+         printf( "%c", MatrixOfRoom[ height - row - 1 ][ column ] );
+      }
+      printf( "\n" );
+   }
 }
