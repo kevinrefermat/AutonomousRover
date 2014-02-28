@@ -21,19 +21,19 @@ void stopMotion( void );
 
 /*** Static Function Prototypes ***/
 
-static void leftTreadForward();
+static void leftTreadForward( void );
 
-static void leftTreadReverse();
+static void leftTreadReverse( void );
 
-static void rightTreadForward();
+static void rightTreadForward( void );
 
-static void rightTreadReverse();   
+static void rightTreadReverse( void );   
 
-static void brakeTreads();
+static void brakeTreads( void );
 
-static void disableTreads();
+static void disableTreads( void );
 
-static void enableTreads();
+static void enableTreads( void );
 
 static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt );
 
@@ -44,7 +44,7 @@ static pulseCount_t degreesToPulses( degree_t degrees );
 
 /*** Interrupt Service Routine ***/
 
-interrupt VectorNumber_Vtimpaovf void motionCompleted();
+interrupt VectorNumber_Vtimpaovf void motionCompleted( void );
 
 
 #endif

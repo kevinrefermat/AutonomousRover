@@ -4,17 +4,25 @@
 
 #include "Rover.h"
 #include "MotorControlSystem.h"
+#include "NavigationSystem.h"
+#include "ObstacleAvoidanceSystem.h"
 
-int main()
-{   
-    inches_t distance;
+void main( void )
+{       
+    InitializeNavigationSystem();
+    SetRoverPosition( 120, 180 );
+    AddObstacle( 10, 70, 650, 500 );
+    Dijkstra( 17, 18 );
+    
+    
+    
+    
+    
     EnableInterrupts;
     initializeTimers();
     //initializePeriodicObjectDetection();
     initializeMotorControlSystem();
-    
-    printf( "helloWorld" );
-    
+
     moveForward( 10000 );
     for( ; ; )
     { 
@@ -49,7 +57,5 @@ int main()
       while( RoverInMotionFlag == True );
     }
     */
-    distance = detectClosestObstacle();
     for (;;);
-    return 0;
 }

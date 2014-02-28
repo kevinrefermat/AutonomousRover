@@ -171,7 +171,6 @@ static pulseCount_t degreesToPulses( degree_t degrees)
 	}
 }
 
-
 interrupt VectorNumber_Vtimpaovf void motionCompleted()
 {
 	stopMotion();

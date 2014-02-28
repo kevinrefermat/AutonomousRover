@@ -4,7 +4,6 @@
 #include "MC9S12C128.h"
 #include <stdtypes.h>
 
-
 /*** TYPE DECLARATIONS ***/
 
 typedef Byte boolean_t;
@@ -20,7 +19,13 @@ typedef Word timerCount_t;
 
 // Distance
 typedef Word inches_t; 
-typedef Byte feet_t; 
+typedef Byte feet_t;
+
+
+// NavigationSystem Types
+
+typedef sByte nodeNumber_t;
+typedef sByte obstacleNumber_t; 
 
 
 /*** ROVER IO CONTROL ***/
@@ -61,7 +66,7 @@ extern const Byte PING_FREQUENCY;
 /*** GLOBAL VARIABLE ***/
 
 extern degree_t pingAngle;
-
+                      
 
 /*** FLAGS ***/
 
@@ -73,12 +78,10 @@ extern boolean_t RoverInMotionFlag;
 void delay( microseconds_t time );
 
 
-#endif
-
 // I don't like the CPU hogging delay function in delay() FIX IT
 
 /*** INITIALIZATION FUNCTIONS ***/
 
-void initializeTimers();
+void initializeTimers( void );
 
-
+#endif
