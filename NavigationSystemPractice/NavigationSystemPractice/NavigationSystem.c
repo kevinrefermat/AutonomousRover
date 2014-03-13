@@ -405,14 +405,14 @@ void printEnvironment()
 
    for ( i = 0; i < RomNumberOfNodes; i++ )
    {
-      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / 6 ][ RomNodeCoordinateList[ i ].x * 2 / 6 ] = 'O';
-      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / 6 ][ RomNodeCoordinateList[ i ].x * 2 / 6 - 1 ] = 'O';
+      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / 6 ][ RomNodeCoordinateList[ i ].x * 2 / 6 ] = i % 10 + 0x30;
+      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / 6 ][ RomNodeCoordinateList[ i ].x * 2 / 6 - 1 ] = i / 10 + 0x30;
    }
    
    for ( i = 0; i < RamNumberOfNodes; i++ )
    {
-      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / 6 ][ RamNodeCoordinateList[ i ].x * 2 / 6 ] = 'O';
-      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / 6 ][ RamNodeCoordinateList[ i ].x * 2 / 6 - 1 ] = 'O';
+      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / 6 ][ RamNodeCoordinateList[ i ].x * 2 / 6 ] = ( i + RomNumberOfNodes ) % 10 + 0x30;
+      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / 6 ][ RamNodeCoordinateList[ i ].x * 2 / 6 - 1 ] = ( i + RomNumberOfNodes ) / 10 + 0x30;
    }
 
    for ( row = 0; row < height; row++ )
