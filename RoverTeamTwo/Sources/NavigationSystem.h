@@ -3,7 +3,6 @@
 
 #include "Rover.h"
 
-
 /*** TYPE DEFINITIONS ***/
 
 typedef struct
@@ -25,6 +24,12 @@ typedef struct
    inches_t top;
    inches_t bottom;
 } tetragon_t;
+
+typedef struct
+{
+   direction_t typeOfMotion;
+   sWord value;
+} turnByTurnElement_t;
 
 
 /*** FUNCTIONS ***/
@@ -51,6 +56,12 @@ static boolean_t IsAbove( segment_t* segment, coordinates_t* point );
 static void SetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column, inches_t value );
 static inches_t GetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column );
 
-void UpdateDegreesAndDistancesFromNodeSequence( void );
+void UpdateTurnByTurnQueueFromNodeSequence( void );
+
+degree_t arcTangent( inches_t y, inches_t x );
+coordinates_t* GetNodeCoordinates( nodeNumber_t nodeId );
+
+turnByTurnElement_t* GetNextTurnByTurnElement( void );
+boolean_t HasNextTurnByTurnElement( void );
 
 #endif

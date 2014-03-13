@@ -23,9 +23,14 @@ static const nodeNumber_t MaxTotalNumberOfNodes = MAX_TOTAL_NUMBER_OF_NODES;
 static const obstacleNumber_t MaxRamNumberOfObstacles = MAX_RAM_NUMBER_OF_OBSTACLES;
 static const obstacleNumber_t RomNumberOfObstacles = ROM_NUMBER_OF_OBSTACLES;
 static const obstacleNumber_t MaxTotalNumberOfObstacles = MAX_TOTAL_NUMBER_OF_OBSTACLES;
-
-static degree_t RamDegreesSequence[ MAX_TOTAL_NUMBER_OF_NODES ];
-static inches_t RamDistanceSequence[ MAX_TOTAL_NUMBER_OF_NODES ];
+                   
+typedef struct
+{
+   sWord size;
+   sWord index;
+   turnByTurnElement_t queue[ MAX_TOTAL_NUMBER_OF_NODES * 2 ]; 
+} turnByTurnQueue_t;
+static turnByTurnQueue_t RamTurnByTurnQueue;
 
 // 1 for rover's current position
 static nodeNumber_t RamNumberOfNodes = 1;
@@ -81,6 +86,19 @@ static const tetragon_t RomObstacleList[] =
    { 390, RIGHT_OF_ROOM, TOP_OF_ROOM, 612 }  // high right corner
 };
 
+static const Word TangentLut[] = 
+{
+   0, 1, 3, 5, 6, 8, 10, 12, 14,
+   15, 17, 19, 21, 23, 24, 26, 28, 30,
+   32, 34, 36, 38, 40, 42, 44, 46, 48,
+   50, 53, 55, 57, 60, 62, 64, 67, 70,
+   72, 75, 78, 80, 83, 86, 90, 93, 96,
+   99, 103, 107, 111, 115, 119, 123, 127, 132,
+   137, 142, 148, 153, 160, 166, 173, 180, 188,
+   196, 205, 214, 224, 235, 247, 260, 274, 290,
+   307, 327, 348, 373, 401, 433, 470, 514, 567,
+   631, 711, 814, 951, 1142, 1430, 1908, 2863, 5728
+};
 
 static boolean_t beenVisited[ MAX_TOTAL_NUMBER_OF_NODES ];
 static nodeNumber_t previousNode[ MAX_TOTAL_NUMBER_OF_NODES ];
@@ -131,24 +149,24 @@ void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
             currentNodeId = j;
          }
       }
-      //********** Implement a catch for UNREACHABLE_TARGET;
    }
+   
+   RamNodeSequenceSize = 1; 
    
    if ( distanceFromTarget[ sourceNodeId ] >= 0x7FFF )
    {
       RamNodeSequence[ 0 ] = -1;
-      RamNodeSequenceSize = 1; 
       return;
    }
    
    RamNodeSequence[ 0 ] = currentNodeId;
-   RamNodeSequenceSize = 1;
    while ( currentNodeId != targetNodeId )
    {
       currentNodeId = previousNode[ currentNodeId ];
-      RamNodeSequence[ RamNodeSequenceSize++ ] = currentNodeId;
+      RamNodeSequence[ RamNodeSequenceSize ] = currentNodeId;
+      RamNodeSequenceSize = RamNodeSequenceSize + 1;
    }
-   UpdateDegreesAndDistancesFromNodeSequence();
+   UpdateTurnByTurnQueueFromNodeSequence();
 }
 
 void AddObstacle( inches_t left, inches_t right, inches_t top, inches_t bottom )
@@ -313,8 +331,6 @@ static boolean_t IntersectWithSegment( segment_t* segment0, segment_t* segment1 
           ( IsAbove( segment1, &( segment0->leftPoint ) ) + IsAbove( segment1, &( segment0->rightPoint ) ) == 1 );
 }
 
-
-/*** DIVIDING BY 6 ALLOWS BOTH SIDES OF INEQUALITY TO BE SCALED SO I CAN USE uin16_t instead of int32_t ***/
 static boolean_t IsAbove( segment_t* segment, coordinates_t* point )
 {
    sWord BxAx, PyAy, ByAy, PxAx;
@@ -376,12 +392,102 @@ static inches_t GetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column )
    return RamAdjacencyMatrixData[ ( ( row - 1 ) * row ) / 2 + column ];
 }
 
-
-void UpdateDegreesAndDistancesFromNodeSequence()
+void UpdateTurnByTurnQueueFromNodeSequence()
 {
    nodeNumber_t i;
+   coordinates_t* currentNode,* nextNode;
+   static degree_t currentAngle = 90;
+   RamTurnByTurnQueue.index = 0;
+   RamTurnByTurnQueue.size = ( RamNodeSequenceSize - 1 ) * 2;
+   
    for ( i = 0; i < RamNodeSequenceSize - 1; i++ )
    {
-      RamDistanceSequence[ i ] = distanceFromTarget[ RamNodeSequence[ i ] ] - distanceFromTarget[ RamNodeSequence[ i + 1 ] ];
+      currentNode = GetNodeCoordinates( RamNodeSequence[ i ] );
+      nextNode = GetNodeCoordinates( RamNodeSequence[ i + 1 ] );
+      currentAngle = currentAngle - arcTangent( nextNode->y - currentNode->y, nextNode->x - currentNode->x );
+      if ( currentAngle < -180 ) currentAngle += 360;
+      else if ( currentAngle > 180 ) currentAngle -= 360;
+      RamTurnByTurnQueue.queue[ 2 * i ].typeOfMotion = ROTATE_MOTION;
+      RamTurnByTurnQueue.queue[ 2 * i ].value = currentAngle; 
+      
+      RamTurnByTurnQueue.queue[ 2 * i + 1 ].typeOfMotion = FORWARD_MOTION;
+      RamTurnByTurnQueue.queue[ 2 * i + 1 ].value = distanceFromTarget[ RamNodeSequence[ i ] ] - distanceFromTarget[ RamNodeSequence[ i + 1 ] ];
    }
+}
+
+degree_t arcTangent( inches_t y, inches_t x )
+{
+   /*** might have problem with overflow at numerator > 65535 ***/
+   Word uNumerator, uDenominator, uRatio;
+   degree_t low, high;
+
+   if ( y > 655 || y < -655 )
+   {
+      y /= 2;
+      x /= 2;
+   }
+
+   uNumerator = 100 * ( y > 0 ? y : ( ~y + 1 ) );
+   uDenominator = ( x > 0 ? x : ( ~x + 1 ) );
+
+   if ( uDenominator == 0 ) return ( 180 * ( y > 0 ) - 90 );
+   
+   uRatio = uNumerator / uDenominator;
+   
+   low = 0;
+   high = 91;
+   
+   while ( high - low > 1 )
+   {
+      if ( uRatio > TangentLut[ ( low + high ) / 2 ] )
+         low = ( low + high ) / 2;
+      else
+         high = ( low + high ) / 2;
+   }
+
+//COMPILER WARNS THAT THIS IS ALWAYS TRUE... WHY?
+   if ( y >= 0 )
+   {
+      // Quadrant I
+      if ( x > 0 )
+         return low;
+      // Quadrant II
+      else
+         return 180 - low;
+   }
+   else
+   {
+      // Quadrant III
+      if ( x < 0 )
+         return low - 180;
+      // Quadrant IV
+      else
+         return ~low + 1;
+   }
+}
+
+coordinates_t* GetNodeCoordinates( nodeNumber_t nodeId )
+{
+   if ( nodeId < RomNumberOfNodes )
+   {
+      return &RomNodeCoordinateList[ nodeId ];
+   }
+   else if ( nodeId < RomNumberOfNodes + RamNumberOfNodes )
+   {
+      return &RamNodeCoordinateList[ nodeId - RomNumberOfNodes ];  
+   }
+   else
+   {
+      return 0x0000;
+   }
+}
+
+turnByTurnElement_t* GetNextTurnByTurnElement()
+{
+   return &RamTurnByTurnQueue.queue[ RamTurnByTurnQueue.index++ ];
+}
+
+boolean_t HasNextTurnByTurnElement()
+{
+   return RamTurnByTurnQueue.index < RamTurnByTurnQueue.size;
 }

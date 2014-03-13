@@ -3,7 +3,7 @@
 
 #include "Rover.h"
 #include "MotorControlSystem.h"
-
+#include "NavigationSystem.h"
 
 /*** Static Constant Definitions ***/
 
@@ -17,6 +17,7 @@ static const pulseCount_t PULSES_PER_DEGREE = 1;
 const direction_t FORWARD_MOTION = 0x0;
 const direction_t REVERSE_MOTION = 0x1;
 const direction_t STOP_MOTION = 0x2;
+const direction_t ROTATE_MOTION = 0x3;
 
 
 /*** Functions ***/
@@ -163,7 +164,7 @@ static pulseCount_t degreesToPulses( degree_t degrees)
 {
 	if ( degrees >= 0 ) 
 	{
-	  return PULSES_PER_DEGREE * degrees;
+	   return PULSES_PER_DEGREE * degrees;
 	}
 	else
 	{
@@ -171,7 +172,31 @@ static pulseCount_t degreesToPulses( degree_t degrees)
 	}
 }
 
+void CommenceTurnByTurnExecution()
+{
+   ExecuteNextTurnByTurnInstruction();
+}
+
+boolean_t ExecuteNextTurnByTurnInstruction()
+{
+   turnByTurnElement_t* TurnByTurnElement;
+   if ( HasNextTurnByTurnElement() )
+   {
+      TurnByTurnElement = GetNextTurnByTurnElement();
+      switch ( TurnByTurnElement->typeOfMotion )
+      {
+         case FORWARD_MOTION: moveForward( TurnByTurnElement->value ); break;
+         case REVERSE_MOTION: moveReverse( TurnByTurnElement->value ); break;
+         case ROTATE_MOTION: rotate( TurnByTurnElement->value ); break;
+         default: break;
+      }
+      return True;
+   } 
+   return False;
+}
+
 interrupt VectorNumber_Vtimpaovf void motionCompleted()
 {
 	stopMotion();
+	ExecuteNextTurnByTurnInstruction();
 }

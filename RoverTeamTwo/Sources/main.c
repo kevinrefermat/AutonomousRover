@@ -8,22 +8,31 @@
 #include "ObstacleAvoidanceSystem.h"
 
 void main( void )
-{       
-    InitializeNavigationSystem();
-    SetRoverPosition( 120, 180 );
-    AddObstacle( 10, 70, 650, 500 );
-    Dijkstra( 17, 18 );
-    
-    
-    
-    
-    
-    EnableInterrupts;
-    initializeTimers();
-    //initializePeriodicObjectDetection();
-    initializeMotorControlSystem();
+{   
+   initializeTimers();
+   initializeMotorControlSystem();
+   
+   //moveForward( 10000 ); 
 
-    moveForward( 10000 );
+   InitializeNavigationSystem();
+
+      
+   SetRoverPosition( 120, 180 );
+   AddObstacle( 10, 70, 650, 500 );
+   Dijkstra( 17, 18 );
+    
+   EnableInterrupts;    
+   CommenceTurnByTurnExecution();
+    
+   
+    for (;;); 
+    
+
+
+   //initializePeriodicObjectDetection();
+   
+
+/*
     for( ; ; )
     { 
       if ( detectClosestObstacle() < 10 ) break; 
@@ -41,9 +50,9 @@ void main( void )
     }
     stopMotion();
     moveReverse( 36 );
-    /*
+    
     for ( ; ; )
-    { 
+    {a
       moveForward( 12 );
       while( RoverInMotionFlag == True );
       
@@ -57,5 +66,4 @@ void main( void )
       while( RoverInMotionFlag == True );
     }
     */
-    for (;;);
 }

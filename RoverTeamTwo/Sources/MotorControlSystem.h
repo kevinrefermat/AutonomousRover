@@ -41,6 +41,10 @@ static pulseCount_t distanceToPulses( inches_t distance );
 
 static pulseCount_t degreesToPulses( degree_t degrees );
 
+void CommenceTurnByTurnExecution( void );
+
+boolean_t ExecuteNextTurnByTurnInstruction( void );
+
 
 /*** Interrupt Service Routine ***/
 

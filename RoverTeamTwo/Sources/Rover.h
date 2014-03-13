@@ -25,14 +25,14 @@ typedef Byte feet_t;
 // NavigationSystem Types
 
 typedef sByte nodeNumber_t;
-typedef sByte obstacleNumber_t; 
-
+typedef sByte obstacleNumber_t;
 
 /*** ROVER IO CONTROL ***/
 
 extern const direction_t FORWARD_MOTION;
 extern const direction_t REVERSE_MOTION;
 extern const direction_t STOP_MOTION;
+extern const direction_t ROTATE_MOTION;
 
 extern const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY;
 

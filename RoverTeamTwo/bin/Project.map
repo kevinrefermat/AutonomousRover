@@ -28,8 +28,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x500     1722
-  _Copy    *toCopyDownBeg 0xCA19
+  _Range   pZeroOut       0x500     1877
+  _Copy    *toCopyDownBeg 0xCBDA
 } _startupData;
 
 *********************************************************************************************
@@ -38,11 +38,11 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata                          174     R     0xC03B     0xC0E8   ROM_C000
-.text                           2036     R     0xC0E9     0xC8DC   ROM_C000
-.copy                             14     R     0xCA19     0xCA26   ROM_C000
+.rodata                          353     R     0xC03B     0xC19B   ROM_C000
+.text                           2286     R     0xC19C     0xCA89   ROM_C000
+.copy                             17     R     0xCBDA     0xCBEA   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
-.data                              8   R/W      0x500      0x507   RAM
+.data                             11   R/W      0x500      0x50A   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -266,13 +266,13 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_17e                   2   N/I      0x17E      0x17F   .absSeg220
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg222
-.bss                            1714   R/W      0x508      0xBB9   RAM
-RUNTIME                          316     R     0xC8DD     0xCA18   ROM_C000
+.bss                            1866   R/W      0x50B      0xC54   RAM
+RUNTIME                          336     R     0xCA8A     0xCBD9   ROM_C000
 .vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):         A2D (dec:     2605)
-READ_WRITE (R/W):      7BA (dec:     1978)
+READ_ONLY (R):         BF1 (dec:     3057)
+READ_WRITE (R/W):      855 (dec:     2133)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -323,7 +323,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _RTICTL                                     3B       1       1       0   .abs_section_3b
      _COPCTL                                     3C       1       1       0   .abs_section_3c
      _ARMCOP                                     3F       1       1       0   .abs_section_3f
-     _TIOS                                       40       1       1       3   .abs_section_40
+     _TIOS                                       40       1       1       2   .abs_section_40
      _CFORC                                      41       1       1       0   .abs_section_41
      _OC7M                                       42       1       1       0   .abs_section_42
      _OC7D                                       43       1       1       0   .abs_section_43
@@ -332,10 +332,10 @@ MODULE:                 -- MC9S12C128.c.o --
      _TCTL1                                      48       1       1       0   .abs_section_48
      _TCTL2                                      49       1       1       1   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
-     _TCTL4                                      4B       1       1       4   .abs_section_4b
+     _TCTL4                                      4B       1       1       0   .abs_section_4b
      _TIE                                        4C       1       1       2   .abs_section_4c
      _TSCR2                                      4D       1       1       1   .abs_section_4d
-     _TFLG1                                      4E       1       1       4   .abs_section_4e
+     _TFLG1                                      4E       1       1       0   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
      _PACTL                                      60       1       1       2   .abs_section_60
      _PAFLG                                      61       1       1       1   .abs_section_61
@@ -427,9 +427,9 @@ MODULE:                 -- MC9S12C128.c.o --
      _CANTXDSR7                                 17B       1       1       0   .abs_section_17b
      _CANTXDLR                                  17C       1       1       0   .abs_section_17c
      _CANTXTBPR                                 17D       1       1       0   .abs_section_17d
-     _PTT                                       240       1       1       3   .abs_section_240
+     _PTT                                       240       1       1       0   .abs_section_240
      _PTIT                                      241       1       1       0   .abs_section_241
-     _DDRT                                      242       1       1       2   .abs_section_242
+     _DDRT                                      242       1       1       0   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
      _PERT                                      244       1       1       1   .abs_section_244
      _PPST                                      245       1       1       1   .abs_section_245
@@ -478,7 +478,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _DBGCA                                      2B       2       2       0   .abs_section_2b
      _DBGCB                                      2E       2       2       0   .abs_section_2e
      _TCNT                                       44       2       2       1   .abs_section_44
-     _TC0                                        50       2       2       4   .abs_section_50
+     _TC0                                        50       2       2       0   .abs_section_50
      _TC1                                        52       2       2       1   .abs_section_52
      _TC2                                        54       2       2       0   .abs_section_54
      _TC3                                        56       2       2       0   .abs_section_56
@@ -511,25 +511,31 @@ MODULE:                 -- MC9S12C128.c.o --
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C0E9      7F     127       1   .text       
+     main                                      C19C      34      52       1   .text       
 - VARIABLES:
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     initializeMotorControlSystem              C168       7       7       1   .text       
-     leftTreadForward                          C16F       7       7       1   .text       
-     rightTreadForward                         C176       7       7       1   .text       
-     leftTreadReverse                          C17D       7       7       1   .text       
-     rightTreadReverse                         C184       7       7       1   .text       
-     brakeTreads                               C18B       4       4       1   .text       
-     disableTreads                             C18F       4       4       3   .text       
-     enableTreads                              C193       4       4       3   .text       
-     moveForward                               C197      19      25       1   .text       
-     moveReverse                               C1B0      19      25       1   .text       
-     stopMotion                                C1C9      20      32       3   .text       
-     initializePulseAccumulator                C1E9       C      12       2   .text       
-     distanceToPulses                          C1F5      23      35       2   .text       
-     motionCompleted                           C218       3       3       1   .text       
+     initializeMotorControlSystem              C1D0       7       7       1   .text       
+     leftTreadForward                          C1D7       7       7       2   .text       
+     rightTreadForward                         C1DE       7       7       2   .text       
+     leftTreadReverse                          C1E5       7       7       2   .text       
+     rightTreadReverse                         C1EC       7       7       2   .text       
+     brakeTreads                               C1F3       4       4       1   .text       
+     disableTreads                             C1F7       4       4       4   .text       
+     enableTreads                              C1FB       4       4       4   .text       
+     moveForward                               C1FF      19      25       1   .text       
+     moveReverse                               C218      19      25       1   .text       
+     rotate                                    C231      2C      44       1   .text       
+     stopMotion                                C25D      20      32       3   .text       
+     initializePulseAccumulator                C27D       C      12       3   .text       
+     distanceToPulses                          C289      23      35       2   .text       
+     degreesToPulses                           C2AC       B      11       1   .text       
+     CommenceTurnByTurnExecution               C2B7       3       3       1   .text       
+     ExecuteNextTurnByTurnInstruction          C2BA      41      65       2   .text       
+     motionCompleted                           C2FB       6       6       1   .text       
 - VARIABLES:
+     FORWARD_MOTION                            C03B       1       1       1   .rodata     
+     ROTATE_MOTION                             C03C       1       1       1   .rodata     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
@@ -541,35 +547,31 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           500       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LINC                                     C8DD       5       5       1   RUNTIME     
-     _LMUL                                     C8E2      27      39       3   RUNTIME     
-     _lDivMod                                  C909      BE     190       3   RUNTIME     
-     _LDIVU                                    C9C7       E      14       1   RUNTIME     
-     _NEG_P                                    C9D5       F      15       4   RUNTIME     
-     _LDIVS                                    C9E4      35      53       1   RUNTIME     
+     _LINC                                     CA8A       5       5       1   RUNTIME     
+     _LMUL                                     CA8F      27      39       3   RUNTIME     
+     _lDivMod                                  CAB6      BE     190       3   RUNTIME     
+     _LDIVU                                    CB74       E      14       1   RUNTIME     
+     _NEG_P                                    CB82       F      15       4   RUNTIME     
+     _LDIVS                                    CB91      35      53       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        CBC6      14      20       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
-     delay                                     C21B      3C      60       3   .text       
-     initializeTimers                          C257      1F      31       1   .text       
+     delay                                     C301      3C      60       1   .text       
+     initializeTimers                          C33D      1F      31       1   .text       
 - VARIABLES:
-     False                                     C03B       1       1       3   .rodata     
-     True                                      C03C       1       1       4   .rodata     
-     CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
+     False                                     C03D       1       1       4   .rodata     
+     True                                      C03E       1       1       6   .rodata     
      INCHES_PER_FOOT                           C03F       1       1       1   .rodata     
-     TIMER_COUNTER_PRESCALE                    C040       1       1       1   .rodata     
-     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C041       4       4       2   .rodata     
+     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C040       4       4       2   .rodata     
      pingAngle                                  500       2       2       3   .data       
-     RoverInMotionFlag                          508       1       1       3   .bss        
+     RoverInMotionFlag                          50B       1       1       4   .bss        
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
 - PROCEDURES:
-     updatePingDelay                           C276       8       8       1   .text       
-     detectClosestObstacle                     C27E      1E      30       1   .text       
-     outputPulseToPing                         C29C      17      23       1   .text       
-     measureReturnPulseFromPing                C2B3      43      67       1   .text       
-     setPingRotationalPosition                 C2F6      23      35       3   .text       
-     degreesToClockCycles                      C319      27      39       1   .text       
-     updateAndUseThePing                       C340      11      17       1   .text       
+     updatePingDelay                           C35C       8       8       1   .text       
+     setPingRotationalPosition                 C364      23      35       1   .text       
+     degreesToClockCycles                      C387      27      39       1   .text       
+     updateAndUseThePing                       C3AE      11      17       1   .text       
 - VARIABLES:
      LOOK_LEFT_PWM                              502       1       1       1   .data       
      LOOK_RIGHT_PWM                             503       1       1       2   .data       
@@ -577,51 +579,58 @@ MODULE:                 -- ObstacleAvoidanceSystem.c.o --
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 MODULE:                 -- NavigationSystem.c.o --
 - PROCEDURES:
-     InitializeNavigationSystem                C351       3       3       1   .text       
-     Dijkstra                                  C354     136     310       4   .text       
-     AddObstacle                               C48A      2E      46       1   .text       
-     SetRoverPosition                          C4B8      12      18       1   .text       
-     UpdateSingleNodeConnections               C4CA      80     128       1   .text       
-     UpdateAllNodeConnections                  C54A      8A     138       2   .text       
-     Distance                                  C5D4      77     119       2   .text       
-     SquareRoot                                C64B      5E      94       1   .text       
-     NodesAreVisibleToEachOther                C6A9      58      88       2   .text       
-     IntersectWithObstacle                     C701      49      73       1   .text       
-     IntersectWithShape                        C74A      44      68       1   .text       
-     IntersectWithSegment                      C78E      42      66       1   .text       
-     IsAbove                                   C7D0      58      88       4   .text       
-     SetAdjacencyMatrixValue                   C828      39      57       2   .text       
-     GetAdjacencyMatrixValue                   C861      3C      60       2   .text       
-     UpdateDegreesAndDistancesFromNodeSequence       C89D      40      64       1   .text       
+     InitializeNavigationSystem                C3BF       3       3       1   .text       
+     Dijkstra                                  C3C2     130     304       4   .text       
+     AddObstacle                               C4F2      2E      46       1   .text       
+     SetRoverPosition                          C520      12      18       1   .text       
+     UpdateSingleNodeConnections               C532      80     128       1   .text       
+     UpdateAllNodeConnections                  C5B2      8A     138       2   .text       
+     Distance                                  C63C      77     119       2   .text       
+     SquareRoot                                C6B3      5E      94       1   .text       
+     NodesAreVisibleToEachOther                C711      58      88       2   .text       
+     IntersectWithObstacle                     C769      49      73       1   .text       
+     IntersectWithShape                        C7B2      44      68       1   .text       
+     IntersectWithSegment                      C7F6      42      66       1   .text       
+     IsAbove                                   C838      58      88       4   .text       
+     SetAdjacencyMatrixValue                   C890      39      57       2   .text       
+     GetAdjacencyMatrixValue                   C8C9      3C      60       2   .text       
+     UpdateTurnByTurnQueueFromNodeSequence       C905      B0     176       2   .text       
+     arcTangent                                C9B5      8B     139       1   .text       
+     GetNodeCoordinates                        CA40      2B      43       2   .text       
+     GetNextTurnByTurnElement                  CA6B      12      18       1   .text       
+     HasNextTurnByTurnElement                  CA7D       D      13       1   .text       
 - VARIABLES:
-     RomNodeCoordinateList                     C045      54      84       6   .rodata     
-     RomObstacleList                           C099      50      80       1   .rodata     
-     NumberOfNodes                              506       1       1       7   .data       
-     NumberOfObstacles                          507       1       1       1   .data       
-     RamNumberOfObstacles                       509       1       1       3   .bss        
-     RamNodeSequenceSize                        50A       1       1       3   .bss        
-     RamDistanceSequence                        50B      4A      74       1   .bss        
-     RamNodeCoordinateList                      555      40      64       7   .bss        
-     RamAdjacencyMatrixData                     595     534    1332       2   .bss        
-     RamObstacleList                            AC9      38      56       5   .bss        
-     RamNodeSequence                            B01      25      37       5   .bss        
-     beenVisited                                B26      25      37       4   .bss        
-     previousNode                               B4B      25      37       2   .bss        
-     distanceFromTarget                         B70      4A      74      11   .bss        
+     RomNodeCoordinateList                     C044      54      84       7   .rodata     
+     RomObstacleList                           C098      50      80       1   .rodata     
+     TangentLut                                C0E8      B4     180       1   .rodata     
+     RamNumberOfNodes                           506       1       1       1   .data       
+     NumberOfNodes                              507       1       1       7   .data       
+     NumberOfObstacles                          508       1       1       1   .data       
+     currentAngle.1                             509       2       2       4   .data       
+     RamNumberOfObstacles                       50C       1       1       3   .bss        
+     RamNodeSequenceSize                        50D       1       1       4   .bss        
+     RamTurnByTurnQueue                         50E      E2     226      11   .bss        
+     RamNodeCoordinateList                      5F0      40      64       8   .bss        
+     RamAdjacencyMatrixData                     630     534    1332       2   .bss        
+     RamObstacleList                            B64      38      56       5   .bss        
+     RamNodeSequence                            B9C      25      37       7   .bss        
+     beenVisited                                BC1      25      37       4   .bss        
+     previousNode                               BE6      25      37       2   .bss        
+     distanceFromTarget                         C0B      4A      74      11   .bss        
 
 *********************************************************************************************
 MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   MC9S12C128.c.o                             260      0      0
-  main.c.o                                     0    127      0
-  MotorControlSystem.c.o                       0    179      2
+  main.c.o                                     0     52      0
+  MotorControlSystem.c.o                       0    305      4
   Start12.c.o                                  0     49      0
-  rtshc12.c.o (ansisf.lib)                     0    316      0
-  Rover.c.o                                    3     91     10
-  ObstacleAvoidanceSystem.c.o                  4    219      2
-  NavigationSystem.c.o                      1715   1420    164
-  other                                      256     12     14
+  rtshc12.c.o (ansisf.lib)                     0    336      0
+  Rover.c.o                                    3     91      7
+  ObstacleAvoidanceSystem.c.o                  4     99      2
+  NavigationSystem.c.o                      1870   1739    344
+  other                                      256     12     17
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
@@ -629,27 +638,29 @@ SECTION USE IN OBJECT-ALLOCATION SECTION
 SECTION: ".text"
   main initializeMotorControlSystem leftTreadForward rightTreadForward 
   leftTreadReverse rightTreadReverse brakeTreads disableTreads enableTreads 
-  moveForward moveReverse stopMotion initializePulseAccumulator 
-  distanceToPulses motionCompleted delay initializeTimers updatePingDelay 
-  detectClosestObstacle outputPulseToPing measureReturnPulseFromPing 
-  setPingRotationalPosition degreesToClockCycles updateAndUseThePing 
-  InitializeNavigationSystem Dijkstra AddObstacle SetRoverPosition 
-  UpdateSingleNodeConnections UpdateAllNodeConnections Distance SquareRoot 
-  NodesAreVisibleToEachOther IntersectWithObstacle IntersectWithShape 
-  IntersectWithSegment IsAbove SetAdjacencyMatrixValue GetAdjacencyMatrixValue 
-  UpdateDegreesAndDistancesFromNodeSequence 
+  moveForward moveReverse rotate stopMotion initializePulseAccumulator 
+  distanceToPulses degreesToPulses CommenceTurnByTurnExecution 
+  ExecuteNextTurnByTurnInstruction motionCompleted delay initializeTimers 
+  updatePingDelay setPingRotationalPosition degreesToClockCycles 
+  updateAndUseThePing InitializeNavigationSystem Dijkstra AddObstacle 
+  SetRoverPosition UpdateSingleNodeConnections UpdateAllNodeConnections 
+  Distance SquareRoot NodesAreVisibleToEachOther IntersectWithObstacle 
+  IntersectWithShape IntersectWithSegment IsAbove SetAdjacencyMatrixValue 
+  GetAdjacencyMatrixValue UpdateTurnByTurnQueueFromNodeSequence arcTangent 
+  GetNodeCoordinates GetNextTurnByTurnElement HasNextTurnByTurnElement 
 SECTION: ".data"
   pingAngle LOOK_LEFT_PWM LOOK_RIGHT_PWM PING_UPDATE_DELAY_CLOCK_CYCLES 
-  NumberOfNodes NumberOfObstacles 
+  RamNumberOfNodes NumberOfNodes NumberOfObstacles currentAngle.1 
 SECTION: ".bss"
   RoverInMotionFlag RamNumberOfObstacles RamNodeSequenceSize 
-  RamDistanceSequence RamNodeCoordinateList RamAdjacencyMatrixData 
+  RamTurnByTurnQueue RamNodeCoordinateList RamAdjacencyMatrixData 
   RamObstacleList RamNodeSequence beenVisited previousNode distanceFromTarget 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata"
-  False True CLOCK_CYCLES_PER_INCH INCHES_PER_FOOT TIMER_COUNTER_PRESCALE 
+  FORWARD_MOTION ROTATE_MOTION False True INCHES_PER_FOOT 
   WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY RomNodeCoordinateList RomObstacleList 
+  TangentLut 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1095,7 +1106,7 @@ SECTION: ".abs_section_17e"
 SECTION: ".abs_section_ffdc"
   _Vector_17 
 SECTION: "RUNTIME"
-  _LINC _LMUL _lDivMod _LDIVU _NEG_P _LDIVS 
+  _LINC _LMUL _lDivMod _LDIVU _NEG_P _LDIVS _CASE_CHECKED_BYTE 
 SECTION: ".abs_section_ffec"
   _Vector_9 
 
@@ -1145,7 +1156,7 @@ OBJECT LIST SORTED BY ADDRESS
      _RTICTL                                     3B       1       1       0   .abs_section_3b
      _COPCTL                                     3C       1       1       0   .abs_section_3c
      _ARMCOP                                     3F       1       1       0   .abs_section_3f
-     _TIOS                                       40       1       1       3   .abs_section_40
+     _TIOS                                       40       1       1       2   .abs_section_40
      _CFORC                                      41       1       1       0   .abs_section_41
      _OC7M                                       42       1       1       0   .abs_section_42
      _OC7D                                       43       1       1       0   .abs_section_43
@@ -1155,12 +1166,12 @@ OBJECT LIST SORTED BY ADDRESS
      _TCTL1                                      48       1       1       0   .abs_section_48
      _TCTL2                                      49       1       1       1   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
-     _TCTL4                                      4B       1       1       4   .abs_section_4b
+     _TCTL4                                      4B       1       1       0   .abs_section_4b
      _TIE                                        4C       1       1       2   .abs_section_4c
      _TSCR2                                      4D       1       1       1   .abs_section_4d
-     _TFLG1                                      4E       1       1       4   .abs_section_4e
+     _TFLG1                                      4E       1       1       0   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
-     _TC0                                        50       2       2       4   .abs_section_50
+     _TC0                                        50       2       2       0   .abs_section_50
      _TC1                                        52       2       2       1   .abs_section_52
      _TC2                                        54       2       2       0   .abs_section_54
      _TC3                                        56       2       2       0   .abs_section_56
@@ -1281,9 +1292,9 @@ OBJECT LIST SORTED BY ADDRESS
      _CANTXDLR                                  17C       1       1       0   .abs_section_17c
      _CANTXTBPR                                 17D       1       1       0   .abs_section_17d
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
-     _PTT                                       240       1       1       3   .abs_section_240
+     _PTT                                       240       1       1       0   .abs_section_240
      _PTIT                                      241       1       1       0   .abs_section_241
-     _DDRT                                      242       1       1       2   .abs_section_242
+     _DDRT                                      242       1       1       0   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
      _PERT                                      244       1       1       1   .abs_section_244
      _PPST                                      245       1       1       1   .abs_section_245
@@ -1328,75 +1339,84 @@ OBJECT LIST SORTED BY ADDRESS
      LOOK_LEFT_PWM                              502       1       1       1   .data       
      LOOK_RIGHT_PWM                             503       1       1       2   .data       
      PING_UPDATE_DELAY_CLOCK_CYCLES             504       2       2       1   .data       
-     NumberOfNodes                              506       1       1       7   .data       
-     NumberOfObstacles                          507       1       1       1   .data       
-     RoverInMotionFlag                          508       1       1       3   .bss        
-     RamNumberOfObstacles                       509       1       1       3   .bss        
-     RamNodeSequenceSize                        50A       1       1       3   .bss        
-     RamDistanceSequence                        50B      4A      74       1   .bss        
-     RamNodeCoordinateList                      555      40      64       7   .bss        
-     RamAdjacencyMatrixData                     595     534    1332       2   .bss        
-     RamObstacleList                            AC9      38      56       5   .bss        
-     RamNodeSequence                            B01      25      37       5   .bss        
-     beenVisited                                B26      25      37       4   .bss        
-     previousNode                               B4B      25      37       2   .bss        
-     distanceFromTarget                         B70      4A      74      11   .bss        
+     RamNumberOfNodes                           506       1       1       1   .data       
+     NumberOfNodes                              507       1       1       7   .data       
+     NumberOfObstacles                          508       1       1       1   .data       
+     currentAngle.1                             509       2       2       4   .data       
+     RoverInMotionFlag                          50B       1       1       4   .bss        
+     RamNumberOfObstacles                       50C       1       1       3   .bss        
+     RamNodeSequenceSize                        50D       1       1       4   .bss        
+     RamTurnByTurnQueue                         50E      E2     226      11   .bss        
+     RamNodeCoordinateList                      5F0      40      64       8   .bss        
+     RamAdjacencyMatrixData                     630     534    1332       2   .bss        
+     RamObstacleList                            B64      38      56       5   .bss        
+     RamNodeSequence                            B9C      25      37       7   .bss        
+     beenVisited                                BC1      25      37       4   .bss        
+     previousNode                               BE6      25      37       2   .bss        
+     distanceFromTarget                         C0B      4A      74      11   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     False                                     C03B       1       1       3   .rodata     
-     True                                      C03C       1       1       4   .rodata     
-     CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
+     FORWARD_MOTION                            C03B       1       1       1   .rodata     
+     ROTATE_MOTION                             C03C       1       1       1   .rodata     
+     False                                     C03D       1       1       4   .rodata     
+     True                                      C03E       1       1       6   .rodata     
      INCHES_PER_FOOT                           C03F       1       1       1   .rodata     
-     TIMER_COUNTER_PRESCALE                    C040       1       1       1   .rodata     
-     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C041       4       4       2   .rodata     
-     RomNodeCoordinateList                     C045      54      84       6   .rodata     
-     RomObstacleList                           C099      50      80       1   .rodata     
-     main                                      C0E9      7F     127       1   .text       
-     initializeMotorControlSystem              C168       7       7       1   .text       
-     leftTreadForward                          C16F       7       7       1   .text       
-     rightTreadForward                         C176       7       7       1   .text       
-     leftTreadReverse                          C17D       7       7       1   .text       
-     rightTreadReverse                         C184       7       7       1   .text       
-     brakeTreads                               C18B       4       4       1   .text       
-     disableTreads                             C18F       4       4       3   .text       
-     enableTreads                              C193       4       4       3   .text       
-     moveForward                               C197      19      25       1   .text       
-     moveReverse                               C1B0      19      25       1   .text       
-     stopMotion                                C1C9      20      32       3   .text       
-     initializePulseAccumulator                C1E9       C      12       2   .text       
-     distanceToPulses                          C1F5      23      35       2   .text       
-     motionCompleted                           C218       3       3       1   .text       
-     delay                                     C21B      3C      60       3   .text       
-     initializeTimers                          C257      1F      31       1   .text       
-     updatePingDelay                           C276       8       8       1   .text       
-     detectClosestObstacle                     C27E      1E      30       1   .text       
-     outputPulseToPing                         C29C      17      23       1   .text       
-     measureReturnPulseFromPing                C2B3      43      67       1   .text       
-     setPingRotationalPosition                 C2F6      23      35       3   .text       
-     degreesToClockCycles                      C319      27      39       1   .text       
-     updateAndUseThePing                       C340      11      17       1   .text       
-     InitializeNavigationSystem                C351       3       3       1   .text       
-     Dijkstra                                  C354     136     310       4   .text       
-     AddObstacle                               C48A      2E      46       1   .text       
-     SetRoverPosition                          C4B8      12      18       1   .text       
-     UpdateSingleNodeConnections               C4CA      80     128       1   .text       
-     UpdateAllNodeConnections                  C54A      8A     138       2   .text       
-     Distance                                  C5D4      77     119       2   .text       
-     SquareRoot                                C64B      5E      94       1   .text       
-     NodesAreVisibleToEachOther                C6A9      58      88       2   .text       
-     IntersectWithObstacle                     C701      49      73       1   .text       
-     IntersectWithShape                        C74A      44      68       1   .text       
-     IntersectWithSegment                      C78E      42      66       1   .text       
-     IsAbove                                   C7D0      58      88       4   .text       
-     SetAdjacencyMatrixValue                   C828      39      57       2   .text       
-     GetAdjacencyMatrixValue                   C861      3C      60       2   .text       
-     UpdateDegreesAndDistancesFromNodeSequence       C89D      40      64       1   .text       
-     _LINC                                     C8DD       5       5       1   RUNTIME     
-     _LMUL                                     C8E2      27      39       3   RUNTIME     
-     _lDivMod                                  C909      BE     190       3   RUNTIME     
-     _LDIVU                                    C9C7       E      14       1   RUNTIME     
-     _NEG_P                                    C9D5       F      15       4   RUNTIME     
-     _LDIVS                                    C9E4      35      53       1   RUNTIME     
+     WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C040       4       4       2   .rodata     
+     RomNodeCoordinateList                     C044      54      84       7   .rodata     
+     RomObstacleList                           C098      50      80       1   .rodata     
+     TangentLut                                C0E8      B4     180       1   .rodata     
+     main                                      C19C      34      52       1   .text       
+     initializeMotorControlSystem              C1D0       7       7       1   .text       
+     leftTreadForward                          C1D7       7       7       2   .text       
+     rightTreadForward                         C1DE       7       7       2   .text       
+     leftTreadReverse                          C1E5       7       7       2   .text       
+     rightTreadReverse                         C1EC       7       7       2   .text       
+     brakeTreads                               C1F3       4       4       1   .text       
+     disableTreads                             C1F7       4       4       4   .text       
+     enableTreads                              C1FB       4       4       4   .text       
+     moveForward                               C1FF      19      25       1   .text       
+     moveReverse                               C218      19      25       1   .text       
+     rotate                                    C231      2C      44       1   .text       
+     stopMotion                                C25D      20      32       3   .text       
+     initializePulseAccumulator                C27D       C      12       3   .text       
+     distanceToPulses                          C289      23      35       2   .text       
+     degreesToPulses                           C2AC       B      11       1   .text       
+     CommenceTurnByTurnExecution               C2B7       3       3       1   .text       
+     ExecuteNextTurnByTurnInstruction          C2BA      41      65       2   .text       
+     motionCompleted                           C2FB       6       6       1   .text       
+     delay                                     C301      3C      60       1   .text       
+     initializeTimers                          C33D      1F      31       1   .text       
+     updatePingDelay                           C35C       8       8       1   .text       
+     setPingRotationalPosition                 C364      23      35       1   .text       
+     degreesToClockCycles                      C387      27      39       1   .text       
+     updateAndUseThePing                       C3AE      11      17       1   .text       
+     InitializeNavigationSystem                C3BF       3       3       1   .text       
+     Dijkstra                                  C3C2     130     304       4   .text       
+     AddObstacle                               C4F2      2E      46       1   .text       
+     SetRoverPosition                          C520      12      18       1   .text       
+     UpdateSingleNodeConnections               C532      80     128       1   .text       
+     UpdateAllNodeConnections                  C5B2      8A     138       2   .text       
+     Distance                                  C63C      77     119       2   .text       
+     SquareRoot                                C6B3      5E      94       1   .text       
+     NodesAreVisibleToEachOther                C711      58      88       2   .text       
+     IntersectWithObstacle                     C769      49      73       1   .text       
+     IntersectWithShape                        C7B2      44      68       1   .text       
+     IntersectWithSegment                      C7F6      42      66       1   .text       
+     IsAbove                                   C838      58      88       4   .text       
+     SetAdjacencyMatrixValue                   C890      39      57       2   .text       
+     GetAdjacencyMatrixValue                   C8C9      3C      60       2   .text       
+     UpdateTurnByTurnQueueFromNodeSequence       C905      B0     176       2   .text       
+     arcTangent                                C9B5      8B     139       1   .text       
+     GetNodeCoordinates                        CA40      2B      43       2   .text       
+     GetNextTurnByTurnElement                  CA6B      12      18       1   .text       
+     HasNextTurnByTurnElement                  CA7D       D      13       1   .text       
+     _LINC                                     CA8A       5       5       1   RUNTIME     
+     _LMUL                                     CA8F      27      39       3   RUNTIME     
+     _lDivMod                                  CAB6      BE     190       3   RUNTIME     
+     _LDIVU                                    CB74       E      14       1   RUNTIME     
+     _NEG_P                                    CB82       F      15       4   RUNTIME     
+     _LDIVS                                    CB91      35      53       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        CBC6      14      20       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
@@ -1404,56 +1424,65 @@ OBJECT LIST SORTED BY ADDRESS
 UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
 NOT USED PROCEDURES
-MotorControlSystem.c.o:
-  rotate degreesToPulses 
 rtshc12.c.o (ansisf.lib):
   _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
   _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP _LCMP_P _LCMP_PP _LNEG _LCOM _LDEC 
   _LMULU16x32 _LMULS16x32 _LMODU _LMODS _ILSEXT _COPY _CASE_DIRECT 
-  _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE _CASE_SEARCH 
-  _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
+  _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 
+  _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
 ObstacleAvoidanceSystem.c.o:
-  initializePeriodicObjectDetection 
+  initializePeriodicObjectDetection detectClosestObstacle outputPulseToPing 
+  measureReturnPulseFromPing 
 NavigationSystem.c.o:
   AddNode 
 NOT USED VARIABLES
 MotorControlSystem.c.o:
-  PULSES_PER_INCH PULSES_PER_FOOT PULSES_PER_DEGREE FORWARD_MOTION 
-  REVERSE_MOTION STOP_MOTION 
+  PULSES_PER_INCH PULSES_PER_FOOT PULSES_PER_DEGREE REVERSE_MOTION STOP_MOTION 
 rtshc12.c.o (ansisf.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
 Rover.c.o:
-  CLOCK_SPEED_KHZ SPEED_OF_SOUND_INCH_PER_SEC PING_FREQUENCY 
+  CLOCK_SPEED_KHZ SPEED_OF_SOUND_INCH_PER_SEC CLOCK_CYCLES_PER_INCH 
+  TIMER_COUNTER_PRESCALE PING_FREQUENCY 
+ObstacleAvoidanceSystem.c.o:
+  CLOCK_CYCLES_PER_INCH TIMER_COUNTER_PRESCALE 
 NavigationSystem.c.o:
   NO_CONNECTION MaxRamNumberOfNodes RomNumberOfNodes MaxTotalNumberOfNodes 
   MaxRamNumberOfObstacles RomNumberOfObstacles MaxTotalNumberOfObstacles 
-  RamNumberOfNodes RamDegreesSequence 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xCA19 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xCBDA ---- SIZE       4 ---
 Filling bytes inserted
- 00080500
-------- ROM-ADDRESS: 0xCA1D ---- RAM-ADDRESS: 0x500 ---- SIZE       2 ---
+ 000B0500
+------- ROM-ADDRESS: 0xCBDE ---- RAM-ADDRESS: 0x500 ---- SIZE       2 ---
 Name of initialized Object : pingAngle
  FFB5
-------- ROM-ADDRESS: 0xCA1F ---- RAM-ADDRESS: 0x502 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xCBE0 ---- RAM-ADDRESS: 0x502 ---- SIZE       1 ---
 Name of initialized Object : LOOK_LEFT_PWM
  12
-------- ROM-ADDRESS: 0xCA20 ---- RAM-ADDRESS: 0x503 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xCBE1 ---- RAM-ADDRESS: 0x503 ---- SIZE       1 ---
 Name of initialized Object : LOOK_RIGHT_PWM
  03
-------- ROM-ADDRESS: 0xCA21 ---- RAM-ADDRESS: 0x504 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xCBE2 ---- RAM-ADDRESS: 0x504 ---- SIZE       2 ---
 Name of initialized Object : PING_UPDATE_DELAY_CLOCK_CYCLES
  F230
-------- ROM-ADDRESS: 0xCA23 ---- RAM-ADDRESS: 0x506 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xCBE4 ---- RAM-ADDRESS: 0x506 ---- SIZE       1 ---
+Name of initialized Object : RamNumberOfNodes
+ 01
+------- ROM-ADDRESS: 0xCBE5 ---- RAM-ADDRESS: 0x507 ---- SIZE       1 ---
 Name of initialized Object : NumberOfNodes
  16
-------- ROM-ADDRESS: 0xCA24 ---- RAM-ADDRESS: 0x507 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xCBE6 ---- RAM-ADDRESS: 0x508 ---- SIZE       1 ---
 Name of initialized Object : NumberOfObstacles
  0A
-------- ROM-ADDRESS: 0xCA25 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xCBE7 ---- SIZE       1 ---
+Filling bytes inserted
+ 00
+------- ROM-ADDRESS: 0xCBE8 ---- RAM-ADDRESS: 0x50A ---- SIZE       1 ---
+Name of initialized Object : currentAngle.1:1
+ 5A
+------- ROM-ADDRESS: 0xCBE9 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1462,10 +1491,9 @@ OBJECT-DEPENDENCIES SECTION
 ---------------------------------------------------------------------------------------------
 Init                      USES _startupData 
 _Startup                  USES __SEG_END_SSTACK Init main 
-main                      USES InitializeNavigationSystem SetRoverPosition 
-                                AddObstacle Dijkstra initializeTimers 
-                                initializeMotorControlSystem moveForward setPingRotationalPosition delay 
-                                stopMotion moveReverse detectClosestObstacle 
+main                      USES initializeTimers initializeMotorControlSystem 
+                                InitializeNavigationSystem SetRoverPosition AddObstacle Dijkstra 
+                                CommenceTurnByTurnExecution 
 initializeMotorControlSystem USES _DDRAB stopMotion 
 leftTreadForward          USES _PORTAB 
 rightTreadForward         USES _PORTAB 
@@ -1480,18 +1508,22 @@ moveForward               USES distanceToPulses initializePulseAccumulator
 moveReverse               USES distanceToPulses initializePulseAccumulator 
                                 disableTreads leftTreadReverse rightTreadReverse True 
                                 RoverInMotionFlag enableTreads 
+rotate                    USES degreesToPulses initializePulseAccumulator 
+                                disableTreads leftTreadForward rightTreadReverse 
+                                leftTreadReverse rightTreadForward True RoverInMotionFlag 
+                                stopMotion enableTreads 
 stopMotion                USES disableTreads brakeTreads enableTreads 
                                 WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY delay _PACTL _PAFLG False RoverInMotionFlag 
 initializePulseAccumulator USES _PACNT _PACTL 
 distanceToPulses          USES INCHES_PER_FOOT 
-motionCompleted           USES stopMotion 
+CommenceTurnByTurnExecution USES ExecuteNextTurnByTurnInstruction 
+ExecuteNextTurnByTurnInstruction USES HasNextTurnByTurnElement 
+                                GetNextTurnByTurnElement _CASE_CHECKED_BYTE moveForward moveReverse 
+                                rotate True False 
+motionCompleted           USES stopMotion ExecuteNextTurnByTurnInstruction 
 delay                     USES _LDIVU _LINC 
 initializeTimers          USES _TSCR1 _TSCR2 _TIE _TIOS _PERT _PPST _TCTL2 
 updatePingDelay           USES _TCNT PING_UPDATE_DELAY_CLOCK_CYCLES _TC1 
-detectClosestObstacle     USES outputPulseToPing measureReturnPulseFromPing 
-                                TIMER_COUNTER_PRESCALE CLOCK_CYCLES_PER_INCH 
-outputPulseToPing         USES _DDRT _PTT 
-measureReturnPulseFromPing USES _DDRT _TIOS _TCTL4 _TFLG1 _TC0 
 setPingRotationalPosition USES _PWMPOL _PWMCLK _PWMPRCLK _PWMCAE _PWMCTL 
                                 _PWMSCLA _PWMPER01 degreesToClockCycles _PWMDTY01 _PWME 
 degreesToClockCycles      USES LOOK_LEFT_PWM LOOK_RIGHT_PWM 
@@ -1500,8 +1532,8 @@ updateAndUseThePing       USES updatePingDelay pingAngle
 InitializeNavigationSystem USES UpdateAllNodeConnections 
 Dijkstra                  USES False beenVisited distanceFromTarget 
                                 NumberOfNodes Dijkstra GetAdjacencyMatrixValue previousNode 
-                                True RamNodeSequence RamNodeSequenceSize 
-                                UpdateDegreesAndDistancesFromNodeSequence 
+                                True RamNodeSequenceSize RamNodeSequence 
+                                UpdateTurnByTurnQueueFromNodeSequence 
 AddObstacle               USES RamNumberOfObstacles RamObstacleList 
                                 NumberOfObstacles UpdateAllNodeConnections 
 SetRoverPosition          USES RamNodeCoordinateList 
@@ -1522,8 +1554,15 @@ IntersectWithShape        USES IntersectWithSegment
 IntersectWithSegment      USES IsAbove 
 SetAdjacencyMatrixValue   USES RamAdjacencyMatrixData 
 GetAdjacencyMatrixValue   USES RamAdjacencyMatrixData 
-UpdateDegreesAndDistancesFromNodeSequence USES RamNodeSequence 
-                                distanceFromTarget RamDistanceSequence RamNodeSequenceSize 
+UpdateTurnByTurnQueueFromNodeSequence USES RamTurnByTurnQueue 
+                                RamNodeSequenceSize UpdateTurnByTurnQueueFromNodeSequence 
+                                RamNodeSequence GetNodeCoordinates arcTangent currentAngle.1 
+                                ROTATE_MOTION FORWARD_MOTION distanceFromTarget 
+arcTangent                USES TangentLut 
+GetNodeCoordinates        USES RomNodeCoordinateList RamNumberOfNodes 
+                                RamNodeCoordinateList 
+GetNextTurnByTurnElement  USES RamTurnByTurnQueue 
+HasNextTurnByTurnElement  USES RamTurnByTurnQueue 
 _LDIVU                    USES _lDivMod 
 _LDIVS                    USES _NEG_P _lDivMod 
 _Vector_17                USES motionCompleted 
@@ -1536,6 +1575,26 @@ DEPENDENCY TREE
  | 
  +- main                
  |  | 
+ |  +- initializeTimers    
+ |  |    
+ |  +- initializeMotorControlSystem
+ |  |  | 
+ |  |  +- stopMotion          
+ |  |     | 
+ |  |     +- disableTreads       
+ |  |     |    
+ |  |     +- brakeTreads         
+ |  |     |    
+ |  |     +- enableTreads        
+ |  |     |    
+ |  |     +- delay               
+ |  |        | 
+ |  |        +- _LDIVU              
+ |  |        |  | 
+ |  |        |  +- _lDivMod            
+ |  |        |       
+ |  |        +- _LINC               
+ |  |             
  |  +- InitializeNavigationSystem
  |  |  | 
  |  |  +- UpdateAllNodeConnections
@@ -1562,8 +1621,8 @@ DEPENDENCY TREE
  |  |     |        | 
  |  |     |        +- _NEG_P              
  |  |     |        |    
- |  |     |        +- _lDivMod            
- |  |     |             
+ |  |     |        +- _lDivMod             (see above)
+ |  |     |           
  |  |     +- SetAdjacencyMatrixValue
  |  |          
  |  +- SetRoverPosition    
@@ -1584,70 +1643,70 @@ DEPENDENCY TREE
  |  |  | 
  |  |  +- GetAdjacencyMatrixValue
  |  |  |    
- |  |  +- UpdateDegreesAndDistancesFromNodeSequence
- |  |       
- |  +- initializeTimers    
- |  |    
- |  +- initializeMotorControlSystem
- |  |  | 
- |  |  +- stopMotion          
+ |  |  +- UpdateTurnByTurnQueueFromNodeSequence
  |  |     | 
- |  |     +- disableTreads       
+ |  |     +- GetNodeCoordinates  
  |  |     |    
- |  |     +- brakeTreads         
- |  |     |    
- |  |     +- enableTreads        
- |  |     |    
- |  |     +- delay               
- |  |        | 
- |  |        +- _LDIVU              
- |  |        |  | 
- |  |        |  +- _lDivMod             (see above)
- |  |        |     
- |  |        +- _LINC               
- |  |             
- |  +- moveForward         
- |  |  | 
- |  |  +- distanceToPulses    
- |  |  |    
- |  |  +- initializePulseAccumulator
- |  |  |    
- |  |  +- disableTreads        (see above)
- |  |  |  
- |  |  +- leftTreadForward    
- |  |  |    
- |  |  +- rightTreadForward   
- |  |  |    
- |  |  +- enableTreads         (see above)
- |  |     
- |  +- setPingRotationalPosition
- |  |  | 
- |  |  +- degreesToClockCycles
- |  |       
- |  +- delay                (see above)
- |  |  
- |  +- stopMotion           (see above)
- |  |  
- |  +- moveReverse         
- |  |  | 
- |  |  +- distanceToPulses     (see above)
- |  |  |  
- |  |  +- initializePulseAccumulator (see above)
- |  |  |  
- |  |  +- disableTreads        (see above)
- |  |  |  
- |  |  +- leftTreadReverse    
- |  |  |    
- |  |  +- rightTreadReverse   
- |  |  |    
- |  |  +- enableTreads         (see above)
- |  |     
- |  +- detectClosestObstacle
+ |  |     +- arcTangent          
+ |  |          
+ |  +- CommenceTurnByTurnExecution
  |     | 
- |     +- outputPulseToPing   
- |     |    
- |     +- measureReturnPulseFromPing
- |          
+ |     +- ExecuteNextTurnByTurnInstruction
+ |        | 
+ |        +- HasNextTurnByTurnElement
+ |        |    
+ |        +- GetNextTurnByTurnElement
+ |        |    
+ |        +- _CASE_CHECKED_BYTE  
+ |        |    
+ |        +- moveForward         
+ |        |  | 
+ |        |  +- distanceToPulses    
+ |        |  |    
+ |        |  +- initializePulseAccumulator
+ |        |  |    
+ |        |  +- disableTreads        (see above)
+ |        |  |  
+ |        |  +- leftTreadForward    
+ |        |  |    
+ |        |  +- rightTreadForward   
+ |        |  |    
+ |        |  +- enableTreads         (see above)
+ |        |     
+ |        +- moveReverse         
+ |        |  | 
+ |        |  +- distanceToPulses     (see above)
+ |        |  |  
+ |        |  +- initializePulseAccumulator (see above)
+ |        |  |  
+ |        |  +- disableTreads        (see above)
+ |        |  |  
+ |        |  +- leftTreadReverse    
+ |        |  |    
+ |        |  +- rightTreadReverse   
+ |        |  |    
+ |        |  +- enableTreads         (see above)
+ |        |     
+ |        +- rotate              
+ |           | 
+ |           +- degreesToPulses     
+ |           |    
+ |           +- initializePulseAccumulator (see above)
+ |           |  
+ |           +- disableTreads        (see above)
+ |           |  
+ |           +- leftTreadForward     (see above)
+ |           |  
+ |           +- rightTreadReverse    (see above)
+ |           |  
+ |           +- leftTreadReverse     (see above)
+ |           |  
+ |           +- rightTreadForward    (see above)
+ |           |  
+ |           +- stopMotion           (see above)
+ |           |  
+ |           +- enableTreads         (see above)
+ |              
  +- _Startup            
     | 
     +- Init                
@@ -1659,6 +1718,8 @@ DEPENDENCY TREE
  +- motionCompleted     
     | 
     +- stopMotion           (see above)
+    |  
+    +- ExecuteNextTurnByTurnInstruction (see above)
        
  _Vector_9           
  | 
@@ -1666,14 +1727,16 @@ DEPENDENCY TREE
     | 
     +- updatePingDelay     
     |    
-    +- setPingRotationalPosition (see above)
-       
+    +- setPingRotationalPosition
+       | 
+       +- degreesToClockCycles
+            
 *********************************************************************************************
 STATISTIC SECTION
 ---------------------------------------------------------------------------------------------
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 7
-Total size of all blocks to be downloaded: 2605
+Number of blocks to be downloaded: 8
+Total size of all blocks to be downloaded: 3057
 
