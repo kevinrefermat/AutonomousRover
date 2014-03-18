@@ -12,11 +12,17 @@ void main( void )
    initializeTimers();
    initializeMotorControlSystem();
    
-   //moveForward( 10000 ); 
+   //moveForward( 60 ); 
+   //rotate( 90 ); 
+   //for (;;); 
 
    InitializeNavigationSystem();
 
-      
+   
+   
+   
+
+     
    SetRoverPosition( 120, 180 );
    AddObstacle( 10, 70, 650, 500 );
    Dijkstra( 17, 18 );

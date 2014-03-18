@@ -7,9 +7,13 @@
 
 /*** Static Constant Definitions ***/
 
-static const pulseCount_t PULSES_PER_INCH = 5;
-static const pulseCount_t PULSES_PER_FOOT = 58;
-static const pulseCount_t PULSES_PER_DEGREE = 1;
+static const pulseCount_t PULSES_PER_INCH = 12;
+static const pulseCount_t PULSES_PER_FOOT = 137;
+static const pulseCount_t PULSES_PER_FIVE_FEET = 712;
+static const pulseCount_t PULSES_PER_TWENTY_FIVE_FEET = 3560;
+
+static const pulseCount_t PULSES_PER_DEGREE_NUMERATOR = 100;
+static const pulseCount_t PULSES_PER_DEGREE_DENOMINATOR = 72;
 
 
 /*** Constant Definitions ***/
@@ -105,15 +109,15 @@ void rotate( degree_t degrees )
   disableTreads();
   if ( degrees > 0 )
   {
-    leftTreadForward();
-    rightTreadReverse();
+    leftTreadReverse();
+    rightTreadForward();
 	  
 	  RoverInMotionFlag = True;
   }
   else if ( degrees < 0 )
   {    
-    leftTreadReverse();
-    rightTreadForward();
+    leftTreadForward();
+    rightTreadReverse();
 	          
     RoverInMotionFlag = True;   
   }
@@ -157,19 +161,24 @@ static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt
 
 static pulseCount_t distanceToPulses( inches_t distance ) 
 {
-	return ( distance / INCHES_PER_FOOT ) * PULSES_PER_FOOT + ( distance % INCHES_PER_FOOT ) * PULSES_PER_INCH;
+   pulseCount_t inches, feet, fiveFeet, twentyFiveFeet;
+   twentyFiveFeet = distance / ( 25 * 12 );
+   distance -= twentyFiveFeet * 25 * 12;
+   fiveFeet = distance / ( 5 * 12 );
+   distance -= fiveFeet * 5 * 12;
+   feet = distance / 12;
+   distance -= feet * 12;
+   inches = distance;
+   twentyFiveFeet *= PULSES_PER_TWENTY_FIVE_FEET;
+   fiveFeet *= PULSES_PER_FIVE_FEET;
+   feet *= PULSES_PER_FOOT;
+   inches *= PULSES_PER_INCH;
+	return twentyFiveFeet + fiveFeet + feet + inches;
 }
 
 static pulseCount_t degreesToPulses( degree_t degrees) 
-{
-	if ( degrees >= 0 ) 
-	{
-	   return PULSES_PER_DEGREE * degrees;
-	}
-	else
-	{
-	  return -1 * PULSES_PER_DEGREE * degrees;
-	}
+{  
+	return ( ( pulseCount_t ) ( ( 2 * ( degrees >= 0 ) - 1 ) * degrees ) ) * PULSES_PER_DEGREE_NUMERATOR / PULSES_PER_DEGREE_DENOMINATOR;
 }
 
 void CommenceTurnByTurnExecution()
