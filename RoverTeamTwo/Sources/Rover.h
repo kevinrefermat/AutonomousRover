@@ -65,8 +65,6 @@ extern const Byte PING_FREQUENCY;
 
 /*** GLOBAL VARIABLE ***/
 
-extern degree_t pingAngle;
-                      
 
 /*** FLAGS ***/
 
@@ -75,13 +73,13 @@ extern boolean_t RoverInMotionFlag;
 
 /*** USEFUL FUNCTIONS ***/
 
-void delay( microseconds_t time );
+void Delay( microseconds_t time );
 
 
 // I don't like the CPU hogging delay function in delay() FIX IT
 
 /*** INITIALIZATION FUNCTIONS ***/
 
-void initializeTimers( void );
+void InitializeTimers( void );
 
 #endif

@@ -20,9 +20,6 @@ const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY = 200000;
 
 /*** GLOBAL VARIABLE ***/
 
-extern degree_t pingAngle = -75;
-
-
 /*** Flags ***/ 
 
 boolean_t RoverInMotionFlag = False;
@@ -32,7 +29,7 @@ boolean_t RoverInMotionFlag = False;
 
 // actual delay time is 12.5us (of overhead) and 10us for each
 // iteration of the for loop          
-void delay( microseconds_t time )
+void Delay( microseconds_t time )
 {  
   microseconds_t i, iMax;
   iMax = time / 10;
@@ -49,7 +46,7 @@ void delay( microseconds_t time )
   }
 }
 
-void initializeTimers()
+void InitializeTimers()
 {
    // enable timer and disable fast flag clear
    TSCR1 = 0x80;

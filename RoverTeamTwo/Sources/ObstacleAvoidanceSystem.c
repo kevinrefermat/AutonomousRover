@@ -5,35 +5,37 @@
 #include "Rover.h"
 #include "ObstacleAvoidanceSystem.h"
 
-static registerValue_t LOOK_LEFT_PWM = 18;
-static registerValue_t LOOK_RIGHT_PWM = 3;
+static const registerValue_t LOOK_LEFT_PWM = 18;
+static const registerValue_t LOOK_RIGHT_PWM = 3;
 
-static timerCount_t PING_UPDATE_DELAY_CLOCK_CYCLES = 62000;
+static const timerCount_t PING_UPDATE_DELAY_CLOCK_CYCLES = 62000;
 
-void initializePeriodicObjectDetection()
+static const inches_t OBSTACLE_IS_NEAR_THRESHOLD = 24;
+
+void InitializePeriodicObjectDetection()
 {
-   updatePingDelay();  
+   UpdatePingDelay();  
 } 
 
-static void updatePingDelay()
+static void UpdatePingDelay()
 {
   TC1 = TCNT + PING_UPDATE_DELAY_CLOCK_CYCLES; 
 }
 
-inches_t detectClosestObstacle()
+inches_t DetectClosestObstacle()
 {
    timerCount_t lengthOfEchoInClockCycles;
    
    DisableInterrupts;
    
    outputPulseToPing();
-   lengthOfEchoInClockCycles = measureReturnPulseFromPing() * TIMER_COUNTER_PRESCALE;
+   lengthOfEchoInClockCycles = MeasureReturnPulseFromPing() * TIMER_COUNTER_PRESCALE;
    
    EnableInterrupts;
    return ( inches_t ) lengthOfEchoInClockCycles / CLOCK_CYCLES_PER_INCH / 2;
 }
 
-static void outputPulseToPing()
+static void OutputPulseToPing()
 {
 // creates a 5us pulse
     OBJECT_DETECTION_DDR = 1;
@@ -52,7 +54,7 @@ static void outputPulseToPing()
     OBJECT_DETECTION_PIN = 0;
 }
 
-static timerCount_t measureReturnPulseFromPing()
+static timerCount_t MeasureReturnPulseFromPing()
 {
    timerCount_t risingEdge;
    
@@ -85,7 +87,7 @@ static timerCount_t measureReturnPulseFromPing()
    }
 }
 
-void setPingRotationalPosition( degree_t degrees )
+void SetPingRotationalPosition( degree_t degrees )
 {
   PWMPOL_PPOL0 = 1;
   PWMCLK_PCLK0 = 1;
@@ -97,12 +99,12 @@ void setPingRotationalPosition( degree_t degrees )
   PWMSCLA = 0x80;
   PWMPER0 = 167;
   
-  PWMDTY0 = degreesToClockCycles( degrees );
+  PWMDTY0 = DegreesToClockCycles( degrees );
   
   PWME_PWME0 = 1;
 }
 
-static registerValue_t degreesToClockCycles( degree_t degrees )
+static registerValue_t DegreesToClockCycles( degree_t degrees )
 { 
   registerValue_t clockCycles;
   degrees += 90;
@@ -111,12 +113,19 @@ static registerValue_t degreesToClockCycles( degree_t degrees )
   return clockCycles;
 }
 
-interrupt VectorNumber_Vtimch1 void updateAndUseThePing()
+void CheckForObstacles()
 {
-	//detectClosestObstacle();
-	updatePingDelay();
-	setPingRotationalPosition( pingAngle );
-	pingAngle += 10;
+   static degree_t pingAngle = 0;
+   setPingRotationalPosition( pingAngle );
+   if ( detectClosestObstacle() <= OBSTACLE_IS_NEAR_THRESHOLD )
+   {
+      //do something
+   }
+}
+
+interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
+{
+   CheckForObstacles();
 }
   
 

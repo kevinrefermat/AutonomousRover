@@ -1,15 +1,19 @@
 #include "Rover.h"
 
-void initializePeriodicObjectDetection( void );
+void InitializePeriodicObjectDetection( void );
 
-inches_t detectClosestObstacle( void );
+inches_t DetectClosestObstacle( void );
 
-static void outputPulseToPing( void );
+static void OutputPulseToPing( void );
 
-static timerCount_t measureReturnPulseFromPing( void );
+static timerCount_t MeasureReturnPulseFromPing( void );
 
-void setPingRotationalPosition( degree_t degrees );          
+void SetPingRotationalPosition( degree_t degrees );          
 
-static registerValue_t degreesToClockCycles( degree_t degrees );
+static registerValue_t DegreesToClockCycles( degree_t degrees );
 
-static void updatePingDelay( void );
+void CheckForObstacles( void );
+
+static void UpdatePingDelay( void );
+
+interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles( void );

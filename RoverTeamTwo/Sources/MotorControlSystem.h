@@ -8,38 +8,38 @@
 
 /*** Function Prototypes ***/
 
-void initializeMotorControlSystem( void );
+void InitializeMotorControlSystem( void );
 
-void moveForward( inches_t distance );
+void MoveForward( inches_t distance );
 
-void moveReverse( inches_t distance );
+void MoveReverse( inches_t distance );
 
-void rotate( degree_t degrees );
+void Rotate( degree_t degrees );
 
-void stopMotion( void );
+void StopMotion( void );
 
 
 /*** Static Function Prototypes ***/
 
-static void leftTreadForward( void );
+static void LeftTreadForward( void );
 
-static void leftTreadReverse( void );
+static void LeftTreadReverse( void );
 
-static void rightTreadForward( void );
+static void RightTreadForward( void );
 
-static void rightTreadReverse( void );   
+static void RightTreadReverse( void );   
 
-static void brakeTreads( void );
+static void BrakeTreads( void );
 
-static void disableTreads( void );
+static void DisableTreads( void );
 
-static void enableTreads( void );
+static void EnableTreads( void );
 
-static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt );
+static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt );
 
-static pulseCount_t distanceToPulses( inches_t distance );
+static pulseCount_t DistanceToPulses( inches_t distance );
 
-static pulseCount_t degreesToPulses( degree_t degrees );
+static pulseCount_t DegreesToPulses( degree_t degrees );
 
 void CommenceTurnByTurnExecution( void );
 
@@ -48,7 +48,7 @@ boolean_t ExecuteNextTurnByTurnInstruction( void );
 
 /*** Interrupt Service Routine ***/
 
-interrupt VectorNumber_Vtimpaovf void motionCompleted( void );
+interrupt VectorNumber_Vtimpaovf void MotionCompleted( void );
 
 
 #endif

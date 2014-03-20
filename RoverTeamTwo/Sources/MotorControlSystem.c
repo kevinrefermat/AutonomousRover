@@ -26,118 +26,118 @@ const direction_t ROTATE_MOTION = 0x3;
 
 /*** Functions ***/
 
-void initializeMotorControlSystem()
+void InitializeMotorControlSystem()
 {
 	DDRA = 0xFF;
 	stopMotion();
 }
 
-static void leftTreadForward()
+static void LeftTreadForward()
 {
   MOTOR_DRIVE_LEFT_IN_0 = 1;
 	MOTOR_DRIVE_LEFT_IN_1 = 0;
 }
 
-static void rightTreadForward()
+static void RightTreadForward()
 {
   MOTOR_DRIVE_RIGHT_IN_0 = 0;
 	MOTOR_DRIVE_RIGHT_IN_1 = 1;
 }
 
-static void leftTreadReverse()
+static void LeftTreadReverse()
 {
   MOTOR_DRIVE_LEFT_IN_0 = 0;
 	MOTOR_DRIVE_LEFT_IN_1 = 1;
 }
 
-static void rightTreadReverse()
+static void RightTreadReverse()
 {
   MOTOR_DRIVE_RIGHT_IN_0 = 1;
 	MOTOR_DRIVE_RIGHT_IN_1 = 0;
 }
 
-static void brakeTreads()
+static void BrakeTreads()
 {
   MOTOR_DRIVE_IO |= 0x0F; 
 }
 
-static void disableTreads()
+static void DisableTreads()
 {
   MOTOR_DRIVE_IO &= 0xCF;
 }
 
-static void enableTreads()
+static void EnableTreads()
 {
   MOTOR_DRIVE_IO |= 0x30;
 }
 
 
-void moveForward( inches_t distance )
+void MoveForward( inches_t distance )
 { 
  	DisableInterrupts;
-  initializePulseAccumulator( distanceToPulses( distance ) ); 
-  disableTreads();
+  InitializePulseAccumulator( distanceToPulses( distance ) ); 
+  DisableTreads();
 	
-	leftTreadForward();
-	rightTreadForward();
+	LeftTreadForward();
+	RightTreadForward();
 	
  	RoverInMotionFlag = True;	
  	                    
- 	enableTreads();
+ 	EnableTreads();
  	EnableInterrupts;
 }
 
-void moveReverse( inches_t distance )
+void MoveReverse( inches_t distance )
 { 
 	DisableInterrupts;
-  initializePulseAccumulator( distanceToPulses( distance ) ); 
-  disableTreads();
+  InitializePulseAccumulator( distanceToPulses( distance ) ); 
+  DisableTreads();
 	
-	leftTreadReverse();
-	rightTreadReverse();
+	LeftTreadReverse();
+	RightTreadReverse();
 	
  	RoverInMotionFlag = True;
  	
- 	enableTreads();
+ 	EnableTreads();
  	EnableInterrupts;	
 }
 
-void rotate( degree_t degrees )
+void Rotate( degree_t degrees )
 {
   DisableInterrupts;
-  initializePulseAccumulator( degreesToPulses( degrees ) );
-  disableTreads();
+  InitializePulseAccumulator( degreesToPulses( degrees ) );
+  DisableTreads();
   if ( degrees > 0 )
   {
-    leftTreadReverse();
-    rightTreadForward();
+    LeftTreadReverse();
+    RightTreadForward();
 	  
 	  RoverInMotionFlag = True;
   }
   else if ( degrees < 0 )
   {    
-    leftTreadForward();
-    rightTreadReverse();
+    LeftTreadForward();
+    RightTreadReverse();
 	          
     RoverInMotionFlag = True;   
   }
   else
   {
-    stopMotion();
+    StopMotion();
   }                
   
-  enableTreads();
+  EnableTreads();
   EnableInterrupts;            
 }
 
-void stopMotion( void )
+void StopMotion( void )
 {
 	DisableInterrupts;
 	
-  disableTreads();
-  brakeTreads();
-  enableTreads();
-  delay( WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY );
+  DisableTreads();
+  BrakeTreads();
+  EnableTreads();
+  Delay( WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY );
 	
 	// Clear the PA overflow flag and stop the PA
 	// Writing a 1 to the PAOVF flag clears it but TEN in TSCR1 must be enabled.
@@ -150,7 +150,7 @@ void stopMotion( void )
 	EnableInterrupts;
 }
 
-static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt )
+static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt )
 {
   // Write the negative number of encoder pulses to PACNT and enable PAOVI to interrupt when
 	PACNT = ~numberOfPulsesTillInterrupt + 1;
@@ -159,7 +159,7 @@ static void initializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt
 	PACTL = 0x52;
 }
 
-static pulseCount_t distanceToPulses( inches_t distance ) 
+static pulseCount_t DistanceToPulses( inches_t distance ) 
 {
    pulseCount_t inches, feet, fiveFeet, twentyFiveFeet;
    twentyFiveFeet = distance / ( 25 * 12 );
@@ -176,7 +176,7 @@ static pulseCount_t distanceToPulses( inches_t distance )
 	return twentyFiveFeet + fiveFeet + feet + inches;
 }
 
-static pulseCount_t degreesToPulses( degree_t degrees) 
+static pulseCount_t DegreesToPulses( degree_t degrees) 
 {  
 	return ( ( pulseCount_t ) ( ( 2 * ( degrees >= 0 ) - 1 ) * degrees ) ) * PULSES_PER_DEGREE_NUMERATOR / PULSES_PER_DEGREE_DENOMINATOR;
 }
@@ -194,9 +194,9 @@ boolean_t ExecuteNextTurnByTurnInstruction()
       TurnByTurnElement = GetNextTurnByTurnElement();
       switch ( TurnByTurnElement->typeOfMotion )
       {
-         case FORWARD_MOTION: moveForward( TurnByTurnElement->value ); break;
-         case REVERSE_MOTION: moveReverse( TurnByTurnElement->value ); break;
-         case ROTATE_MOTION: rotate( TurnByTurnElement->value ); break;
+         case FORWARD_MOTION: MoveForward( TurnByTurnElement->value ); break;
+         case REVERSE_MOTION: MoveReverse( TurnByTurnElement->value ); break;
+         case ROTATE_MOTION: Rotate( TurnByTurnElement->value ); break;
          default: break;
       }
       return True;
@@ -204,8 +204,8 @@ boolean_t ExecuteNextTurnByTurnInstruction()
    return False;
 }
 
-interrupt VectorNumber_Vtimpaovf void motionCompleted()
+interrupt VectorNumber_Vtimpaovf void MotionCompleted()
 {
-	stopMotion();
+	StopMotion();
 	ExecuteNextTurnByTurnInstruction();
 }
