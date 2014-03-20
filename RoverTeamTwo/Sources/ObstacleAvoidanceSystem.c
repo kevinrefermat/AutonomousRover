@@ -28,7 +28,7 @@ inches_t DetectClosestObstacle()
    
    DisableInterrupts;
    
-   outputPulseToPing();
+   OutputPulseToPing();
    lengthOfEchoInClockCycles = MeasureReturnPulseFromPing() * TIMER_COUNTER_PRESCALE;
    
    EnableInterrupts;
@@ -116,8 +116,8 @@ static registerValue_t DegreesToClockCycles( degree_t degrees )
 void CheckForObstacles()
 {
    static degree_t pingAngle = 0;
-   setPingRotationalPosition( pingAngle );
-   if ( detectClosestObstacle() <= OBSTACLE_IS_NEAR_THRESHOLD )
+   SetPingRotationalPosition( pingAngle );
+   if ( DetectClosestObstacle() <= OBSTACLE_IS_NEAR_THRESHOLD )
    {
       //do something
    }

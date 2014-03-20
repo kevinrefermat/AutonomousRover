@@ -29,7 +29,28 @@ const direction_t ROTATE_MOTION = 0x3;
 void InitializeMotorControlSystem()
 {
 	DDRA = 0xFF;
-	stopMotion();
+	
+	//PWM
+	control
+	alignment
+	clock select
+	period
+	duty
+	
+  PWMPOL_PPOL2 = 1;
+	PWMPOL_PPOL3 = 1;
+	
+	PWMCLK_PCLK2 = 0;
+	PWMCLK_PCLK3 = 0;
+	
+	PWMPRCLK_PCKB = 0x7;
+	
+	PWMCAE_CAE2 = 0;
+	PWMCAE_CAE3 = 0;
+	
+	PWMCTL_CON23 = 0;
+	
+	StopMotion();
 }
 
 static void LeftTreadForward()
@@ -63,19 +84,21 @@ static void BrakeTreads()
 
 static void DisableTreads()
 {
-  MOTOR_DRIVE_IO &= 0xCF;
+  MOTOR_DRIVE_LEFT_ENABLE = 0;
+  MOTOR_DRIVE_RIGHT_ENABLE = 0;
 }
 
 static void EnableTreads()
 {
-  MOTOR_DRIVE_IO |= 0x30;
+  MOTOR_DRIVE_LEFT_ENABLE = 1;
+  MOTOR_DRIVE_RIGHT_ENABLE = 1;
 }
 
 
 void MoveForward( inches_t distance )
 { 
  	DisableInterrupts;
-  InitializePulseAccumulator( distanceToPulses( distance ) ); 
+  InitializePulseAccumulator( DistanceToPulses( distance ) ); 
   DisableTreads();
 	
 	LeftTreadForward();
@@ -90,7 +113,7 @@ void MoveForward( inches_t distance )
 void MoveReverse( inches_t distance )
 { 
 	DisableInterrupts;
-  InitializePulseAccumulator( distanceToPulses( distance ) ); 
+  InitializePulseAccumulator( DistanceToPulses( distance ) ); 
   DisableTreads();
 	
 	LeftTreadReverse();
@@ -105,7 +128,7 @@ void MoveReverse( inches_t distance )
 void Rotate( degree_t degrees )
 {
   DisableInterrupts;
-  InitializePulseAccumulator( degreesToPulses( degrees ) );
+  InitializePulseAccumulator( DegreesToPulses( degrees ) );
   DisableTreads();
   if ( degrees > 0 )
   {
