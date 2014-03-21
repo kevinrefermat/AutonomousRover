@@ -28,16 +28,9 @@ const direction_t ROTATE_MOTION = 0x3;
 
 void InitializeMotorControlSystem()
 {
-	DDRA = 0xFF;
+	MOTOR_DRIVE_DDR |= 0x0F;
 	
-	//PWM
-	control
-	alignment
-	clock select
-	period
-	duty
-	
-  PWMPOL_PPOL2 = 1;
+   PWMPOL_PPOL2 = 1;
 	PWMPOL_PPOL3 = 1;
 	
 	PWMCLK_PCLK2 = 0;
@@ -50,56 +43,71 @@ void InitializeMotorControlSystem()
 	
 	PWMCTL_CON23 = 0;
 	
+	SetLeftTreadDrivePower( 0xFF );
+	SetRightTreadDrivePower( 0xFF );
+	
 	StopMotion();
+}
+
+static void SetLeftTreadDrivePower( registerValue8_t power )
+{
+	MOTOR_DRIVE_LEFT_DUTY = power;
+	MOTOR_DRIVE_LEFT_PERIOD = 0xFF;
+}
+
+static void SetRightTreadDrivePower( registerValue8_t power )
+{
+	MOTOR_DRIVE_RIGHT_DUTY = power;
+	MOTOR_DRIVE_RIGHT_PERIOD = 0xFF;
 }
 
 static void LeftTreadForward()
 {
-  MOTOR_DRIVE_LEFT_IN_0 = 1;
+   MOTOR_DRIVE_LEFT_IN_0 = 1;
 	MOTOR_DRIVE_LEFT_IN_1 = 0;
 }
 
 static void RightTreadForward()
 {
-  MOTOR_DRIVE_RIGHT_IN_0 = 0;
+   MOTOR_DRIVE_RIGHT_IN_0 = 0;
 	MOTOR_DRIVE_RIGHT_IN_1 = 1;
 }
 
 static void LeftTreadReverse()
 {
-  MOTOR_DRIVE_LEFT_IN_0 = 0;
+   MOTOR_DRIVE_LEFT_IN_0 = 0;
 	MOTOR_DRIVE_LEFT_IN_1 = 1;
 }
 
 static void RightTreadReverse()
 {
-  MOTOR_DRIVE_RIGHT_IN_0 = 1;
+   MOTOR_DRIVE_RIGHT_IN_0 = 1;
 	MOTOR_DRIVE_RIGHT_IN_1 = 0;
 }
 
 static void BrakeTreads()
 {
-  MOTOR_DRIVE_IO |= 0x0F; 
+   MOTOR_DRIVE_IO |= 0x0F; 
 }
 
 static void DisableTreads()
 {
-  MOTOR_DRIVE_LEFT_ENABLE = 0;
-  MOTOR_DRIVE_RIGHT_ENABLE = 0;
+   MOTOR_DRIVE_LEFT_ENABLE = 0;
+   MOTOR_DRIVE_RIGHT_ENABLE = 0;
 }
 
 static void EnableTreads()
 {
-  MOTOR_DRIVE_LEFT_ENABLE = 1;
-  MOTOR_DRIVE_RIGHT_ENABLE = 1;
-}
+   MOTOR_DRIVE_LEFT_ENABLE = 1;
+   MOTOR_DRIVE_RIGHT_ENABLE = 1;
+} 
 
 
 void MoveForward( inches_t distance )
 { 
  	DisableInterrupts;
-  InitializePulseAccumulator( DistanceToPulses( distance ) ); 
-  DisableTreads();
+   InitializePulseAccumulator( DistanceToPulses( distance ) ); 
+   DisableTreads();
 	
 	LeftTreadForward();
 	RightTreadForward();
@@ -113,8 +121,8 @@ void MoveForward( inches_t distance )
 void MoveReverse( inches_t distance )
 { 
 	DisableInterrupts;
-  InitializePulseAccumulator( DistanceToPulses( distance ) ); 
-  DisableTreads();
+   InitializePulseAccumulator( DistanceToPulses( distance ) ); 
+   DisableTreads();
 	
 	LeftTreadReverse();
 	RightTreadReverse();
@@ -127,40 +135,40 @@ void MoveReverse( inches_t distance )
 
 void Rotate( degree_t degrees )
 {
-  DisableInterrupts;
-  InitializePulseAccumulator( DegreesToPulses( degrees ) );
-  DisableTreads();
-  if ( degrees > 0 )
-  {
-    LeftTreadReverse();
-    RightTreadForward();
+   DisableInterrupts;
+   InitializePulseAccumulator( DegreesToPulses( degrees ) );
+   DisableTreads();
+   if ( degrees > 0 )
+   {
+      LeftTreadReverse();
+      RightTreadForward();
 	  
-	  RoverInMotionFlag = True;
-  }
-  else if ( degrees < 0 )
-  {    
-    LeftTreadForward();
-    RightTreadReverse();
+	   RoverInMotionFlag = True;
+   }
+   else if ( degrees < 0 )
+   {    
+      LeftTreadForward();
+      RightTreadReverse();
 	          
-    RoverInMotionFlag = True;   
-  }
-  else
-  {
-    StopMotion();
-  }                
+      RoverInMotionFlag = True;   
+   }
+   else
+   {
+      StopMotion();
+   }                
   
-  EnableTreads();
-  EnableInterrupts;            
+   EnableTreads();
+   EnableInterrupts;            
 }
 
 void StopMotion( void )
 {
 	DisableInterrupts;
 	
-  DisableTreads();
-  BrakeTreads();
-  EnableTreads();
-  Delay( WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY );
+   DisableTreads();
+   BrakeTreads();
+   EnableTreads();
+   Delay( WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY );
 	
 	// Clear the PA overflow flag and stop the PA
 	// Writing a 1 to the PAOVF flag clears it but TEN in TSCR1 must be enabled.
@@ -175,7 +183,7 @@ void StopMotion( void )
 
 static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt )
 {
-  // Write the negative number of encoder pulses to PACNT and enable PAOVI to interrupt when
+   // Write the negative number of encoder pulses to PACNT and enable PAOVI to interrupt when
 	PACNT = ~numberOfPulsesTillInterrupt + 1;
 	
 	// Initialize pulse accumulator for encoders.

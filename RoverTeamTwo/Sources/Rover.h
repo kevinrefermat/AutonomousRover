@@ -10,7 +10,7 @@ typedef Byte boolean_t;
 typedef sWord degree_t;
 typedef Word pulseCount_t;
 typedef Byte direction_t;
-typedef Byte registerValue_t;
+typedef Byte registerValue8_t;
 
 // Time  
 typedef Word milliseconds_t;
@@ -37,12 +37,17 @@ extern const direction_t ROTATE_MOTION;
 extern const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY;
 
 #define MOTOR_DRIVE_IO PORTA
+#define MOTOR_DRIVE_DDR DDRA
 #define MOTOR_DRIVE_LEFT_IN_0 PORTA_BIT0
 #define MOTOR_DRIVE_LEFT_IN_1 PORTA_BIT1
 #define MOTOR_DRIVE_RIGHT_IN_0 PORTA_BIT2
 #define MOTOR_DRIVE_RIGHT_IN_1 PORTA_BIT3
-#define MOTOR_DRIVE_LEFT_ENABLE PWME_PWME2;
-#define MOTOR_DRIVE_RIGHT_ENABLE PWME_PWME3;
+#define MOTOR_DRIVE_LEFT_ENABLE PWME_PWME2  
+#define MOTOR_DRIVE_LEFT_PERIOD PWMPER2
+#define MOTOR_DRIVE_LEFT_DUTY PWMDTY2
+#define MOTOR_DRIVE_RIGHT_ENABLE PWME_PWME3   
+#define MOTOR_DRIVE_RIGHT_PERIOD PWMPER3
+#define MOTOR_DRIVE_RIGHT_DUTY PWMDTY3
  
 #define OBJECT_DETECTION_PIN PTT_PTT0
 #define OBJECT_DETECTION_DDR DDRT_DDRT0

@@ -5,15 +5,32 @@
 #include "Rover.h"
 #include "ObstacleAvoidanceSystem.h"
 
-static const registerValue_t LOOK_LEFT_PWM = 18;
-static const registerValue_t LOOK_RIGHT_PWM = 3;
+static const registerValue8_t LOOK_LEFT_PWM = 18;
+static const registerValue8_t LOOK_RIGHT_PWM = 3;
 
-static const timerCount_t PING_UPDATE_DELAY_CLOCK_CYCLES = 62000;
-
+static const timerCount_t PING_UPDATE_DELAY_CLOCK_CYCLES = 20800;
 static const inches_t OBSTACLE_IS_NEAR_THRESHOLD = 24;
 
-void InitializePeriodicObjectDetection()
-{
+void InitializeObstacleAvoidanceSystem()
+{  
+   // disable interrupt caused by channel 0 for measuring PING echo
+   TIE_C0I = 0;
+   
+   // enable interrupt caused by channel 1 for periodic PING check
+   TIE_C1I = 1;
+
+   // set ioc0 to input capture
+   TIOS_IOS1 = 0;
+   
+   // set ic1 to output compare
+   TIOS_IOS1 = 1;
+      
+   // disconnect timer from pin oc1
+   TCTL2 &= 0xF3;
+   
+   SetPingRotationalPosition( 0 );
+   Delay( 400 );
+   CheckForObstacles();
    UpdatePingDelay();  
 } 
 
@@ -59,24 +76,21 @@ static timerCount_t MeasureReturnPulseFromPing()
    timerCount_t risingEdge;
    
    OBJECT_DETECTION_DDR = 0;
-
-
-   // enable channel 0 to be input capture
-   TIOS &= 0xFE;
    
    // capture rising edge
    TCTL4_EDG0x = 0x01;
    
-   TFLG1 = 0x01;
-   while ( !( TFLG1 & 0x01 ) ); 
-   TFLG1 = 0x01;
+   TFLG1_C0F = 1;
+   while ( !( TFLG1_C0F ) ); 
+   TFLG1_C0F = 1;
    
    risingEdge = TC0;
    
    TCTL4_EDG0x = 0x02;
   
-   while ( !( TFLG1 & 0x01 ) );
-   
+   while ( !( TFLG1_C0F ) );
+   TFLG1_C0F = 1;
+
    if ( risingEdge < TC0 )
    {
       return TC0 - risingEdge;
@@ -104,9 +118,9 @@ void SetPingRotationalPosition( degree_t degrees )
   PWME_PWME0 = 1;
 }
 
-static registerValue_t DegreesToClockCycles( degree_t degrees )
+static registerValue8_t DegreesToClockCycles( degree_t degrees )
 { 
-  registerValue_t clockCycles;
+  registerValue8_t clockCycles;
   degrees += 90;
   clockCycles = degrees;
   clockCycles = clockCycles * ( LOOK_LEFT_PWM - LOOK_RIGHT_PWM ) / 180 + LOOK_RIGHT_PWM;
@@ -115,17 +129,17 @@ static registerValue_t DegreesToClockCycles( degree_t degrees )
 
 void CheckForObstacles()
 {
-   static degree_t pingAngle = 0;
-   SetPingRotationalPosition( pingAngle );
    if ( DetectClosestObstacle() <= OBSTACLE_IS_NEAR_THRESHOLD )
    {
-      //do something
+      // do something!
    }
 }
 
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
 {
    CheckForObstacles();
+   UpdatePingDelay();
+   TFLG1_C1F = 1;
 }
   
 

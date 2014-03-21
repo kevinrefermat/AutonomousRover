@@ -1,6 +1,6 @@
 #include "Rover.h"
 
-void InitializePeriodicObjectDetection( void );
+void InitializeObstacleAvoidanceSystem( void );
 
 inches_t DetectClosestObstacle( void );
 
@@ -10,7 +10,7 @@ static timerCount_t MeasureReturnPulseFromPing( void );
 
 void SetPingRotationalPosition( degree_t degrees );          
 
-static registerValue_t DegreesToClockCycles( degree_t degrees );
+static registerValue8_t DegreesToClockCycles( degree_t degrees );
 
 void CheckForObstacles( void );
 

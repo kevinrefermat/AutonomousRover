@@ -21,6 +21,10 @@ void StopMotion( void );
 
 /*** Static Function Prototypes ***/
 
+static void SetLeftTreadDrivePower( Byte power );
+
+static void SetRightTreadDrivePower( Byte power );
+
 static void LeftTreadForward( void );
 
 static void LeftTreadReverse( void );

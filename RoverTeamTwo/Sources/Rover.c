@@ -54,26 +54,7 @@ void InitializeTimers()
    // disable timer overflow interrupt; ch0 = simple modulus counter; clock prescale = 32
    TSCR2 = 0x05;                            
    
-   // disable interrupt caused by channel 0 for measuring PING echo
-   TIE &= 0xFE;
-   
-   /*********************************** UN DISABLE CH1 INTERRUPT ******
-   // enable interrupt caused by channel 1 for periodic PING check
-   TIE_C1I = 1;
-   ********************************************************************/
-   TIE_C1I = 0;
-
-   
-   // set ioc0 to input capture
-   TIOS &= 0xFE;
-   // set ic1 to output compare
-   TIOS_IOS1 = 1;
-   
    // pull up or down device enabled
    PERT |= 0x01;
    PPST |= 0x01;
-   
-   // disconnect timer from pin oc1
-   TCTL2 &= 0xF3;
-
 }

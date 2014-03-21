@@ -8,13 +8,16 @@
 #include "ObstacleAvoidanceSystem.h"
 
 void main( void )
-{   
+{  
+   
    InitializeTimers();
+   
    InitializeMotorControlSystem();
+   InitializeObstacleAvoidanceSystem();
    
    //MoveForward( 60 ); 
    //Rotate( 90 ); 
-   //for (;;); 
+   for (;;); 
 
    InitializeNavigationSystem();
      
