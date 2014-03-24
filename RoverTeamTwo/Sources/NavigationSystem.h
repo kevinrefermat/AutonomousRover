@@ -7,12 +7,6 @@
 
 typedef struct
 {
-   inches_t x;
-   inches_t y;
-} coordinates_t;
-
-typedef struct
-{
    coordinates_t leftPoint;
    coordinates_t rightPoint;
 } segment_t;

@@ -27,6 +27,12 @@ typedef Byte feet_t;
 typedef sByte nodeNumber_t;
 typedef sByte obstacleNumber_t;
 
+typedef struct
+{
+   inches_t x;
+   inches_t y;
+} coordinates_t;
+
 /*** ROVER IO CONTROL ***/
 
 extern const direction_t FORWARD_MOTION;
