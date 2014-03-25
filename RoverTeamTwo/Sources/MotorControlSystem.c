@@ -44,7 +44,7 @@ void InitializeMotorControlSystem()
 	PWMCTL_CON23 = 0;
 	
 	SetLeftTreadDrivePower( 0xFF );
-	SetRightTreadDrivePower( 0xFF );
+	SetRightTreadDrivePower( 0xFA );
 	
 	StopMotion();
 }
@@ -205,7 +205,7 @@ static pulseCount_t DistanceToPulses( inches_t distance )
    feet *= PULSES_PER_FOOT;
    inches *= PULSES_PER_INCH;
 	return twentyFiveFeet + fiveFeet + feet + inches;
-}
+   o98}
 
 static pulseCount_t DegreesToPulses( degree_t degrees) 
 {  

@@ -13,7 +13,9 @@ void main( void )
    InitializeTimers();
    
    InitializeMotorControlSystem();
-   InitializeObstacleAvoidanceSystem();
+   //InitializeObstacleAvoidanceSystem();
+   
+   MoveForward( 1000 );
    
    //MoveForward( 60 ); 
    //Rotate( 90 ); 
