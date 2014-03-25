@@ -55,14 +55,18 @@ static coordinates_t triangulate()
    minTotalError = 0x7FFF;
    closestCoords = ( coordinates_t ) { 0, 0 };
 
-   for ( y = COARSE_RESOLUTION; y <= 720 - COARSE_RESOLUTION; y += COARSE_RESOLUTION )
+ //  for ( y = COARSE_RESOLUTION; y <= 720 - COARSE_RESOLUTION; y += COARSE_RESOLUTION )
+   for ( y = 0; y <= 720; y++ )
    {
-      for ( x = COARSE_RESOLUTION; x <= 450 - COARSE_RESOLUTION; x += COARSE_RESOLUTION )
+//      for ( x = COARSE_RESOLUTION; x <= 450 - COARSE_RESOLUTION; x += COARSE_RESOLUTION )
+      for ( x = 0; x <= 450; x++ )
       {
          tempCoords = ( coordinates_t ) { x, y }; 
          totalError = abs( Distance( tempCoords, beacon1 ) - distanceToBeacon1 );
          totalError = totalError + abs( Distance( tempCoords, beacon2 ) - distanceToBeacon2 );
          totalError = totalError + abs( Distance( tempCoords, beacon3 ) - distanceToBeacon3 );
+         
+         printf( "%d ", totalError );
            
          if ( totalError < minTotalError )
          {
@@ -70,8 +74,9 @@ static coordinates_t triangulate()
             closestCoords = ( coordinates_t ) { x, y };
          }
       }
+      printf( ";" );
    }
-   for ( y = closestCoords.y - COARSE_RESOLUTION; y <= closestCoords.y + COARSE_RESOLUTION; y ++ )
+/*   for ( y = closestCoords.y - COARSE_RESOLUTION; y <= closestCoords.y + COARSE_RESOLUTION; y ++ )
    {
       for ( x = closestCoords.x - COARSE_RESOLUTION; x <= closestCoords.x + COARSE_RESOLUTION; x ++ )
       {
@@ -86,7 +91,7 @@ static coordinates_t triangulate()
             closestCoords = ( coordinates_t ) { x, y };
          } 
       }
-   }
+   }*/
    return closestCoords;
 }
  
