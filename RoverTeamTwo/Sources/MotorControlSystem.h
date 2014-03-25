@@ -18,6 +18,11 @@ void Rotate( degree_t degrees );
 
 void StopMotion( void );
 
+void SetRoverInMotionFlag( void );
+
+void ClearRoverInMotionFlag( void );
+
+boolean_t GetRoverInMotionFlag( void );
 
 /*** Static Function Prototypes ***/
 

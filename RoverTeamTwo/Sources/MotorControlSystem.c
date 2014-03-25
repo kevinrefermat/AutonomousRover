@@ -16,6 +16,9 @@ static const pulseCount_t PULSES_PER_DEGREE_NUMERATOR = 100;
 static const pulseCount_t PULSES_PER_DEGREE_DENOMINATOR = 72;
 
 
+/*** Flags ***/
+static boolean_t RoverInMotionFlag = False;
+
 /*** Constant Definitions ***/
 
 const direction_t FORWARD_MOTION = 0x0;
@@ -112,7 +115,7 @@ void MoveForward( inches_t distance )
 	LeftTreadForward();
 	RightTreadForward();
 	
- 	RoverInMotionFlag = True;	
+ 	SetRoverInMotionFlag();	
  	                    
  	EnableTreads();
  	EnableInterrupts;
@@ -127,7 +130,7 @@ void MoveReverse( inches_t distance )
 	LeftTreadReverse();
 	RightTreadReverse();
 	
- 	RoverInMotionFlag = True;
+ 	SetRoverInMotionFlag();
  	
  	EnableTreads();
  	EnableInterrupts;	
@@ -138,25 +141,25 @@ void Rotate( degree_t degrees )
    DisableInterrupts;
    InitializePulseAccumulator( DegreesToPulses( degrees ) );
    DisableTreads();
-   if ( degrees > 0 )
+   if ( degrees == 0 )
    {
-      LeftTreadReverse();
-      RightTreadForward();
-	  
-	   RoverInMotionFlag = True;
-   }
-   else if ( degrees < 0 )
-   {    
-      LeftTreadForward();
-      RightTreadReverse();
-	          
-      RoverInMotionFlag = True;   
+      StopMotion();
    }
    else
    {
-      StopMotion();
-   }                
-  
+      if ( degrees > 0 )
+      {
+         LeftTreadReverse();
+         RightTreadForward();
+      }
+      else if ( degrees < 0 )
+      {    
+         LeftTreadForward();
+         RightTreadReverse();
+	   }       
+      SetRoverInMotionFlag();   
+   }
+   
    EnableTreads();
    EnableInterrupts;            
 }
@@ -177,9 +180,26 @@ void StopMotion( void )
 	PACTL_PAEN = 0;
 	PAFLG_PAOVF = 1;
 	
-	RoverInMotionFlag = False;
+	ClearRoverInMotionFlag();
 	EnableInterrupts;
 }
+
+void SetRoverInMotionFlag()
+{
+   RoverInMotionFlag = True;
+}
+
+void ClearRoverInMotionFlag()
+{
+   RoverInMotionFlag = False;
+}
+
+boolean_t GetRoverInMotionFlag()
+{
+   return RoverInMotionFlag;
+}
+
+/* STATIC FUNCTIONS */
 
 static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt )
 {

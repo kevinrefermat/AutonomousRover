@@ -12,17 +12,8 @@ const Byte INCHES_PER_FOOT = 12;
 
 const Byte TIMER_COUNTER_PRESCALE = 32;
 
-const Byte PING_FREQUENCY = 3;
-
-
 // At 100000 with no load at all it works. With load it must be higher
 const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY = 200000;
-
-/*** GLOBAL VARIABLE ***/
-
-/*** Flags ***/ 
-
-boolean_t RoverInMotionFlag = False;
 
 
 /*** USEFUL FUNCTIONS ***/

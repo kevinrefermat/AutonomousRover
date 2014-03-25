@@ -73,15 +73,6 @@ extern const Byte TIMER_COUNTER_PRESCALE;
 
 extern const Byte PING_FREQUENCY;
 
-
-/*** GLOBAL VARIABLE ***/
-
-
-/*** FLAGS ***/
-
-extern boolean_t RoverInMotionFlag;
-
-
 /*** USEFUL FUNCTIONS ***/
 
 void Delay( microseconds_t time );
