@@ -18,9 +18,9 @@ void Rotate( degree_t degrees );
 
 void StopMotion( void );
 
-void SetRoverInMotionFlag( void );
+static void SetRoverInMotionFlag( void );
 
-void ClearRoverInMotionFlag( void );
+static void ClearRoverInMotionFlag( void );
 
 boolean_t GetRoverInMotionFlag( void );
 

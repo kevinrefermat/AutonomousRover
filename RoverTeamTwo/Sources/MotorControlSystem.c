@@ -184,22 +184,22 @@ void StopMotion( void )
 	EnableInterrupts;
 }
 
-void SetRoverInMotionFlag()
-{
-   RoverInMotionFlag = True;
-}
-
-void ClearRoverInMotionFlag()
-{
-   RoverInMotionFlag = False;
-}
-
 boolean_t GetRoverInMotionFlag()
 {
    return RoverInMotionFlag;
 }
 
 /* STATIC FUNCTIONS */
+
+static void SetRoverInMotionFlag()
+{
+   RoverInMotionFlag = True;
+}
+
+static void ClearRoverInMotionFlag()
+{
+   RoverInMotionFlag = False;
+}
 
 static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt )
 {
