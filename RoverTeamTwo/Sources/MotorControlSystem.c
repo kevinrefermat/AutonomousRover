@@ -17,7 +17,7 @@ static const pulseCount_t PULSES_PER_DEGREE_DENOMINATOR = 72;
 
 
 /*** Flags ***/
-static boolean_t RoverInMotionFlag = False;
+static boolean_t RoverInMotionFlag = 0;
 
 /*** Constant Definitions ***/
 
@@ -225,7 +225,7 @@ static pulseCount_t DistanceToPulses( inches_t distance )
    feet *= PULSES_PER_FOOT;
    inches *= PULSES_PER_INCH;
 	return twentyFiveFeet + fiveFeet + feet + inches;
-   o98}
+}
 
 static pulseCount_t DegreesToPulses( degree_t degrees) 
 {  

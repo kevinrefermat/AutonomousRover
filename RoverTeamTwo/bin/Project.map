@@ -1,5 +1,5 @@
-*** EVALUATION ***
-PROGRAM "F:\RoverTeamTwo\RoverTeamTwo\bin\Project.abs"
+
+PROGRAM "C:\Users\kevinrefermat\Documents\GitHub\RoverTeamTwo\RoverTeamTwo\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -13,12 +13,12 @@ Linker      : SmartLinker V-5.0.40 Build 10203, Jul 23 2010
 FILE SECTION
 ---------------------------------------------------------------------------------------------
 MC9S12C128.c.o                          Model: SMALL,         Lang: ANSI-C
-main.c.o                                Model: SMALL,         Lang: ANSI-C
-MotorControlSystem.c.o                  Model: SMALL,         Lang: ANSI-C
 Start12.c.o                             Model: SMALL,         Lang: ANSI-C
 rtshc12.c.o (ansisf.lib)                Model: SMALL,         Lang: ANSI-C
 Rover.c.o                               Model: SMALL,         Lang: ANSI-C
+MotorControlSystem.c.o                  Model: SMALL,         Lang: ANSI-C
 ObstacleAvoidanceSystem.c.o             Model: SMALL,         Lang: ANSI-C
+main.c.o                                Model: SMALL,         Lang: ANSI-C
 NavigationSystem.c.o                    Model: SMALL,         Lang: ANSI-C
 
 *********************************************************************************************
@@ -29,7 +29,7 @@ _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
   _Range   pZeroOut       0x500     227
-  _Copy    *toCopyDownBeg 0xC3E7
+  _Copy    *toCopyDownBeg 0xC3EB
 } _startupData;
 
 *********************************************************************************************
@@ -39,8 +39,8 @@ Section Name                    Size  Type     From       To       Segment
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
 .rodata                            9     R     0xC03B     0xC043   ROM_C000
-.text                            702     R     0xC044     0xC301   ROM_C000
-.copy                              2     R     0xC3E7     0xC3E8   ROM_C000
+.text                            706     R     0xC044     0xC305   ROM_C000
+.copy                              2     R     0xC3EB     0xC3EC   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -266,11 +266,11 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg222
 .bss                             227   R/W      0x500      0x5E2   RAM
-RUNTIME                          229     R     0xC302     0xC3E6   ROM_C000
+RUNTIME                          229     R     0xC306     0xC3EA   ROM_C000
 .vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):         3EF (dec:     1007)
+READ_ONLY (R):         3F3 (dec:     1011)
 READ_WRITE (R/W):      1E3 (dec:      483)
 NO_INIT (N/I):         104 (dec:      260)
 
@@ -508,33 +508,6 @@ MODULE:                 -- MC9S12C128.c.o --
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _CANRXTSR                                  16E       2       2       0   .abs_section_16e
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
-MODULE:                 -- main.c.o --
-- PROCEDURES:
-     main                                      C044      10      16       1   .text       
-- VARIABLES:
-MODULE:                 -- MotorControlSystem.c.o --
-- PROCEDURES:
-     InitializeMotorControlSystem              C054      28      40       1   .text       
-     SetLeftTreadDrivePower                    C07C       7       7       1   .text       
-     SetRightTreadDrivePower                   C083       7       7       1   .text       
-     LeftTreadForward                          C08A       7       7       2   .text       
-     RightTreadForward                         C091       7       7       2   .text       
-     LeftTreadReverse                          C098       7       7       2   .text       
-     RightTreadReverse                         C09F       7       7       2   .text       
-     BrakeTreads                               C0A6       4       4       1   .text       
-     DisableTreads                             C0AA       7       7       4   .text       
-     EnableTreads                              C0B1       7       7       4   .text       
-     MoveForward                               C0B8      19      25       2   .text       
-     MoveReverse                               C0D1      19      25       1   .text       
-     Rotate                                    C0EA      2C      44       1   .text       
-     StopMotion                                C116      20      32       3   .text       
-     InitializePulseAccumulator                C136       C      12       3   .text       
-     DistanceToPulses                          C142      64     100       2   .text       
-     DegreesToPulses                           C1A6      1F      31       1   .text       
-     ExecuteNextTurnByTurnInstruction          C1C5      41      65       1   .text       
-     MotionCompleted                           C206       6       6       1   .text       
-- VARIABLES:
-     _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
      Init                                      C000      29      41       1   .init       
@@ -545,36 +518,65 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           500       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LINC                                     C302       5       5       1   RUNTIME     
-     _lDivMod                                  C307      BE     190       1   RUNTIME     
-     _LDIVU                                    C3C5       E      14       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        C3D3      14      20       1   RUNTIME     
+     _LINC                                     C306       5       5       1   RUNTIME     
+     _lDivMod                                  C30B      BE     190       1   RUNTIME     
+     _LDIVU                                    C3C9       E      14       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        C3D7      14      20       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
-     Delay                                     C20C      3C      60       1   .text       
-     InitializeTimers                          C248      10      16       1   .text       
+     Delay                                     C044      3C      60       1   .text       
+     InitializeTimers                          C080      10      16       1   .text       
 - VARIABLES:
      False                                     C03B       1       1       2   .rodata     
-     True                                      C03C       1       1       4   .rodata     
+     True                                      C03C       1       1       2   .rodata     
      CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
      TIMER_COUNTER_PRESCALE                    C03F       1       1       1   .rodata     
      WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C040       4       4       2   .rodata     
-     RoverInMotionFlag                          500       1       1       4   .bss        
+MODULE:                 -- MotorControlSystem.c.o --
+- PROCEDURES:
+     InitializeMotorControlSystem              C090      28      40       1   .text       
+     SetLeftTreadDrivePower                    C0B8       7       7       1   .text       
+     SetRightTreadDrivePower                   C0BF       7       7       1   .text       
+     LeftTreadForward                          C0C6       7       7       2   .text       
+     RightTreadForward                         C0CD       7       7       2   .text       
+     LeftTreadReverse                          C0D4       7       7       2   .text       
+     RightTreadReverse                         C0DB       7       7       2   .text       
+     BrakeTreads                               C0E2       4       4       1   .text       
+     DisableTreads                             C0E6       7       7       4   .text       
+     EnableTreads                              C0ED       7       7       4   .text       
+     MoveForward                               C0F4      16      22       2   .text       
+     MoveReverse                               C10A      16      22       1   .text       
+     Rotate                                    C120      2B      43       1   .text       
+     StopMotion                                C14B      1D      29       3   .text       
+     SetRoverInMotionFlag                      C168       7       7       3   .text       
+     ClearRoverInMotionFlag                    C16F       7       7       1   .text       
+     InitializePulseAccumulator                C176       C      12       3   .text       
+     DistanceToPulses                          C182      64     100       2   .text       
+     DegreesToPulses                           C1E6      1F      31       1   .text       
+     ExecuteNextTurnByTurnInstruction          C205      41      65       1   .text       
+     MotionCompleted                           C246       6       6       1   .text       
+- VARIABLES:
+     RoverInMotionFlag                          500       1       1       2   .bss        
+     _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
 - PROCEDURES:
-     UpdatePingDelay                           C258       8       8       1   .text       
-     DetectClosestObstacle                     C260      1E      30       1   .text       
-     OutputPulseToPing                         C27E      17      23       1   .text       
-     MeasureReturnPulseFromPing                C295      41      65       1   .text       
-     CheckForObstacles                         C2D6       4       4       1   .text       
-     PeriodicCheckForObstacles                 C2DA       9       9       1   .text       
+     UpdatePingDelay                           C24C       8       8       1   .text       
+     DetectClosestObstacle                     C254      1E      30       1   .text       
+     OutputPulseToPing                         C272      17      23       1   .text       
+     MeasureReturnPulseFromPing                C289      41      65       1   .text       
+     CheckForObstacles                         C2CA       4       4       1   .text       
+     PeriodicCheckForObstacles                 C2CE       9       9       1   .text       
 - VARIABLES:
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
+MODULE:                 -- main.c.o --
+- PROCEDURES:
+     main                                      C2D7      10      16       1   .text       
+- VARIABLES:
 MODULE:                 -- NavigationSystem.c.o --
 - PROCEDURES:
-     GetNextTurnByTurnElement                  C2E3      12      18       1   .text       
-     HasNextTurnByTurnElement                  C2F5       D      13       1   .text       
+     GetNextTurnByTurnElement                  C2E7      12      18       1   .text       
+     HasNextTurnByTurnElement                  C2F9       D      13       1   .text       
 - VARIABLES:
      RamTurnByTurnQueue                         501      E2     226       5   .bss        
 
@@ -583,12 +585,12 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   MC9S12C128.c.o                             260      0      0
-  main.c.o                                     0     16      0
-  MotorControlSystem.c.o                       0    440      2
   Start12.c.o                                  0     49      0
   rtshc12.c.o (ansisf.lib)                     0    229      0
-  Rover.c.o                                    1     76      9
+  Rover.c.o                                    0     76      9
+  MotorControlSystem.c.o                       1    444      2
   ObstacleAvoidanceSystem.c.o                  0    139      2
+  main.c.o                                     0     16      0
   NavigationSystem.c.o                       226     31      0
   other                                      256     12      2
 
@@ -596,14 +598,15 @@ MODULE STATISTIC
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  main InitializeMotorControlSystem SetLeftTreadDrivePower 
+  Delay InitializeTimers InitializeMotorControlSystem SetLeftTreadDrivePower 
   SetRightTreadDrivePower LeftTreadForward RightTreadForward LeftTreadReverse 
   RightTreadReverse BrakeTreads DisableTreads EnableTreads MoveForward 
-  MoveReverse Rotate StopMotion InitializePulseAccumulator DistanceToPulses 
-  DegreesToPulses ExecuteNextTurnByTurnInstruction MotionCompleted Delay 
-  InitializeTimers UpdatePingDelay DetectClosestObstacle OutputPulseToPing 
-  MeasureReturnPulseFromPing CheckForObstacles PeriodicCheckForObstacles 
-  GetNextTurnByTurnElement HasNextTurnByTurnElement 
+  MoveReverse Rotate StopMotion SetRoverInMotionFlag ClearRoverInMotionFlag 
+  InitializePulseAccumulator DistanceToPulses DegreesToPulses 
+  ExecuteNextTurnByTurnInstruction MotionCompleted UpdatePingDelay 
+  DetectClosestObstacle OutputPulseToPing MeasureReturnPulseFromPing 
+  CheckForObstacles PeriodicCheckForObstacles main GetNextTurnByTurnElement 
+  HasNextTurnByTurnElement 
 SECTION: ".bss"
   RoverInMotionFlag RamTurnByTurnQueue 
 SECTION: ".init"
@@ -1053,10 +1056,10 @@ SECTION: ".abs_section_16e"
   _CANRXTSR 
 SECTION: ".abs_section_17e"
   _CANTXTSR 
-SECTION: ".abs_section_ffdc"
-  _Vector_17 
 SECTION: "RUNTIME"
   _LINC _lDivMod _LDIVU _CASE_CHECKED_BYTE 
+SECTION: ".abs_section_ffdc"
+  _Vector_17 
 SECTION: ".abs_section_ffec"
   _Vector_9 
 
@@ -1285,49 +1288,51 @@ OBJECT LIST SORTED BY ADDRESS
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     RoverInMotionFlag                          500       1       1       4   .bss        
+     RoverInMotionFlag                          500       1       1       2   .bss        
      RamTurnByTurnQueue                         501      E2     226       5   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
      False                                     C03B       1       1       2   .rodata     
-     True                                      C03C       1       1       4   .rodata     
+     True                                      C03C       1       1       2   .rodata     
      CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
      TIMER_COUNTER_PRESCALE                    C03F       1       1       1   .rodata     
      WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C040       4       4       2   .rodata     
-     main                                      C044      10      16       1   .text       
-     InitializeMotorControlSystem              C054      28      40       1   .text       
-     SetLeftTreadDrivePower                    C07C       7       7       1   .text       
-     SetRightTreadDrivePower                   C083       7       7       1   .text       
-     LeftTreadForward                          C08A       7       7       2   .text       
-     RightTreadForward                         C091       7       7       2   .text       
-     LeftTreadReverse                          C098       7       7       2   .text       
-     RightTreadReverse                         C09F       7       7       2   .text       
-     BrakeTreads                               C0A6       4       4       1   .text       
-     DisableTreads                             C0AA       7       7       4   .text       
-     EnableTreads                              C0B1       7       7       4   .text       
-     MoveForward                               C0B8      19      25       2   .text       
-     MoveReverse                               C0D1      19      25       1   .text       
-     Rotate                                    C0EA      2C      44       1   .text       
-     StopMotion                                C116      20      32       3   .text       
-     InitializePulseAccumulator                C136       C      12       3   .text       
-     DistanceToPulses                          C142      64     100       2   .text       
-     DegreesToPulses                           C1A6      1F      31       1   .text       
-     ExecuteNextTurnByTurnInstruction          C1C5      41      65       1   .text       
-     MotionCompleted                           C206       6       6       1   .text       
-     Delay                                     C20C      3C      60       1   .text       
-     InitializeTimers                          C248      10      16       1   .text       
-     UpdatePingDelay                           C258       8       8       1   .text       
-     DetectClosestObstacle                     C260      1E      30       1   .text       
-     OutputPulseToPing                         C27E      17      23       1   .text       
-     MeasureReturnPulseFromPing                C295      41      65       1   .text       
-     CheckForObstacles                         C2D6       4       4       1   .text       
-     PeriodicCheckForObstacles                 C2DA       9       9       1   .text       
-     GetNextTurnByTurnElement                  C2E3      12      18       1   .text       
-     HasNextTurnByTurnElement                  C2F5       D      13       1   .text       
-     _LINC                                     C302       5       5       1   RUNTIME     
-     _lDivMod                                  C307      BE     190       1   RUNTIME     
-     _LDIVU                                    C3C5       E      14       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        C3D3      14      20       1   RUNTIME     
+     Delay                                     C044      3C      60       1   .text       
+     InitializeTimers                          C080      10      16       1   .text       
+     InitializeMotorControlSystem              C090      28      40       1   .text       
+     SetLeftTreadDrivePower                    C0B8       7       7       1   .text       
+     SetRightTreadDrivePower                   C0BF       7       7       1   .text       
+     LeftTreadForward                          C0C6       7       7       2   .text       
+     RightTreadForward                         C0CD       7       7       2   .text       
+     LeftTreadReverse                          C0D4       7       7       2   .text       
+     RightTreadReverse                         C0DB       7       7       2   .text       
+     BrakeTreads                               C0E2       4       4       1   .text       
+     DisableTreads                             C0E6       7       7       4   .text       
+     EnableTreads                              C0ED       7       7       4   .text       
+     MoveForward                               C0F4      16      22       2   .text       
+     MoveReverse                               C10A      16      22       1   .text       
+     Rotate                                    C120      2B      43       1   .text       
+     StopMotion                                C14B      1D      29       3   .text       
+     SetRoverInMotionFlag                      C168       7       7       3   .text       
+     ClearRoverInMotionFlag                    C16F       7       7       1   .text       
+     InitializePulseAccumulator                C176       C      12       3   .text       
+     DistanceToPulses                          C182      64     100       2   .text       
+     DegreesToPulses                           C1E6      1F      31       1   .text       
+     ExecuteNextTurnByTurnInstruction          C205      41      65       1   .text       
+     MotionCompleted                           C246       6       6       1   .text       
+     UpdatePingDelay                           C24C       8       8       1   .text       
+     DetectClosestObstacle                     C254      1E      30       1   .text       
+     OutputPulseToPing                         C272      17      23       1   .text       
+     MeasureReturnPulseFromPing                C289      41      65       1   .text       
+     CheckForObstacles                         C2CA       4       4       1   .text       
+     PeriodicCheckForObstacles                 C2CE       9       9       1   .text       
+     main                                      C2D7      10      16       1   .text       
+     GetNextTurnByTurnElement                  C2E7      12      18       1   .text       
+     HasNextTurnByTurnElement                  C2F9       D      13       1   .text       
+     _LINC                                     C306       5       5       1   RUNTIME     
+     _lDivMod                                  C30B      BE     190       1   RUNTIME     
+     _LDIVU                                    C3C9       E      14       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        C3D7      14      20       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
@@ -1335,14 +1340,14 @@ OBJECT LIST SORTED BY ADDRESS
 UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
 NOT USED PROCEDURES
-MotorControlSystem.c.o:
-  CommenceTurnByTurnExecution 
 rtshc12.c.o (ansisf.lib):
   _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
   _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP _LCMP_P _LCMP_PP _LNEG _LCOM _LDEC 
   _LMUL _LMULU16x32 _LMULS16x32 _NEG_P _LDIVS _LMODU _LMODS _ILSEXT _COPY 
   _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_SEARCH _CASE_SEARCH_BYTE 
   _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
+MotorControlSystem.c.o:
+  GetRoverInMotionFlag CommenceTurnByTurnExecution 
 ObstacleAvoidanceSystem.c.o:
   InitializeObstacleAvoidanceSystem SetPingRotationalPosition 
   DegreesToClockCycles 
@@ -1353,15 +1358,15 @@ NavigationSystem.c.o:
   IntersectWithSegment IsAbove SetAdjacencyMatrixValue GetAdjacencyMatrixValue 
   UpdateTurnByTurnQueueFromNodeSequence arcTangent GetNodeCoordinates 
 NOT USED VARIABLES
+rtshc12.c.o (ansisf.lib):
+  _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
+Rover.c.o:
+  CLOCK_SPEED_KHZ SPEED_OF_SOUND_INCH_PER_SEC INCHES_PER_FOOT 
 MotorControlSystem.c.o:
   PULSES_PER_INCH PULSES_PER_FOOT PULSES_PER_FIVE_FEET 
   PULSES_PER_TWENTY_FIVE_FEET PULSES_PER_DEGREE_NUMERATOR 
   PULSES_PER_DEGREE_DENOMINATOR FORWARD_MOTION REVERSE_MOTION STOP_MOTION 
   ROTATE_MOTION 
-rtshc12.c.o (ansisf.lib):
-  _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
-Rover.c.o:
-  CLOCK_SPEED_KHZ SPEED_OF_SOUND_INCH_PER_SEC INCHES_PER_FOOT PING_FREQUENCY 
 ObstacleAvoidanceSystem.c.o:
   LOOK_LEFT_PWM LOOK_RIGHT_PWM PING_UPDATE_DELAY_CLOCK_CYCLES 
   OBSTACLE_IS_NEAR_THRESHOLD 
@@ -1377,7 +1382,7 @@ NavigationSystem.c.o:
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC3E7 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC3EB ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1386,8 +1391,8 @@ OBJECT-DEPENDENCIES SECTION
 ---------------------------------------------------------------------------------------------
 Init                      USES _startupData 
 _Startup                  USES __SEG_END_SSTACK Init main 
-main                      USES InitializeTimers InitializeMotorControlSystem 
-                                MoveForward 
+Delay                     USES _LDIVU _LINC 
+InitializeTimers          USES _TSCR1 _TSCR2 _PERT _PPST 
 InitializeMotorControlSystem USES _DDRAB _PWMPOL _PWMCLK _PWMPRCLK _PWMCAE 
                                 _PWMCTL SetLeftTreadDrivePower SetRightTreadDrivePower 
                                 StopMotion 
@@ -1401,24 +1406,24 @@ BrakeTreads               USES _PORTAB
 DisableTreads             USES _PWME 
 EnableTreads              USES _PWME 
 MoveForward               USES DistanceToPulses InitializePulseAccumulator 
-                                DisableTreads LeftTreadForward RightTreadForward True 
-                                RoverInMotionFlag EnableTreads 
+                                DisableTreads LeftTreadForward RightTreadForward 
+                                SetRoverInMotionFlag EnableTreads 
 MoveReverse               USES DistanceToPulses InitializePulseAccumulator 
-                                DisableTreads LeftTreadReverse RightTreadReverse True 
-                                RoverInMotionFlag EnableTreads 
+                                DisableTreads LeftTreadReverse RightTreadReverse 
+                                SetRoverInMotionFlag EnableTreads 
 Rotate                    USES DegreesToPulses InitializePulseAccumulator 
-                                DisableTreads LeftTreadReverse RightTreadForward 
-                                LeftTreadForward RightTreadReverse True RoverInMotionFlag 
-                                StopMotion EnableTreads 
+                                DisableTreads StopMotion LeftTreadReverse RightTreadForward 
+                                LeftTreadForward RightTreadReverse SetRoverInMotionFlag 
+                                EnableTreads 
 StopMotion                USES DisableTreads BrakeTreads EnableTreads 
-                                WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY Delay _PACTL _PAFLG False RoverInMotionFlag 
+                                WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY Delay _PACTL _PAFLG ClearRoverInMotionFlag 
+SetRoverInMotionFlag      USES True RoverInMotionFlag 
+ClearRoverInMotionFlag    USES False RoverInMotionFlag 
 InitializePulseAccumulator USES _PACNT _PACTL 
 ExecuteNextTurnByTurnInstruction USES HasNextTurnByTurnElement 
                                 GetNextTurnByTurnElement _CASE_CHECKED_BYTE MoveForward MoveReverse 
                                 Rotate True False 
 MotionCompleted           USES StopMotion ExecuteNextTurnByTurnInstruction 
-Delay                     USES _LDIVU _LINC 
-InitializeTimers          USES _TSCR1 _TSCR2 _PERT _PPST 
 UpdatePingDelay           USES _TCNT _TC1 
 DetectClosestObstacle     USES OutputPulseToPing MeasureReturnPulseFromPing 
                                 TIMER_COUNTER_PRESCALE CLOCK_CYCLES_PER_INCH 
@@ -1426,6 +1431,8 @@ OutputPulseToPing         USES _DDRT _PTT
 MeasureReturnPulseFromPing USES _DDRT _TCTL4 _TFLG1 _TC0 
 CheckForObstacles         USES DetectClosestObstacle 
 PeriodicCheckForObstacles USES CheckForObstacles UpdatePingDelay _TFLG1 
+main                      USES InitializeTimers InitializeMotorControlSystem 
+                                MoveForward 
 GetNextTurnByTurnElement  USES RamTurnByTurnQueue 
 HasNextTurnByTurnElement  USES RamTurnByTurnQueue 
 _LDIVU                    USES _lDivMod 
@@ -1456,13 +1463,15 @@ DEPENDENCY TREE
  |  |     +- EnableTreads        
  |  |     |    
  |  |     +- Delay               
- |  |        | 
- |  |        +- _LDIVU              
- |  |        |  | 
- |  |        |  +- _lDivMod            
- |  |        |       
- |  |        +- _LINC               
- |  |             
+ |  |     |  | 
+ |  |     |  +- _LDIVU              
+ |  |     |  |  | 
+ |  |     |  |  +- _lDivMod            
+ |  |     |  |       
+ |  |     |  +- _LINC               
+ |  |     |       
+ |  |     +- ClearRoverInMotionFlag
+ |  |          
  |  +- MoveForward         
  |     | 
  |     +- DistanceToPulses    
@@ -1474,6 +1483,8 @@ DEPENDENCY TREE
  |     +- LeftTreadForward    
  |     |    
  |     +- RightTreadForward   
+ |     |    
+ |     +- SetRoverInMotionFlag
  |     |    
  |     +- EnableTreads         (see above)
  |        
@@ -1511,6 +1522,8 @@ DEPENDENCY TREE
        |  |    
        |  +- RightTreadReverse   
        |  |    
+       |  +- SetRoverInMotionFlag (see above)
+       |  |  
        |  +- EnableTreads         (see above)
        |     
        +- Rotate              
@@ -1521,6 +1534,8 @@ DEPENDENCY TREE
           |  
           +- DisableTreads        (see above)
           |  
+          +- StopMotion           (see above)
+          |  
           +- LeftTreadReverse     (see above)
           |  
           +- RightTreadForward    (see above)
@@ -1529,7 +1544,7 @@ DEPENDENCY TREE
           |  
           +- RightTreadReverse    (see above)
           |  
-          +- StopMotion           (see above)
+          +- SetRoverInMotionFlag (see above)
           |  
           +- EnableTreads         (see above)
              
@@ -1554,5 +1569,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 1007
+Total size of all blocks to be downloaded: 1011
 

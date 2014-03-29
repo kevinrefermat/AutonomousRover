@@ -2,8 +2,8 @@
 
 /*** Constants ***/
 
-const Byte False = 0;
-const Byte True = 1;
+const boolean_t False = 0;
+const boolean_t True = 1;
 
 const LWord CLOCK_SPEED_KHZ = 2000;
 const Word SPEED_OF_SOUND_INCH_PER_SEC = 13506;
