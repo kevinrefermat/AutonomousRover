@@ -80,7 +80,7 @@ inches_t DetectClosestObstacle()
 
 static void OutputPulseToPing()
 {
-// creates a 5us pulse
+// creates a 5us pulse?? I think it's actually 3.5us
     OBJECT_DETECTION_DDR = 1;
 
     OBJECT_DETECTION_PIN = 0;
