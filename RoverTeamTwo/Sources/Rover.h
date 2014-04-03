@@ -11,6 +11,7 @@ typedef sWord degree_t;
 typedef Word pulseCount_t;
 typedef Byte direction_t;
 typedef Byte registerValue8_t;
+typedef Word registerValue16_t;
 
 // Time  
 typedef Word milliseconds_t;
@@ -61,17 +62,20 @@ extern const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY;
 
 /*** CONSTANTS ***/
 
+#define MAX_16_BIT_VALUE 0xFFFF
+
+#define CLOCK_SPEED_HZ 2000000
+#define TIMER_COUNTER_PRESCALE 32
+#define TIMER_COUNTER_TICKS_PER_S ( CLOCK_SPEED_HZ / TIMER_COUNTER_PRESCALE )
+#define TIMER_COUNTER_TICKS_PER_MS ( TIMER_COUNTER_TICKS_PER_S / 1000 )
+
+#define MAX_PERIOD_OF_INTERRUPT_MS ( ( MAX_16_BIT_VALUE * 1000 ) / TIMER_COUNTER_TICKS_PER_S )
+
+#define SPEED_OF_SOUND_INCH_PER_SEC 13506
+#define CLOCK_TICKS_PER_INCH_OF_SOUND_TRAVEL ( CLOCK_SPEED_HZ / SPEED_OF_SOUND_INCH_PER_SEC )
+
 extern const boolean_t False;
 extern const boolean_t True;
-
-extern const LWord CLOCK_SPEED_HZ;
-extern const Word SPEED_OF_SOUND_INCH_PER_SEC;
-extern const timerCount_t CLOCK_CYCLES_PER_INCH;
-extern const Byte INCHES_PER_FOOT;
-
-extern const Byte TIMER_COUNTER_PRESCALE;
-
-extern const Byte PING_FREQUENCY;
 
 /*** USEFUL FUNCTIONS ***/
 

@@ -4,15 +4,17 @@
 
 #include "Rover.h"
 #include "ObstacleAvoidanceSystem.h"
+#include "MotorControlSystem.h"
 
-static const registerValue8_t LOOK_LEFT_PWM = 18;
-static const registerValue8_t LOOK_RIGHT_PWM = 3;
+static const registerValue8_t LookLeftPwmDuty = 18;
+static const registerValue8_t LookRightPwmDuty = 3;
 
-static const inches_t OBSTACLE_IS_NEAR_THRESHOLD = 24;
+static const inches_t ObstacleDetectionThreshhold = 24;
 
-static milliseconds_t PeriodicPingPeriod;
+static timerCount_t PingPeriodTimerCounterOffset;
+static degree_t CurrentPingAngle;
 
-void EnableObstacleAvoidanceSystem()
+void InitializeObstacleAvoidanceSystem()
 {  
    // disable interrupt caused by channel 0 for measuring PING echo
    TIE_C0I = 0;
@@ -25,12 +27,16 @@ void EnableObstacleAvoidanceSystem()
 
    // pull device is a pull down device
    PPST_PPST0 = 1;
+   
+   // Clear flag
+   TFLG1_C1F = 1;
+   
+   SetPingRotationalPosition( 0 );
+   Delay( 300000 );
 } 
 
 void EnablePeriodicObstacleDetection( milliseconds_t period )
 {
-   SetPingRotationalPosition( 0 );
-   
    // enable interrupt caused by channel 1 for periodic PING check
    TIE_C1I = 1;
    
@@ -41,17 +47,11 @@ void EnablePeriodicObstacleDetection( milliseconds_t period )
    // previous functional line that replaced lower two lines ---> TCTL2 &= 0xF3;
    TCTL2_OL1 = 0;
    TCTL2_OM1 = 0;
+ 
+   period = ( period <= MAX_PERIOD_OF_INTERRUPT_MS ) ? period : MAX_PERIOD_OF_INTERRUPT_MS;
+   PingPeriodTimerCounterOffset = period * TIMER_COUNTER_TICKS_PER_MS;
 
-   // MATH PROOF
-   // ms * ( cycles / s ) * ( 1 / prescaler ) * ( s / ms )
-   // = period * ( 2000000 cycles / s ) * ( 1 tcntCycle / 32 cycles ) * ( 1 s / 1000 ms )
-   // = 62.5
-   // ~= 63
-   
-   period = period <= 1000 ? period : 1000; // 1000 * 63 is barely less than the max 16-bit value 65535
-   PeriodicPingPeriod = period * 63;
-
-   UpdatePingDelay( PeriodicPingPeriod ); 
+   SetPingTimer(); 
 }
 
 void DisablePeriodicObstacleDetection()
@@ -60,9 +60,9 @@ void DisablePeriodicObstacleDetection()
    TIE_C1I = 0;
 }
 
-static void UpdatePingDelay( timerCount_t tcntDelayCycles )
+static void SetPingTimer()
 {
-  TC1 = TCNT + tcntDelayCycles;; 
+  TC1 = TCNT + PingPeriodTimerCounterOffset;
 }
 
 inches_t DetectClosestObstacle()
@@ -75,7 +75,7 @@ inches_t DetectClosestObstacle()
    lengthOfEchoInClockCycles = MeasureReturnPulseFromPing() * TIMER_COUNTER_PRESCALE;
    
    EnableInterrupts;
-   return ( inches_t ) lengthOfEchoInClockCycles / CLOCK_CYCLES_PER_INCH / 2;
+   return ( inches_t ) lengthOfEchoInClockCycles / CLOCK_TICKS_PER_INCH_OF_SOUND_TRAVEL / 2 ;
 }
 
 static void OutputPulseToPing()
@@ -129,45 +129,40 @@ static timerCount_t MeasureReturnPulseFromPing()
 
 void SetPingRotationalPosition( degree_t degrees )
 {
-  PWMPOL_PPOL0 = 1;
-  PWMCLK_PCLK0 = 1;
-  PWMPRCLK_PCKA = 0x0;
-  PWMCAE_CAE0 = 0;
-  PWMCTL_CON01 = 0;
-  
-  //Divide unscaled bus clock by (128)*(2)
-  PWMSCLA = 0x80;
-  PWMPER0 = 167;
-  
-  PWMDTY0 = DegreesToClockCycles( degrees );
-  
-  PWME_PWME0 = 1;
-}
+   registerValue8_t clockCycles;
 
-static registerValue8_t DegreesToClockCycles( degree_t degrees )
-{ 
-  registerValue8_t clockCycles;
-  degrees += 90;
-  clockCycles = degrees;
-  clockCycles = clockCycles * ( LOOK_LEFT_PWM - LOOK_RIGHT_PWM ) / 180 + LOOK_RIGHT_PWM;
-  return clockCycles;
-}
-
-void PeriodicCheckForObstacles()
-{
-   if ( DetectClosestObstacle() <= OBSTACLE_IS_NEAR_THRESHOLD )
-   {
-      // do something!
-   }
+   PWMPOL_PPOL0 = 1;
+   PWMCLK_PCLK0 = 1;
+   PWMPRCLK_PCKA = 0x0;
+   PWMCAE_CAE0 = 0;
+   PWMCTL_CON01 = 0;
+  
+   //Divide unscaled bus clock by (128)*(2)
+   PWMSCLA = 0x80;
+   PWMPER0 = 167;
+  
+   degrees += 90;
+   clockCycles = ( ( degrees_t ) ( degrees * ( LookLeftPwmDuty - LookRightPwmDuty ) / 180 ) ) + LookRightPwmDuty;
+   PWMDTY0 = clockCycles;
+  
+   PWME_PWME0 = 1;
+   CurrentPingAngle = degrees;
 }
 
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
 {
-   PeriodicCheckForObstacles();
-   SetPingRotationalPosition( 0 );
-   UpdatePingDelay( PeriodicPingPeriod );
+   if ( CurrentPingAngle != 0 )
+   {
+      SetPingRotationalPosition( 0 );
+      Delay( 300000 );
+   }
+   if ( DetectClosestObstacle() <= ObstacleDetectionThreshhold )
+   {
+      /*********** IMPLEMENT MORE ELEGANT SOLUTION **************/
+      StopMotion();
+   }
+   SetPingTimer();
+   
+   // Clear flag
    TFLG1_C1F = 1;
 }
-  
-
-

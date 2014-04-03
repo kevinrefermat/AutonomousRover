@@ -1,24 +1,12 @@
-Make it so that everytime you DisableInterrupts and EnableInterrupts that you aren't enableing them if they weren't already enabled when you entered the function.
-
-if ( interrupts are enabled )
-{
-   interruptsWereEnabled = 1;
-}
-DisableInterrupts
-
-BLAH BLAH BLAH
-
-if ( interruptsWereEnabled )
-{
-   EnableInterrupts;
-}
+Create a function in Rover.c to DisableInterrupts and remember the previous setting then another
+function to RestoreInterrupts.
 
 
+Implement Error Codes on Port B and use LEDs on MCU module.
 
 
-Also tidy up all the modules to ensure that each function leaves the state of the machine how it left it except for the explicit reason that function was called.
-
-
+Also tidy up all the modules to ensure that each function leaves the state of the machine how it 
+left it except for the explicit reason that function was called.
 
 
 

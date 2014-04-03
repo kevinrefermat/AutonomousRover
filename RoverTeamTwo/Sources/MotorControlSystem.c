@@ -237,7 +237,7 @@ void CommenceTurnByTurnExecution()
    ExecuteNextTurnByTurnInstruction();
 }
 
-boolean_t ExecuteNextTurnByTurnInstruction()
+static boolean_t ExecuteNextTurnByTurnInstruction()
 {
    turnByTurnElement_t* TurnByTurnElement;
    if ( HasNextTurnByTurnElement() )
