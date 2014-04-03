@@ -15,16 +15,14 @@ void main( void )
    InitializeMotorControlSystem();
    //InitializeObstacleAvoidanceSystem();
    
-   MoveForward( 1000 );
+   MoveForward( 1200 );
    
    //MoveForward( 60 ); 
    //Rotate( 90 ); 
-   for (;;); 
+
 
    InitializeNavigationSystem();
-     
-   SetRoverPosition( 120, 180 );
-   AddObstacle( 10, 70, 650, 500 );
+
    Dijkstra( 17, 18 );
     
    EnableInterrupts;    

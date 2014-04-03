@@ -1,0 +1,108 @@
+' =========================================================================
+'
+'
+'
+'   {$STAMP BS2}
+'   {$PBASIC 2.5}
+'
+' =========================================================================
+
+
+
+
+
+' -----[ I/O Definitions ]-------------------------------------------------
+
+TxEnable        PIN     15              ' Transmitter(27982)TR pin
+Tx              PIN     14              ' Transmitter(27982)DATA pin
+SendSignal      PIN     0
+
+' -----[ Constants ]-------------------------------------------------------
+
+EOM             CON     255             ' Value to signal end-of-message
+
+#SELECT $STAMP                          ' Select Baud constants
+  #CASE BS2, BS2E, BS2PE
+    T1200       CON     813
+    T2400       CON     396
+    T4800       CON     188
+    T9600       CON     84
+    T19K2       CON     32
+  #CASE BS2SX, BS2P
+    T1200       CON     2063
+    T2400       CON     1021
+    T4800       CON     500
+    T9600       CON     240
+    T19K2       CON     110
+  #CASE BS2PX
+    T1200       CON     3313
+    T2400       CON     1646
+    T4800       CON     813
+    T9600       CON     396
+    T19K2       CON     188
+#ENDSELECT
+Inverted        CON     $4000           'Value for inverted serial format
+Baud            CON     T9600+Inverted  '9600 baud, 8,N,1 inverted
+
+' -----[ Variables ]-------------------------------------------------------
+
+string          VAR     Byte(17)        'Array to hold received data
+idx             VAR    Word          'Index into message data
+StrLen          VAR     Byte            'Length of string received
+char            VAR     Byte            'Current character from message
+'packet          VAR     Byte            'Current packet # being transmitted
+rcvdCrc         VAR     Word            'Crc value received
+temp            VAR     Byte            'temporary byte variable
+crc             VAR     Word            'Calculate Crc value
+
+' -----[ EEPROM Data ]-----------------------------------------------------
+
+M1        DATA "ONE", EOM
+M2        DATA "TWO",EOM
+M3        DATA "THREE",EOM
+
+
+
+        DATA EOM
+
+' -----[ Initialization ]--------------------------------------------------
+
+
+' -----[ Program Code ]----------------------------------------------------
+
+LOW Tx                                  'Initialize transceiver interface
+LOW TxEnable                            'Disable transmitter
+INPUT SendSignal
+
+main:                                   'Initialize packet number
+
+  hold:
+    IF (SendSignal = 0) THEN hold
+    strLen = 0                          'Set string length to zero
+    crc = 0                             'Start Crc at zero
+    FOR  idx=M1 TO (M1+10)              'Point idx to start of message data
+      strLen = strLen + 1
+      READ idx, char                    'Read a character from message data
+      string(strLen-1) = char           'Put character into string array
+      temp = char                       'Prepare to add char to Crc value
+      GOSUB CalcCRC                     'Add cValue to Crc value
+      IF   (strLen = 11) OR (char = EOM) THEN EXIT ' Exit if done
+    NEXT                                  'Keep reading message characters
+
+    PAUSE 10                        'Give receiver time to process
+    HIGH TxEnable                     'Enable transmitter
+      ' Send packet
+    PULSOUT Tx,1200                   'Send sync pulse to radio
+      ' Send preample "UUUU!", packet #, string length, string data, crc
+    SEROUT Tx, Baud, ["U11!", strLen, STR string\strLen,
+                        crc.LOWBYTE, crc.HIGHBYTE]
+    LOW TxEnable                      'Disable transmitter
+  GOTO hold
+
+' -----[ Subroutines ]-----------------------------------------------------
+
+' CRC Checksum Calculation Routine
+CalcCRC:
+  temp= crc.HIGHBYTE ^ temp >> 4 ^ (crc.HIGHBYTE ^ temp)
+  crc = temp ^ (temp << 5) ^ (temp << 12) ^ (crc << 8)
+RETURN

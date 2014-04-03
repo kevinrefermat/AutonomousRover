@@ -1,5 +1,5 @@
-
-PROGRAM "C:\Users\kevinrefermat\Documents\GitHub\RoverTeamTwo\RoverTeamTwo\bin\Project.abs"
+*** EVALUATION ***
+PROGRAM "F:\RoverTeamTwo\RoverTeamTwo\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -28,8 +28,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x500     227
-  _Copy    *toCopyDownBeg 0xC3EB
+  _Range   pZeroOut       0x500     1870
+  _Copy    *toCopyDownBeg 0xCBAD
 } _startupData;
 
 *********************************************************************************************
@@ -38,10 +38,11 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata                            9     R     0xC03B     0xC043   ROM_C000
-.text                            706     R     0xC044     0xC305   ROM_C000
-.copy                              2     R     0xC3EB     0xC3EC   ROM_C000
+.rodata                          355     R     0xC03B     0xC19D   ROM_C000
+.text                           2239     R     0xC19E     0xCA5C   ROM_C000
+.copy                             10     R     0xCBAD     0xCBB6   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
+.data                              4   R/W      0x500      0x503   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -265,13 +266,13 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_17e                   2   N/I      0x17E      0x17F   .absSeg220
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg222
-.bss                             227   R/W      0x500      0x5E2   RAM
-RUNTIME                          229     R     0xC306     0xC3EA   ROM_C000
+.bss                            1866   R/W      0x504      0xC4D   RAM
+RUNTIME                          336     R     0xCA5D     0xCBAC   ROM_C000
 .vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):         3F3 (dec:     1011)
-READ_WRITE (R/W):      1E3 (dec:      483)
+READ_ONLY (R):         BBD (dec:     3005)
+READ_WRITE (R/W):      84E (dec:     2126)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -518,67 +519,103 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           500       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LINC                                     C306       5       5       1   RUNTIME     
-     _lDivMod                                  C30B      BE     190       1   RUNTIME     
-     _LDIVU                                    C3C9       E      14       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        C3D7      14      20       1   RUNTIME     
+     _LINC                                     CA5D       5       5       1   RUNTIME     
+     _LMUL                                     CA62      27      39       3   RUNTIME     
+     _lDivMod                                  CA89      BE     190       3   RUNTIME     
+     _LDIVU                                    CB47       E      14       1   RUNTIME     
+     _NEG_P                                    CB55       F      15       4   RUNTIME     
+     _LDIVS                                    CB64      35      53       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        CB99      14      20       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
-     Delay                                     C044      3C      60       1   .text       
-     InitializeTimers                          C080      10      16       1   .text       
+     Delay                                     C19E      3C      60       1   .text       
+     InitializeTimers                          C1DA      10      16       1   .text       
 - VARIABLES:
-     False                                     C03B       1       1       2   .rodata     
-     True                                      C03C       1       1       2   .rodata     
+     False                                     C03B       1       1       4   .rodata     
+     True                                      C03C       1       1       4   .rodata     
      CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
      TIMER_COUNTER_PRESCALE                    C03F       1       1       1   .rodata     
      WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C040       4       4       2   .rodata     
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     InitializeMotorControlSystem              C090      28      40       1   .text       
-     SetLeftTreadDrivePower                    C0B8       7       7       1   .text       
-     SetRightTreadDrivePower                   C0BF       7       7       1   .text       
-     LeftTreadForward                          C0C6       7       7       2   .text       
-     RightTreadForward                         C0CD       7       7       2   .text       
-     LeftTreadReverse                          C0D4       7       7       2   .text       
-     RightTreadReverse                         C0DB       7       7       2   .text       
-     BrakeTreads                               C0E2       4       4       1   .text       
-     DisableTreads                             C0E6       7       7       4   .text       
-     EnableTreads                              C0ED       7       7       4   .text       
-     MoveForward                               C0F4      16      22       2   .text       
-     MoveReverse                               C10A      16      22       1   .text       
-     Rotate                                    C120      2B      43       1   .text       
-     StopMotion                                C14B      1D      29       3   .text       
-     SetRoverInMotionFlag                      C168       7       7       3   .text       
-     ClearRoverInMotionFlag                    C16F       7       7       1   .text       
-     InitializePulseAccumulator                C176       C      12       3   .text       
-     DistanceToPulses                          C182      64     100       2   .text       
-     DegreesToPulses                           C1E6      1F      31       1   .text       
-     ExecuteNextTurnByTurnInstruction          C205      41      65       1   .text       
-     MotionCompleted                           C246       6       6       1   .text       
+     InitializeMotorControlSystem              C1EA      28      40       1   .text       
+     SetLeftTreadDrivePower                    C212       7       7       1   .text       
+     SetRightTreadDrivePower                   C219       7       7       1   .text       
+     LeftTreadForward                          C220       7       7       2   .text       
+     RightTreadForward                         C227       7       7       2   .text       
+     LeftTreadReverse                          C22E       7       7       2   .text       
+     RightTreadReverse                         C235       7       7       2   .text       
+     BrakeTreads                               C23C       4       4       1   .text       
+     DisableTreads                             C240       7       7       4   .text       
+     EnableTreads                              C247       7       7       4   .text       
+     MoveForward                               C24E      16      22       2   .text       
+     MoveReverse                               C264      16      22       1   .text       
+     Rotate                                    C27A      2B      43       1   .text       
+     StopMotion                                C2A5      1D      29       3   .text       
+     SetRoverInMotionFlag                      C2C2       7       7       3   .text       
+     ClearRoverInMotionFlag                    C2C9       7       7       1   .text       
+     InitializePulseAccumulator                C2D0       C      12       3   .text       
+     DistanceToPulses                          C2DC      64     100       2   .text       
+     DegreesToPulses                           C340      1F      31       1   .text       
+     CommenceTurnByTurnExecution               C35F       3       3       1   .text       
+     ExecuteNextTurnByTurnInstruction          C362      41      65       2   .text       
+     MotionCompleted                           C3A3       6       6       1   .text       
 - VARIABLES:
-     RoverInMotionFlag                          500       1       1       2   .bss        
+     FORWARD_MOTION                            C044       1       1       1   .rodata     
+     ROTATE_MOTION                             C045       1       1       1   .rodata     
+     RoverInMotionFlag                          504       1       1       2   .bss        
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
 - PROCEDURES:
-     UpdatePingDelay                           C24C       8       8       1   .text       
-     DetectClosestObstacle                     C254      1E      30       1   .text       
-     OutputPulseToPing                         C272      17      23       1   .text       
-     MeasureReturnPulseFromPing                C289      41      65       1   .text       
-     CheckForObstacles                         C2CA       4       4       1   .text       
-     PeriodicCheckForObstacles                 C2CE       9       9       1   .text       
+     UpdatePingDelay                           C3A9       8       8       1   .text       
+     DetectClosestObstacle                     C3B1      1E      30       1   .text       
+     OutputPulseToPing                         C3CF      17      23       1   .text       
+     MeasureReturnPulseFromPing                C3E6      41      65       1   .text       
+     CheckForObstacles                         C427       4       4       1   .text       
+     PeriodicCheckForObstacles                 C42B       9       9       1   .text       
 - VARIABLES:
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C2D7      10      16       1   .text       
+     main                                      C434      1E      30       1   .text       
 - VARIABLES:
 MODULE:                 -- NavigationSystem.c.o --
 - PROCEDURES:
-     GetNextTurnByTurnElement                  C2E7      12      18       1   .text       
-     HasNextTurnByTurnElement                  C2F9       D      13       1   .text       
+     InitializeNavigationSystem                C452       3       3       1   .text       
+     Dijkstra                                  C455     130     304       4   .text       
+     UpdateAllNodeConnections                  C585      8A     138       1   .text       
+     Distance                                  C60F      77     119       1   .text       
+     SquareRoot                                C686      5E      94       1   .text       
+     NodesAreVisibleToEachOther                C6E4      58      88       1   .text       
+     IntersectWithObstacle                     C73C      49      73       1   .text       
+     IntersectWithShape                        C785      44      68       1   .text       
+     IntersectWithSegment                      C7C9      42      66       1   .text       
+     IsAbove                                   C80B      58      88       4   .text       
+     SetAdjacencyMatrixValue                   C863      39      57       1   .text       
+     GetAdjacencyMatrixValue                   C89C      3C      60       2   .text       
+     UpdateTurnByTurnQueueFromNodeSequence       C8D8      B0     176       2   .text       
+     arcTangent                                C988      8B     139       1   .text       
+     GetNodeCoordinates                        CA13      2B      43       2   .text       
+     GetNextTurnByTurnElement                  CA3E      12      18       1   .text       
+     HasNextTurnByTurnElement                  CA50       D      13       1   .text       
 - VARIABLES:
-     RamTurnByTurnQueue                         501      E2     226       5   .bss        
+     RomNodeCoordinateList                     C046      54      84       5   .rodata     
+     RomObstacleList                           C09A      50      80       1   .rodata     
+     TangentLut                                C0EA      B4     180       1   .rodata     
+     RamNumberOfNodes                           500       1       1       1   .data       
+     NumberOfNodes                              501       1       1       6   .data       
+     currentAngle.1                             502       2       2       4   .data       
+     RamNumberOfObstacles                       505       1       1       1   .bss        
+     RamNodeSequenceSize                        506       1       1       4   .bss        
+     RamTurnByTurnQueue                         507      E2     226      11   .bss        
+     RamNodeCoordinateList                      5E9      40      64       4   .bss        
+     RamAdjacencyMatrixData                     629     534    1332       2   .bss        
+     RamObstacleList                            B5D      38      56       1   .bss        
+     RamNodeSequence                            B95      25      37       7   .bss        
+     beenVisited                                BBA      25      37       4   .bss        
+     previousNode                               BDF      25      37       2   .bss        
+     distanceFromTarget                         C04      4A      74      11   .bss        
 
 *********************************************************************************************
 MODULE STATISTIC
@@ -586,13 +623,13 @@ MODULE STATISTIC
 ---------------------------------------------------------------------------------------------
   MC9S12C128.c.o                             260      0      0
   Start12.c.o                                  0     49      0
-  rtshc12.c.o (ansisf.lib)                     0    229      0
+  rtshc12.c.o (ansisf.lib)                     0    336      0
   Rover.c.o                                    0     76      9
-  MotorControlSystem.c.o                       1    444      2
+  MotorControlSystem.c.o                       1    447      4
   ObstacleAvoidanceSystem.c.o                  0    139      2
-  main.c.o                                     0     16      0
-  NavigationSystem.c.o                       226     31      0
-  other                                      256     12      2
+  main.c.o                                     0     30      0
+  NavigationSystem.c.o                      1869   1547    344
+  other                                      256     12     10
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
@@ -603,17 +640,26 @@ SECTION: ".text"
   RightTreadReverse BrakeTreads DisableTreads EnableTreads MoveForward 
   MoveReverse Rotate StopMotion SetRoverInMotionFlag ClearRoverInMotionFlag 
   InitializePulseAccumulator DistanceToPulses DegreesToPulses 
-  ExecuteNextTurnByTurnInstruction MotionCompleted UpdatePingDelay 
-  DetectClosestObstacle OutputPulseToPing MeasureReturnPulseFromPing 
-  CheckForObstacles PeriodicCheckForObstacles main GetNextTurnByTurnElement 
-  HasNextTurnByTurnElement 
+  CommenceTurnByTurnExecution ExecuteNextTurnByTurnInstruction MotionCompleted 
+  UpdatePingDelay DetectClosestObstacle OutputPulseToPing 
+  MeasureReturnPulseFromPing CheckForObstacles PeriodicCheckForObstacles main 
+  InitializeNavigationSystem Dijkstra UpdateAllNodeConnections Distance 
+  SquareRoot NodesAreVisibleToEachOther IntersectWithObstacle 
+  IntersectWithShape IntersectWithSegment IsAbove SetAdjacencyMatrixValue 
+  GetAdjacencyMatrixValue UpdateTurnByTurnQueueFromNodeSequence arcTangent 
+  GetNodeCoordinates GetNextTurnByTurnElement HasNextTurnByTurnElement 
+SECTION: ".data"
+  RamNumberOfNodes NumberOfNodes currentAngle.1 
 SECTION: ".bss"
-  RoverInMotionFlag RamTurnByTurnQueue 
+  RoverInMotionFlag RamNumberOfObstacles RamNodeSequenceSize 
+  RamTurnByTurnQueue RamNodeCoordinateList RamAdjacencyMatrixData 
+  RamObstacleList RamNodeSequence beenVisited previousNode distanceFromTarget 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata"
   False True CLOCK_CYCLES_PER_INCH TIMER_COUNTER_PRESCALE 
-  WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY 
+  WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY FORWARD_MOTION ROTATE_MOTION 
+  RomNodeCoordinateList RomObstacleList TangentLut 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1057,7 +1103,7 @@ SECTION: ".abs_section_16e"
 SECTION: ".abs_section_17e"
   _CANTXTSR 
 SECTION: "RUNTIME"
-  _LINC _lDivMod _LDIVU _CASE_CHECKED_BYTE 
+  _LINC _LMUL _lDivMod _LDIVU _NEG_P _LDIVS _CASE_CHECKED_BYTE 
 SECTION: ".abs_section_ffdc"
   _Vector_17 
 SECTION: ".abs_section_ffec"
@@ -1288,51 +1334,87 @@ OBJECT LIST SORTED BY ADDRESS
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     RoverInMotionFlag                          500       1       1       2   .bss        
-     RamTurnByTurnQueue                         501      E2     226       5   .bss        
+     RamNumberOfNodes                           500       1       1       1   .data       
+     NumberOfNodes                              501       1       1       6   .data       
+     currentAngle.1                             502       2       2       4   .data       
+     RoverInMotionFlag                          504       1       1       2   .bss        
+     RamNumberOfObstacles                       505       1       1       1   .bss        
+     RamNodeSequenceSize                        506       1       1       4   .bss        
+     RamTurnByTurnQueue                         507      E2     226      11   .bss        
+     RamNodeCoordinateList                      5E9      40      64       4   .bss        
+     RamAdjacencyMatrixData                     629     534    1332       2   .bss        
+     RamObstacleList                            B5D      38      56       1   .bss        
+     RamNodeSequence                            B95      25      37       7   .bss        
+     beenVisited                                BBA      25      37       4   .bss        
+     previousNode                               BDF      25      37       2   .bss        
+     distanceFromTarget                         C04      4A      74      11   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     False                                     C03B       1       1       2   .rodata     
-     True                                      C03C       1       1       2   .rodata     
+     False                                     C03B       1       1       4   .rodata     
+     True                                      C03C       1       1       4   .rodata     
      CLOCK_CYCLES_PER_INCH                     C03D       2       2       1   .rodata     
      TIMER_COUNTER_PRESCALE                    C03F       1       1       1   .rodata     
      WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C040       4       4       2   .rodata     
-     Delay                                     C044      3C      60       1   .text       
-     InitializeTimers                          C080      10      16       1   .text       
-     InitializeMotorControlSystem              C090      28      40       1   .text       
-     SetLeftTreadDrivePower                    C0B8       7       7       1   .text       
-     SetRightTreadDrivePower                   C0BF       7       7       1   .text       
-     LeftTreadForward                          C0C6       7       7       2   .text       
-     RightTreadForward                         C0CD       7       7       2   .text       
-     LeftTreadReverse                          C0D4       7       7       2   .text       
-     RightTreadReverse                         C0DB       7       7       2   .text       
-     BrakeTreads                               C0E2       4       4       1   .text       
-     DisableTreads                             C0E6       7       7       4   .text       
-     EnableTreads                              C0ED       7       7       4   .text       
-     MoveForward                               C0F4      16      22       2   .text       
-     MoveReverse                               C10A      16      22       1   .text       
-     Rotate                                    C120      2B      43       1   .text       
-     StopMotion                                C14B      1D      29       3   .text       
-     SetRoverInMotionFlag                      C168       7       7       3   .text       
-     ClearRoverInMotionFlag                    C16F       7       7       1   .text       
-     InitializePulseAccumulator                C176       C      12       3   .text       
-     DistanceToPulses                          C182      64     100       2   .text       
-     DegreesToPulses                           C1E6      1F      31       1   .text       
-     ExecuteNextTurnByTurnInstruction          C205      41      65       1   .text       
-     MotionCompleted                           C246       6       6       1   .text       
-     UpdatePingDelay                           C24C       8       8       1   .text       
-     DetectClosestObstacle                     C254      1E      30       1   .text       
-     OutputPulseToPing                         C272      17      23       1   .text       
-     MeasureReturnPulseFromPing                C289      41      65       1   .text       
-     CheckForObstacles                         C2CA       4       4       1   .text       
-     PeriodicCheckForObstacles                 C2CE       9       9       1   .text       
-     main                                      C2D7      10      16       1   .text       
-     GetNextTurnByTurnElement                  C2E7      12      18       1   .text       
-     HasNextTurnByTurnElement                  C2F9       D      13       1   .text       
-     _LINC                                     C306       5       5       1   RUNTIME     
-     _lDivMod                                  C30B      BE     190       1   RUNTIME     
-     _LDIVU                                    C3C9       E      14       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        C3D7      14      20       1   RUNTIME     
+     FORWARD_MOTION                            C044       1       1       1   .rodata     
+     ROTATE_MOTION                             C045       1       1       1   .rodata     
+     RomNodeCoordinateList                     C046      54      84       5   .rodata     
+     RomObstacleList                           C09A      50      80       1   .rodata     
+     TangentLut                                C0EA      B4     180       1   .rodata     
+     Delay                                     C19E      3C      60       1   .text       
+     InitializeTimers                          C1DA      10      16       1   .text       
+     InitializeMotorControlSystem              C1EA      28      40       1   .text       
+     SetLeftTreadDrivePower                    C212       7       7       1   .text       
+     SetRightTreadDrivePower                   C219       7       7       1   .text       
+     LeftTreadForward                          C220       7       7       2   .text       
+     RightTreadForward                         C227       7       7       2   .text       
+     LeftTreadReverse                          C22E       7       7       2   .text       
+     RightTreadReverse                         C235       7       7       2   .text       
+     BrakeTreads                               C23C       4       4       1   .text       
+     DisableTreads                             C240       7       7       4   .text       
+     EnableTreads                              C247       7       7       4   .text       
+     MoveForward                               C24E      16      22       2   .text       
+     MoveReverse                               C264      16      22       1   .text       
+     Rotate                                    C27A      2B      43       1   .text       
+     StopMotion                                C2A5      1D      29       3   .text       
+     SetRoverInMotionFlag                      C2C2       7       7       3   .text       
+     ClearRoverInMotionFlag                    C2C9       7       7       1   .text       
+     InitializePulseAccumulator                C2D0       C      12       3   .text       
+     DistanceToPulses                          C2DC      64     100       2   .text       
+     DegreesToPulses                           C340      1F      31       1   .text       
+     CommenceTurnByTurnExecution               C35F       3       3       1   .text       
+     ExecuteNextTurnByTurnInstruction          C362      41      65       2   .text       
+     MotionCompleted                           C3A3       6       6       1   .text       
+     UpdatePingDelay                           C3A9       8       8       1   .text       
+     DetectClosestObstacle                     C3B1      1E      30       1   .text       
+     OutputPulseToPing                         C3CF      17      23       1   .text       
+     MeasureReturnPulseFromPing                C3E6      41      65       1   .text       
+     CheckForObstacles                         C427       4       4       1   .text       
+     PeriodicCheckForObstacles                 C42B       9       9       1   .text       
+     main                                      C434      1E      30       1   .text       
+     InitializeNavigationSystem                C452       3       3       1   .text       
+     Dijkstra                                  C455     130     304       4   .text       
+     UpdateAllNodeConnections                  C585      8A     138       1   .text       
+     Distance                                  C60F      77     119       1   .text       
+     SquareRoot                                C686      5E      94       1   .text       
+     NodesAreVisibleToEachOther                C6E4      58      88       1   .text       
+     IntersectWithObstacle                     C73C      49      73       1   .text       
+     IntersectWithShape                        C785      44      68       1   .text       
+     IntersectWithSegment                      C7C9      42      66       1   .text       
+     IsAbove                                   C80B      58      88       4   .text       
+     SetAdjacencyMatrixValue                   C863      39      57       1   .text       
+     GetAdjacencyMatrixValue                   C89C      3C      60       2   .text       
+     UpdateTurnByTurnQueueFromNodeSequence       C8D8      B0     176       2   .text       
+     arcTangent                                C988      8B     139       1   .text       
+     GetNodeCoordinates                        CA13      2B      43       2   .text       
+     GetNextTurnByTurnElement                  CA3E      12      18       1   .text       
+     HasNextTurnByTurnElement                  CA50       D      13       1   .text       
+     _LINC                                     CA5D       5       5       1   RUNTIME     
+     _LMUL                                     CA62      27      39       3   RUNTIME     
+     _lDivMod                                  CA89      BE     190       3   RUNTIME     
+     _LDIVU                                    CB47       E      14       1   RUNTIME     
+     _NEG_P                                    CB55       F      15       4   RUNTIME     
+     _LDIVS                                    CB64      35      53       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        CB99      14      20       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
@@ -1343,20 +1425,16 @@ NOT USED PROCEDURES
 rtshc12.c.o (ansisf.lib):
   _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
   _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP _LCMP_P _LCMP_PP _LNEG _LCOM _LDEC 
-  _LMUL _LMULU16x32 _LMULS16x32 _NEG_P _LDIVS _LMODU _LMODS _ILSEXT _COPY 
-  _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_SEARCH _CASE_SEARCH_BYTE 
-  _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
+  _LMULU16x32 _LMULS16x32 _LMODU _LMODS _ILSEXT _COPY _CASE_DIRECT 
+  _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 
+  _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
 MotorControlSystem.c.o:
-  GetRoverInMotionFlag CommenceTurnByTurnExecution 
+  GetRoverInMotionFlag 
 ObstacleAvoidanceSystem.c.o:
   InitializeObstacleAvoidanceSystem SetPingRotationalPosition 
   DegreesToClockCycles 
 NavigationSystem.c.o:
-  InitializeNavigationSystem Dijkstra AddObstacle AddNode SetRoverPosition 
-  UpdateSingleNodeConnections UpdateAllNodeConnections Distance SquareRoot 
-  NodesAreVisibleToEachOther IntersectWithObstacle IntersectWithShape 
-  IntersectWithSegment IsAbove SetAdjacencyMatrixValue GetAdjacencyMatrixValue 
-  UpdateTurnByTurnQueueFromNodeSequence arcTangent GetNodeCoordinates 
+  AddObstacle AddNode SetRoverPosition UpdateSingleNodeConnections 
 NOT USED VARIABLES
 rtshc12.c.o (ansisf.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
@@ -1365,24 +1443,34 @@ Rover.c.o:
 MotorControlSystem.c.o:
   PULSES_PER_INCH PULSES_PER_FOOT PULSES_PER_FIVE_FEET 
   PULSES_PER_TWENTY_FIVE_FEET PULSES_PER_DEGREE_NUMERATOR 
-  PULSES_PER_DEGREE_DENOMINATOR FORWARD_MOTION REVERSE_MOTION STOP_MOTION 
-  ROTATE_MOTION 
+  PULSES_PER_DEGREE_DENOMINATOR REVERSE_MOTION STOP_MOTION 
 ObstacleAvoidanceSystem.c.o:
   LOOK_LEFT_PWM LOOK_RIGHT_PWM PING_UPDATE_DELAY_CLOCK_CYCLES 
   OBSTACLE_IS_NEAR_THRESHOLD 
 NavigationSystem.c.o:
   NO_CONNECTION MaxRamNumberOfNodes RomNumberOfNodes MaxTotalNumberOfNodes 
   MaxRamNumberOfObstacles RomNumberOfObstacles MaxTotalNumberOfObstacles 
-  RomNodeCoordinateList FORWARD_MOTION ROTATE_MOTION RomObstacleList TangentLut 
-  RamNumberOfNodes NumberOfNodes NumberOfObstacles currentAngle.1 
-  RamNumberOfObstacles RamNodeSequenceSize RamNodeCoordinateList 
-  RamAdjacencyMatrixData RamObstacleList RamNodeSequence beenVisited 
-  previousNode distanceFromTarget 
+  NumberOfObstacles 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC3EB ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xCBAD ---- SIZE       4 ---
+Filling bytes inserted
+ 00040500
+------- ROM-ADDRESS: 0xCBB1 ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
+Name of initialized Object : RamNumberOfNodes
+ 01
+------- ROM-ADDRESS: 0xCBB2 ---- RAM-ADDRESS: 0x501 ---- SIZE       1 ---
+Name of initialized Object : NumberOfNodes
+ 16
+------- ROM-ADDRESS: 0xCBB3 ---- SIZE       1 ---
+Filling bytes inserted
+ 00
+------- ROM-ADDRESS: 0xCBB4 ---- RAM-ADDRESS: 0x503 ---- SIZE       1 ---
+Name of initialized Object : currentAngle.1:1
+ 5A
+------- ROM-ADDRESS: 0xCBB5 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1420,6 +1508,7 @@ StopMotion                USES DisableTreads BrakeTreads EnableTreads
 SetRoverInMotionFlag      USES True RoverInMotionFlag 
 ClearRoverInMotionFlag    USES False RoverInMotionFlag 
 InitializePulseAccumulator USES _PACNT _PACTL 
+CommenceTurnByTurnExecution USES ExecuteNextTurnByTurnInstruction 
 ExecuteNextTurnByTurnInstruction USES HasNextTurnByTurnElement 
                                 GetNextTurnByTurnElement _CASE_CHECKED_BYTE MoveForward MoveReverse 
                                 Rotate True False 
@@ -1432,10 +1521,37 @@ MeasureReturnPulseFromPing USES _DDRT _TCTL4 _TFLG1 _TC0
 CheckForObstacles         USES DetectClosestObstacle 
 PeriodicCheckForObstacles USES CheckForObstacles UpdatePingDelay _TFLG1 
 main                      USES InitializeTimers InitializeMotorControlSystem 
-                                MoveForward 
+                                MoveForward InitializeNavigationSystem Dijkstra 
+                                CommenceTurnByTurnExecution 
+InitializeNavigationSystem USES UpdateAllNodeConnections 
+Dijkstra                  USES False beenVisited distanceFromTarget 
+                                NumberOfNodes Dijkstra GetAdjacencyMatrixValue previousNode 
+                                True RamNodeSequenceSize RamNodeSequence 
+                                UpdateTurnByTurnQueueFromNodeSequence 
+UpdateAllNodeConnections  USES NodesAreVisibleToEachOther Distance 
+                                SetAdjacencyMatrixValue NumberOfNodes RamNodeCoordinateList 
+                                RomNodeCoordinateList 
+Distance                  USES _LMUL SquareRoot 
+SquareRoot                USES _LMUL _LDIVS 
+NodesAreVisibleToEachOther USES RomNodeCoordinateList IntersectWithObstacle 
+                                RamNodeCoordinateList 
+IntersectWithObstacle     USES RomObstacleList RamObstacleList True 
+                                RamNumberOfObstacles False IntersectWithShape 
+IntersectWithShape        USES IntersectWithSegment 
+IntersectWithSegment      USES IsAbove 
+SetAdjacencyMatrixValue   USES RamAdjacencyMatrixData 
+GetAdjacencyMatrixValue   USES RamAdjacencyMatrixData 
+UpdateTurnByTurnQueueFromNodeSequence USES RamTurnByTurnQueue 
+                                RamNodeSequenceSize UpdateTurnByTurnQueueFromNodeSequence 
+                                RamNodeSequence GetNodeCoordinates arcTangent currentAngle.1 
+                                ROTATE_MOTION FORWARD_MOTION distanceFromTarget 
+arcTangent                USES TangentLut 
+GetNodeCoordinates        USES RomNodeCoordinateList RamNumberOfNodes 
+                                RamNodeCoordinateList 
 GetNextTurnByTurnElement  USES RamTurnByTurnQueue 
 HasNextTurnByTurnElement  USES RamTurnByTurnQueue 
 _LDIVU                    USES _lDivMod 
+_LDIVS                    USES _NEG_P _lDivMod 
 _Vector_17                USES MotionCompleted 
 _Vector_9                 USES PeriodicCheckForObstacles 
 
@@ -1473,21 +1589,111 @@ DEPENDENCY TREE
  |  |     +- ClearRoverInMotionFlag
  |  |          
  |  +- MoveForward         
+ |  |  | 
+ |  |  +- DistanceToPulses    
+ |  |  |    
+ |  |  +- InitializePulseAccumulator
+ |  |  |    
+ |  |  +- DisableTreads        (see above)
+ |  |  |  
+ |  |  +- LeftTreadForward    
+ |  |  |    
+ |  |  +- RightTreadForward   
+ |  |  |    
+ |  |  +- SetRoverInMotionFlag
+ |  |  |    
+ |  |  +- EnableTreads         (see above)
+ |  |     
+ |  +- InitializeNavigationSystem
+ |  |  | 
+ |  |  +- UpdateAllNodeConnections
+ |  |     | 
+ |  |     +- NodesAreVisibleToEachOther
+ |  |     |  | 
+ |  |     |  +- IntersectWithObstacle
+ |  |     |     | 
+ |  |     |     +- IntersectWithShape  
+ |  |     |        | 
+ |  |     |        +- IntersectWithSegment
+ |  |     |           | 
+ |  |     |           +- IsAbove             
+ |  |     |                
+ |  |     +- Distance            
+ |  |     |  | 
+ |  |     |  +- _LMUL               
+ |  |     |  |    
+ |  |     |  +- SquareRoot          
+ |  |     |     | 
+ |  |     |     +- _LMUL                (see above)
+ |  |     |     |  
+ |  |     |     +- _LDIVS              
+ |  |     |        | 
+ |  |     |        +- _NEG_P              
+ |  |     |        |    
+ |  |     |        +- _lDivMod             (see above)
+ |  |     |           
+ |  |     +- SetAdjacencyMatrixValue
+ |  |          
+ |  +- Dijkstra            
+ |  |  | 
+ |  |  +- GetAdjacencyMatrixValue
+ |  |  |    
+ |  |  +- UpdateTurnByTurnQueueFromNodeSequence
+ |  |     | 
+ |  |     +- GetNodeCoordinates  
+ |  |     |    
+ |  |     +- arcTangent          
+ |  |          
+ |  +- CommenceTurnByTurnExecution
  |     | 
- |     +- DistanceToPulses    
- |     |    
- |     +- InitializePulseAccumulator
- |     |    
- |     +- DisableTreads        (see above)
- |     |  
- |     +- LeftTreadForward    
- |     |    
- |     +- RightTreadForward   
- |     |    
- |     +- SetRoverInMotionFlag
- |     |    
- |     +- EnableTreads         (see above)
- |        
+ |     +- ExecuteNextTurnByTurnInstruction
+ |        | 
+ |        +- HasNextTurnByTurnElement
+ |        |    
+ |        +- GetNextTurnByTurnElement
+ |        |    
+ |        +- _CASE_CHECKED_BYTE  
+ |        |    
+ |        +- MoveForward          (see above)
+ |        |  
+ |        +- MoveReverse         
+ |        |  | 
+ |        |  +- DistanceToPulses     (see above)
+ |        |  |  
+ |        |  +- InitializePulseAccumulator (see above)
+ |        |  |  
+ |        |  +- DisableTreads        (see above)
+ |        |  |  
+ |        |  +- LeftTreadReverse    
+ |        |  |    
+ |        |  +- RightTreadReverse   
+ |        |  |    
+ |        |  +- SetRoverInMotionFlag (see above)
+ |        |  |  
+ |        |  +- EnableTreads         (see above)
+ |        |     
+ |        +- Rotate              
+ |           | 
+ |           +- DegreesToPulses     
+ |           |    
+ |           +- InitializePulseAccumulator (see above)
+ |           |  
+ |           +- DisableTreads        (see above)
+ |           |  
+ |           +- StopMotion           (see above)
+ |           |  
+ |           +- LeftTreadReverse     (see above)
+ |           |  
+ |           +- RightTreadForward    (see above)
+ |           |  
+ |           +- LeftTreadForward     (see above)
+ |           |  
+ |           +- RightTreadReverse    (see above)
+ |           |  
+ |           +- SetRoverInMotionFlag (see above)
+ |           |  
+ |           +- EnableTreads         (see above)
+ |              
  +- _Startup            
     | 
     +- Init                
@@ -1500,54 +1706,8 @@ DEPENDENCY TREE
     | 
     +- StopMotion           (see above)
     |  
-    +- ExecuteNextTurnByTurnInstruction
-       | 
-       +- HasNextTurnByTurnElement
-       |    
-       +- GetNextTurnByTurnElement
-       |    
-       +- _CASE_CHECKED_BYTE  
-       |    
-       +- MoveForward          (see above)
-       |  
-       +- MoveReverse         
-       |  | 
-       |  +- DistanceToPulses     (see above)
-       |  |  
-       |  +- InitializePulseAccumulator (see above)
-       |  |  
-       |  +- DisableTreads        (see above)
-       |  |  
-       |  +- LeftTreadReverse    
-       |  |    
-       |  +- RightTreadReverse   
-       |  |    
-       |  +- SetRoverInMotionFlag (see above)
-       |  |  
-       |  +- EnableTreads         (see above)
-       |     
-       +- Rotate              
-          | 
-          +- DegreesToPulses     
-          |    
-          +- InitializePulseAccumulator (see above)
-          |  
-          +- DisableTreads        (see above)
-          |  
-          +- StopMotion           (see above)
-          |  
-          +- LeftTreadReverse     (see above)
-          |  
-          +- RightTreadForward    (see above)
-          |  
-          +- LeftTreadForward     (see above)
-          |  
-          +- RightTreadReverse    (see above)
-          |  
-          +- SetRoverInMotionFlag (see above)
-          |  
-          +- EnableTreads         (see above)
-             
+    +- ExecuteNextTurnByTurnInstruction (see above)
+       
  _Vector_9           
  | 
  +- PeriodicCheckForObstacles
@@ -1568,6 +1728,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 1011
+Number of blocks to be downloaded: 8
+Total size of all blocks to be downloaded: 3005
 

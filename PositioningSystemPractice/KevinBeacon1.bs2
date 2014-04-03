@@ -1,0 +1,117 @@
+
+'
+'   {$STAMP BS2}
+'   {$PBASIC 2.5}
+'
+
+
+
+
+' -----[ I/O Definitions ]-------------------------------------------------
+
+TxEnable        PIN     15              ' Transmitter(27982)TR pin
+Tx              PIN     14              ' Transmitter(27982)DATA pin
+HC12            PIN     10
+S0              PIN     13
+' -----[ Constants ]-------------------------------------------------------
+
+EOM             CON     255             ' Value to signal end-of-message
+
+#SELECT $STAMP                          ' Select Baud constants
+  #CASE BS2, BS2E, BS2PE
+    T1200       CON     813
+    T2400       CON     396
+    T4800       CON     188
+    T9600       CON     84
+    T19K2       CON     32
+  #CASE BS2SX, BS2P
+    T1200       CON     2063
+    T2400       CON     1021
+    T4800       CON     500
+    T9600       CON     240
+    T19K2       CON     110
+  #CASE BS2PX
+    T1200       CON     3313
+    T2400       CON     1646
+    T4800       CON     813
+    T9600       CON     396
+    T19K2       CON     188
+#ENDSELECT
+Inverted        CON     $4000           'Value for inverted serial format
+Baud            CON     T9600+Inverted  '9600 baud, 8,N,1 inverted
+
+' -----[ Variables ]-------------------------------------------------------
+
+string          VAR     Byte(17)        'Array to hold received data
+strLen          VAR     Byte            'Length of string received
+temp            VAR     Byte            'Temporary variable
+packet          VAR     Byte            'Current packet number
+lastPacket      VAR     Byte            'Last good packet number
+cValue          VAR     Byte            'Value to add to CRC value
+crc             VAR     Word            'Calculate CRC value
+rcvdCrc         VAR     Word            'Received CRC value
+
+
+' -----[ EEPROM Data ]-----------------------------------------------------
+
+
+
+
+' -----[ Initialization ]--------------------------------------------------
+DIR13=0
+
+' -----[ Program Code ]----------------------------------------------------
+
+Main:
+LOW Tx
+LOW TxEnable
+
+DO
+  ' Wait for preamble, then receive data and crc value
+  SERIN Tx,Baud,[WAIT ("U11!"), strLen, STR string\strLen,
+                 rcvdCrc.LOWBYTE,rcvdCrc.HIGHBYTE]
+  ' Calculate crc of received data
+  crc = 0
+  FOR temp = 0 TO strLen-1
+    cValue = string(temp)
+    GOSUB CalcCRC
+  NEXT
+
+  ' See if received crc value matches calculated crc value
+  IF rcvdCrc = crc THEN
+  'DEBUG string, CR
+  ' Check if this is a repeated packet
+  'If "ONE" was the message received
+    IF string(0) = "O" THEN
+      IF string(1) = "N" THEN
+        IF string(2) = "E" THEN
+          'Transmit Sonar
+          'Pull pin x high
+          HIGH 10
+          PAUSE 100
+          'Pull PIn x LOw
+          LOW 10
+        ENDIF
+      ENDIF
+    ENDIF
+  ELSE
+    ' Received crc did NOT match calculated crc
+    DEBUG "  ** RECEIVE ERROR **  ", BELL
+  ENDIF
+LOOP
+
+
+
+ local_Rs232:
+'SEROUT  HC12, 8276,40, ["00Hocus Pocus Smurf", CR]
+
+PAUSE 100
+
+
+' -----[ Subroutines ]-----------------------------------------------------
+
+' CRC Checksum Calculation Routine
+CalcCRC:
+  cValue= crc.HIGHBYTE ^ cValue >> 4 ^ (crc.HIGHBYTE ^ cValue)
+  crc = cValue ^ (cValue << 5) ^ (cValue << 12) ^ (crc << 8)
+RETURN
