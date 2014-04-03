@@ -8,35 +8,61 @@
 static const registerValue8_t LOOK_LEFT_PWM = 18;
 static const registerValue8_t LOOK_RIGHT_PWM = 3;
 
-static const timerCount_t PING_UPDATE_DELAY_CLOCK_CYCLES = 20800;
 static const inches_t OBSTACLE_IS_NEAR_THRESHOLD = 24;
 
-void InitializeObstacleAvoidanceSystem()
+static milliseconds_t PeriodicPingPeriod;
+
+void EnableObstacleAvoidanceSystem()
 {  
    // disable interrupt caused by channel 0 for measuring PING echo
    TIE_C0I = 0;
+
+   // set ioc0 to input capture
+   TIOS_IOS0 = 0;
+      
+   // internal pull device enabled
+   PERT_PERT0 = 1;
+
+   // pull device is a pull down device
+   PPST_PPST0 = 1;
+} 
+
+void EnablePeriodicObstacleDetection( milliseconds_t period )
+{
+   SetPingRotationalPosition( 0 );
    
    // enable interrupt caused by channel 1 for periodic PING check
    TIE_C1I = 1;
-
-   // set ioc0 to input capture
-   TIOS_IOS1 = 0;
    
    // set ic1 to output compare
    TIOS_IOS1 = 1;
-      
-   // disconnect timer from pin oc1
-   TCTL2 &= 0xF3;
    
-   SetPingRotationalPosition( 0 );
-   Delay( 400 );
-   CheckForObstacles();
-   UpdatePingDelay();  
-} 
+   // disconnect timer from pin oc1
+   // previous functional line that replaced lower two lines ---> TCTL2 &= 0xF3;
+   TCTL2_OL1 = 0;
+   TCTL2_OM1 = 0;
 
-static void UpdatePingDelay()
+   // MATH PROOF
+   // ms * ( cycles / s ) * ( 1 / prescaler ) * ( s / ms )
+   // = period * ( 2000000 cycles / s ) * ( 1 tcntCycle / 32 cycles ) * ( 1 s / 1000 ms )
+   // = 62.5
+   // ~= 63
+   
+   period = period <= 1000 ? period : 1000; // 1000 * 63 is barely less than the max 16-bit value 65535
+   PeriodicPingPeriod = period * 63;
+
+   UpdatePingDelay( PeriodicPingPeriod ); 
+}
+
+void DisablePeriodicObstacleDetection()
 {
-  TC1 = TCNT + PING_UPDATE_DELAY_CLOCK_CYCLES; 
+   // Disable periodic ping interrupt
+   TIE_C1I = 0;
+}
+
+static void UpdatePingDelay( timerCount_t tcntDelayCycles )
+{
+  TC1 = TCNT + tcntDelayCycles;; 
 }
 
 inches_t DetectClosestObstacle()
@@ -127,7 +153,7 @@ static registerValue8_t DegreesToClockCycles( degree_t degrees )
   return clockCycles;
 }
 
-void CheckForObstacles()
+void PeriodicCheckForObstacles()
 {
    if ( DetectClosestObstacle() <= OBSTACLE_IS_NEAR_THRESHOLD )
    {
@@ -137,8 +163,9 @@ void CheckForObstacles()
 
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
 {
-   CheckForObstacles();
-   UpdatePingDelay();
+   PeriodicCheckForObstacles();
+   SetPingRotationalPosition( 0 );
+   UpdatePingDelay( PeriodicPingPeriod );
    TFLG1_C1F = 1;
 }
   

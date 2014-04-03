@@ -44,8 +44,4 @@ void InitializeTimers()
    
    // disable timer overflow interrupt; ch0 = simple modulus counter; clock prescale = 32
    TSCR2 = 0x05;                            
-   
-   // pull up or down device enabled
-   PERT |= 0x01;
-   PPST |= 0x01;
 }

@@ -1,3 +1,25 @@
-Remove all instances of gridUnit_t and replace with inches_t. Also make sure that inches_t is a 16 bit value.
+Make it so that everytime you DisableInterrupts and EnableInterrupts that you aren't enableing them if they weren't already enabled when you entered the function.
 
-Change all unsigned numbers to signed numbers.
+if ( interrupts are enabled )
+{
+   interruptsWereEnabled = 1;
+}
+DisableInterrupts
+
+BLAH BLAH BLAH
+
+if ( interruptsWereEnabled )
+{
+   EnableInterrupts;
+}
+
+
+
+
+Also tidy up all the modules to ensure that each function leaves the state of the machine how it left it except for the explicit reason that function was called.
+
+
+
+
+
+Code functions that outline use cases. ie. navigateToTarfget
