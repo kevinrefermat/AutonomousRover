@@ -7,13 +7,23 @@
 
 /*** Static Constant Definitions ***/
 
-static const pulseCount_t PULSES_PER_INCH = 12;
-static const pulseCount_t PULSES_PER_FOOT = 137;
-static const pulseCount_t PULSES_PER_FIVE_FEET = 712;
-static const pulseCount_t PULSES_PER_TWENTY_FIVE_FEET = 3560;
+static const pulseCount_t PulsesPerInch = 12;
+static const pulseCount_t PulsesPerFoot = 137;
+static const pulseCount_t PulsesPerFiveFeet = 712;
+static const pulseCount_t PulsesPerTwentyFiveFeet = 3560;
 
 static const pulseCount_t PULSES_PER_DEGREE_NUMERATOR = 100;
 static const pulseCount_t PULSES_PER_DEGREE_DENOMINATOR = 72;
+
+static const pulseCount_t MaxPower = 0xFF;
+
+/*** Static Variables ***/
+static timerCount_t TreadStabilizationTimerCounterOffset;
+static pulseCount_t NonPulseAccumulatorPulseCount = 0;
+static boolean_t lastPulseValue = 0;
+static boolean_t currentPulseValue = 0;
+static registerValue8_t LeftTreadPower = 0xFF;
+static registerValue8_t RightTreadPower = 0xFC;
 
 
 /*** Flags ***/
@@ -46,10 +56,47 @@ void InitializeMotorControlSystem()
 	
 	PWMCTL_CON23 = 0;
 	
-	SetLeftTreadDrivePower( 0xFF );
-	SetRightTreadDrivePower( 0xFA );
+	SetLeftTreadDrivePower( LeftTreadPower );
+	SetRightTreadDrivePower( RightTreadPower );
 	
 	StopMotion();
+}
+
+void EnableTreadStabilization()
+{
+   milliseconds_t period = 1000 / ( 4 * DC_MOTOR_ENCODER_FREQ );
+    
+    // set ioc2 to output compare
+   TIOS_IOS2 = 1;
+   
+   // disconnect timer from pin oc2
+   TCTL2_OL2 = 0;
+   TCTL2_OM2 = 0;
+ 
+   if ( period > MAX_PERIOD_OF_INTERRUPT_MS )
+   {
+      period = MAX_PERIOD_OF_INTERRUPT_MS;  
+   }
+ 
+   TreadStabilizationTimerCounterOffset = period * TIMER_COUNTER_TICKS_PER_MS;
+
+   SetTreadStabilizationTimer();   
+   
+   // Clear flag
+   TFLG1_C2F = 1;
+   
+   // enable interrupt caused by channel 2 for periodic tread stabilization check
+   TIE_C2I = 1;
+}
+
+void DisableTreadStabilization()
+{
+   TIE_C2I = 0;
+}
+
+static void SetTreadStabilizationTimer()
+{
+   TC2 = TCNT + TreadStabilizationTimerCounterOffset;  
 }
 
 static void SetLeftTreadDrivePower( registerValue8_t power )
@@ -205,9 +252,12 @@ static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt
 {
    // Write the negative number of encoder pulses to PACNT and enable PAOVI to interrupt when
 	PACNT = ~numberOfPulsesTillInterrupt + 1;
+	NonPulseAccumulatorPulseCount = ~numberOfPulsesTillInterrupt + 1;
 	
 	// Initialize pulse accumulator for encoders.
 	PACTL = 0x52;
+	
+	EnableTreadStabilization(); 
 }
 
 static pulseCount_t DistanceToPulses( inches_t distance ) 
@@ -220,10 +270,10 @@ static pulseCount_t DistanceToPulses( inches_t distance )
    feet = distance / 12;
    distance -= feet * 12;
    inches = distance;
-   twentyFiveFeet *= PULSES_PER_TWENTY_FIVE_FEET;
-   fiveFeet *= PULSES_PER_FIVE_FEET;
-   feet *= PULSES_PER_FOOT;
-   inches *= PULSES_PER_INCH;
+   twentyFiveFeet *= PulsesPerTwentyFiveFeet;
+   fiveFeet *= PulsesPerFiveFeet;
+   feet *= PulsesPerFoot;
+   inches *= PulsesPerInch;
 	return twentyFiveFeet + fiveFeet + feet + inches;
 }
 
@@ -258,5 +308,85 @@ static boolean_t ExecuteNextTurnByTurnInstruction()
 interrupt VectorNumber_Vtimpaovf void MotionCompleted()
 {
 	StopMotion();
+	DisableTreadStabilization();
 	ExecuteNextTurnByTurnInstruction();
+}
+
+interrupt VectorNumber_Vtimch2 void PeriodicTreadStabilization()
+{
+   pulseCount_t PulseAccumulatorPulseCount = PACNT;
+   
+   /*** TEST ***/
+   DDRB_BIT1 = 1;
+   PORTB_BIT1 = 0;
+   PORTB_BIT1 = 1;
+   PORTB_BIT1 = 0;
+   /*** END TEST ***/
+   
+   SetTreadStabilizationTimer();
+   
+   DDRB_BIT0 = 0;
+   currentPulseValue = PORTB_BIT0;
+   
+   // count pulses
+   if ( lastPulseValue == 0 && currentPulseValue == 1 )
+   {
+      NonPulseAccumulatorPulseCount++;
+      
+   }
+   
+   //adjust power every so many pulses
+   if ( PACNT % 10 == 0 )
+   {
+      if ( PulseAccumulatorPulseCount < NonPulseAccumulatorPulseCount )  // right tread needs to speed up
+      {
+         if ( RightTreadPower == MaxPower )
+         {
+            LeftTreadPower--;
+            DDRB_BIT5 = 1;
+            DDRB_BIT7 = 1;
+            PORTB_BIT5 = 0;
+            PORTB_BIT7 = 1;
+         }
+         else
+         {
+            if ( RightTreadPower + 3 <= MaxPower )
+            {
+               RightTreadPower += 3;  
+            }
+            else
+            {
+               RightTreadPower++;  
+            }
+         }         
+      }
+      else if ( PulseAccumulatorPulseCount > NonPulseAccumulatorPulseCount )  // left tread needs to speed up
+      {
+         if ( LeftTreadPower == MaxPower )
+         {
+            RightTreadPower--;
+            DDRB_BIT5 = 1;
+            DDRB_BIT7 = 1;
+            PORTB_BIT5 = 1;
+            PORTB_BIT7 = 0;  
+         }
+         else
+         {
+            if ( LeftTreadPower + 3 <= MaxPower )
+            {
+               LeftTreadPower += 3;  
+            }
+            else
+            {
+               LeftTreadPower++;  
+            }
+         }     
+      }
+      SetLeftTreadDrivePower( LeftTreadPower );
+      SetRightTreadDrivePower( RightTreadPower );
+   }
+   lastPulseValue = currentPulseValue;
+   
+   // Clear flag
+   TFLG1_C2F = 1;
 }

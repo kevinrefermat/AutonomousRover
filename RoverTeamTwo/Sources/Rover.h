@@ -62,10 +62,10 @@ extern const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY;
 
 /*** CONSTANTS ***/
 
-#define MAX_16_BIT_VALUE 0xFFFF
+#define MAX_16_BIT_VALUE 65535
 
 #define CLOCK_SPEED_HZ 2000000
-#define TIMER_COUNTER_PRESCALE 32
+#define TIMER_COUNTER_PRESCALE 128
 #define TIMER_COUNTER_TICKS_PER_S ( CLOCK_SPEED_HZ / TIMER_COUNTER_PRESCALE )
 #define TIMER_COUNTER_TICKS_PER_MS ( TIMER_COUNTER_TICKS_PER_S / 1000 )
 
@@ -74,12 +74,17 @@ extern const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY;
 #define SPEED_OF_SOUND_INCH_PER_SEC 13506
 #define CLOCK_TICKS_PER_INCH_OF_SOUND_TRAVEL ( CLOCK_SPEED_HZ / SPEED_OF_SOUND_INCH_PER_SEC )
 
+#define DC_MOTOR_ENCODER_FREQ 70
+
 extern const boolean_t False;
 extern const boolean_t True;
 
 /*** USEFUL FUNCTIONS ***/
 
 void Delay( microseconds_t time );
+
+void TurnOnErrorLight( void );
+void TurnOffErrorLight( void );
 
 
 // I don't like the CPU hogging delay function in delay() FIX IT

@@ -37,9 +37,6 @@ void InitializeObstacleAvoidanceSystem()
 
 void EnablePeriodicObstacleDetection( milliseconds_t period )
 {
-   // enable interrupt caused by channel 1 for periodic PING check
-   TIE_C1I = 1;
-   
    // set ic1 to output compare
    TIOS_IOS1 = 1;
    
@@ -48,10 +45,20 @@ void EnablePeriodicObstacleDetection( milliseconds_t period )
    TCTL2_OL1 = 0;
    TCTL2_OM1 = 0;
  
-   period = ( period <= MAX_PERIOD_OF_INTERRUPT_MS ) ? period : MAX_PERIOD_OF_INTERRUPT_MS;
+   if ( period > MAX_PERIOD_OF_INTERRUPT_MS )
+   {
+      period = MAX_PERIOD_OF_INTERRUPT_MS;  
+   }
+ 
    PingPeriodTimerCounterOffset = period * TIMER_COUNTER_TICKS_PER_MS;
 
-   SetPingTimer(); 
+   SetPingTimer();    
+   
+   // Clear flag
+   TFLG1_C1F = 1;
+   
+   // enable interrupt caused by channel 1 for periodic PING check
+   TIE_C1I = 1;
 }
 
 void DisablePeriodicObstacleDetection()
@@ -62,7 +69,7 @@ void DisablePeriodicObstacleDetection()
 
 static void SetPingTimer()
 {
-  TC1 = TCNT + PingPeriodTimerCounterOffset;
+   TC1 = TCNT + PingPeriodTimerCounterOffset;
 }
 
 inches_t DetectClosestObstacle()
@@ -72,15 +79,17 @@ inches_t DetectClosestObstacle()
    DisableInterrupts;
    
    OutputPulseToPing();
-   lengthOfEchoInClockCycles = MeasureReturnPulseFromPing() * TIMER_COUNTER_PRESCALE;
+   lengthOfEchoInClockCycles = MeasureReturnPulseFromPing();
+   lengthOfEchoInClockCycles *= TIMER_COUNTER_PRESCALE;
    
    EnableInterrupts;
+   
    return ( inches_t ) lengthOfEchoInClockCycles / CLOCK_TICKS_PER_INCH_OF_SOUND_TRAVEL / 2 ;
 }
 
 static void OutputPulseToPing()
 {
-// creates a 5us pulse?? I think it's actually 3.5us
+// creates a 5us pulse. It looks like it would make 3.5us pulse but it's actually 5us
     OBJECT_DETECTION_DDR = 1;
 
     OBJECT_DETECTION_PIN = 0;
@@ -142,15 +151,16 @@ void SetPingRotationalPosition( degree_t degrees )
    PWMPER0 = 167;
   
    degrees += 90;
-   clockCycles = ( ( degrees_t ) ( degrees * ( LookLeftPwmDuty - LookRightPwmDuty ) / 180 ) ) + LookRightPwmDuty;
+   clockCycles = ( ( degree_t ) ( degrees * ( LookLeftPwmDuty - LookRightPwmDuty ) / 180 ) ) + LookRightPwmDuty;
    PWMDTY0 = clockCycles;
   
    PWME_PWME0 = 1;
-   CurrentPingAngle = degrees;
+   CurrentPingAngle = degrees - 90;
 }
 
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
 {
+   SetPingTimer();
    if ( CurrentPingAngle != 0 )
    {
       SetPingRotationalPosition( 0 );
@@ -161,7 +171,6 @@ interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
       /*********** IMPLEMENT MORE ELEGANT SOLUTION **************/
       StopMotion();
    }
-   SetPingTimer();
    
    // Clear flag
    TFLG1_C1F = 1;

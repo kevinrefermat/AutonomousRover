@@ -21,8 +21,8 @@ boolean_t GetRoverInMotionFlag( void );
 
 /*** Static Function Prototypes ***/
 
-static void SetLeftTreadDrivePower( Byte power );
-static void SetRightTreadDrivePower( Byte power );
+static void SetLeftTreadDrivePower( registerValue8_t power );
+static void SetRightTreadDrivePower( registerValue8_t power );
 
 static void EnableTreads( void );
 static void DisableTreads( void );
@@ -34,6 +34,10 @@ static void RightTreadForward( void );
 static void RightTreadReverse( void );   
 
 static void BrakeTreads( void );
+
+void EnableTreadStabilization( void );
+static void SetTreadStabilizationTimer( void );
+
 
 static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt );
 static pulseCount_t DistanceToPulses( inches_t distance );
@@ -49,5 +53,6 @@ static void ClearRoverInMotionFlag( void );
 
 interrupt VectorNumber_Vtimpaovf void MotionCompleted( void );
 
+interrupt VectorNumber_Vtimch2 void PeriodicTreadStabilization( void );
 
 #endif

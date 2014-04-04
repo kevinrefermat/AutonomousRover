@@ -32,16 +32,18 @@ void Delay( microseconds_t time )
 
 void InitializeTimers()
 {
-   Byte offset = 0;
+   registerValue8_t offset, timerCounterPrescale;
+   offset = 0;
 
    // enable timer and disable fast flag clear
    TSCR1 = 0x80;
    
    // disable timer overflow interrupt; ch0 = simple modulus counter; clock prescale = 1 and is last 3 bits
-   TSCR2 = 0x00;                            
+   TSCR2 = 0x00;
+                               
+   timerCounterPrescale = TIMER_COUNTER_PRESCALE;
    
-   // CODE ERROR CONDITION; POSSIBLY LEAVE ONE LED ON CHIP ENABLED FOR PORTB
-   switch ( TIMER_COUNTER_PRESCALE )
+   switch ( timerCounterPrescale )
    {
       case 1: 
          break;
@@ -66,6 +68,25 @@ void InitializeTimers()
       case 128: 
          offset = 0x07;
          break;
+      default:
+         TurnOnErrorLight();
+         break;
    }
    TSCR2 += offset;
+}
+
+void TurnOnErrorLight()
+{
+   DDRB_BIT7 = 1;
+   PORTB_BIT7 = 0;
+   _asm
+   {
+      swi
+   }
+}
+
+void TurnOffErrorLight()
+{
+   DDRB_BIT7 = 1;
+   PORTB_BIT7 = 1;
 }

@@ -9,16 +9,20 @@
 
 void main( void )
 {  
-   
+   TurnOffErrorLight();
    InitializeTimers();
    
    InitializeMotorControlSystem();
-   //InitializeObstacleAvoidanceSystem();
+   0();
+   //EnablePeriodicObstacleDetection( 300 );
+
    
+
    MoveForward( 1200 );
    
    //MoveForward( 60 ); 
    //Rotate( 90 ); 
+   for(;;);
 
 
    InitializeNavigationSystem();
