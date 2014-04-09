@@ -31,7 +31,7 @@ _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
   _Range   pZeroOut       0x500     248
-  _Copy    *toCopyDownBeg 0xC70E
+  _Copy    *toCopyDownBeg 0xC70B
 } _startupData;
 
 *********************************************************************************************
@@ -41,8 +41,8 @@ Section Name                    Size  Type     From       To       Segment
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
 .rodata                            6     R     0xC03B     0xC040   ROM_C000
-.text                           1512     R     0xC041     0xC628   ROM_C000
-.copy                              9     R     0xC70E     0xC716   ROM_C000
+.text                           1509     R     0xC041     0xC625   ROM_C000
+.copy                              9     R     0xC70B     0xC713   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
 .data                              3   R/W      0x500      0x502   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
@@ -270,11 +270,11 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_ffea                  2     R     0xFFEA     0xFFEB   .absSeg222
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg223
 .bss                             245   R/W      0x503      0x5F7   RAM
-RUNTIME                          229     R     0xC629     0xC70D   ROM_C000
+RUNTIME                          229     R     0xC626     0xC70A   ROM_C000
 .vectSeg224_vect                   2     R     0xFFFE     0xFFFF   .vectSeg224
 
 Summary of section sizes per section type:
-READ_ONLY (R):         71F (dec:     1823)
+READ_ONLY (R):         71C (dec:     1820)
 READ_WRITE (R/W):      1F8 (dec:      504)
 NO_INIT (N/I):         104 (dec:      260)
 
@@ -474,7 +474,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
      _PORTAB                                      0       2       2      23   .abs_section_0
-     _DDRAB                                       2       2       2      12   .abs_section_2
+     _DDRAB                                       2       2       2      14   .abs_section_2
      _PARTID                                     1A       2       2       0   .abs_section_1a
      _DBGTB                                      22       2       2       0   .abs_section_22
      _DBGCC                                      26       2       2       0   .abs_section_26
@@ -522,10 +522,10 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           500       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LINC                                     C629       5       5       1   RUNTIME     
-     _lDivMod                                  C62E      BE     190       1   RUNTIME     
-     _LDIVU                                    C6EC       E      14       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        C6FA      14      20       1   RUNTIME     
+     _LINC                                     C626       5       5       1   RUNTIME     
+     _lDivMod                                  C62B      BE     190       1   RUNTIME     
+     _LDIVU                                    C6E9       E      14       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        C6F7      14      20       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
@@ -596,28 +596,28 @@ MODULE:                 -- NavigationSystem.c.o --
      RamTurnByTurnQueue                         50E      E2     226       5   .bss        
 MODULE:                 -- Compass.c.o --
 - PROCEDURES:
-     writeByteToCompass                        C41E      28      40      11   .text       
-     InitializeCompass                         C446      73     115       1   .text       
-     readByteFromCompass                       C4B9       C      12       6   .text       
-     GetDataFromCompass                        C4C5      59      89       1   .text       
+     writeByteToCompass                        C41E      28      40      10   .text       
+     InitializeCompass                         C446      6E     110       1   .text       
+     readByteFromCompass                       C4B4       C      12       6   .text       
+     GetDataFromCompass                        C4C0      59      89       1   .text       
 - VARIABLES:
      rawXData                                   5F0       2       2       2   .bss        
      rawYData                                   5F2       2       2       2   .bss        
      rawZData                                   5F4       2       2       2   .bss        
 MODULE:                 -- I2C.c.o --
 - PROCEDURES:
-     i2cDelay                                  C51E       E      14      12   .text       
-     readSCL                                   C52C      11      17       1   .text       
-     readSDA                                   C53D      12      18       6   .text       
-     clearSCL                                  C54F       7       7       3   .text       
-     clearSDA                                  C556       7       7       3   .text       
-     readSCL_AllowClockStretching              C55D      19      25       5   .text       
-     i2cStartCond                              C576      20      32       1   .text       
-     i2cStopCond                               C596      14      20       2   .text       
-     i2cWriteBit                               C5AA      13      19       2   .text       
-     i2cReadBit                                C5BD      17      23       2   .text       
-     I2CWriteByte                              C5D4      2D      45       1   .text       
-     I2CReadByte                               C601      28      40       1   .text       
+     i2cDelay                                  C519       E      14      12   .text       
+     readSCL                                   C527      11      17       1   .text       
+     readSDA                                   C538      12      18       6   .text       
+     clearSCL                                  C54A       7       7       3   .text       
+     clearSDA                                  C551       7       7       3   .text       
+     readSCL_AllowClockStretching              C558      19      25       5   .text       
+     i2cStartCond                              C571      20      32       1   .text       
+     i2cStopCond                               C591      14      20       2   .text       
+     i2cWriteBit                               C5A5      13      19       2   .text       
+     i2cReadBit                                C5B8      17      23       2   .text       
+     I2CWriteByte                              C5CF      2D      45       1   .text       
+     I2CReadByte                               C5FC      2A      42       1   .text       
 - VARIABLES:
      TimeOutTime                                502       1       1       1   .data       
      started                                    5F6       1       1       3   .bss        
@@ -635,8 +635,8 @@ MODULE STATISTIC
   ObstacleAvoidanceSystem.c.o                  4    216      2
   main.c.o                                     0     13      0
   NavigationSystem.c.o                       226     31      0
-  Compass.c.o                                  6    256      0
-  I2C.c.o                                      3    267      0
+  Compass.c.o                                  6    251      0
+  I2C.c.o                                      3    269      0
   other                                      256     12      9
 
 *********************************************************************************************
@@ -1124,7 +1124,7 @@ OBJECT LIST SORTED BY ADDRESS
      Name                                      Addr   hSize   dSize     Ref    Section   RLIB
 ---------------------------------------------------------------------------------------------
      _PORTAB                                      0       2       2      23   .abs_section_0
-     _DDRAB                                       2       2       2      12   .abs_section_2
+     _DDRAB                                       2       2       2      14   .abs_section_2
      _PORTE                                       8       1       1       0   .abs_section_8
      _DDRE                                        9       1       1       0   .abs_section_9
      _PEAR                                        A       1       1       0   .abs_section_a
@@ -1401,26 +1401,26 @@ OBJECT LIST SORTED BY ADDRESS
      main                                      C3F2       D      13       1   .text       
      GetNextTurnByTurnElement                  C3FF      12      18       1   .text       
      HasNextTurnByTurnElement                  C411       D      13       1   .text       
-     writeByteToCompass                        C41E      28      40      11   .text       
-     InitializeCompass                         C446      73     115       1   .text       
-     readByteFromCompass                       C4B9       C      12       6   .text       
-     GetDataFromCompass                        C4C5      59      89       1   .text       
-     i2cDelay                                  C51E       E      14      12   .text       
-     readSCL                                   C52C      11      17       1   .text       
-     readSDA                                   C53D      12      18       6   .text       
-     clearSCL                                  C54F       7       7       3   .text       
-     clearSDA                                  C556       7       7       3   .text       
-     readSCL_AllowClockStretching              C55D      19      25       5   .text       
-     i2cStartCond                              C576      20      32       1   .text       
-     i2cStopCond                               C596      14      20       2   .text       
-     i2cWriteBit                               C5AA      13      19       2   .text       
-     i2cReadBit                                C5BD      17      23       2   .text       
-     I2CWriteByte                              C5D4      2D      45       1   .text       
-     I2CReadByte                               C601      28      40       1   .text       
-     _LINC                                     C629       5       5       1   RUNTIME     
-     _lDivMod                                  C62E      BE     190       1   RUNTIME     
-     _LDIVU                                    C6EC       E      14       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        C6FA      14      20       1   RUNTIME     
+     writeByteToCompass                        C41E      28      40      10   .text       
+     InitializeCompass                         C446      6E     110       1   .text       
+     readByteFromCompass                       C4B4       C      12       6   .text       
+     GetDataFromCompass                        C4C0      59      89       1   .text       
+     i2cDelay                                  C519       E      14      12   .text       
+     readSCL                                   C527      11      17       1   .text       
+     readSDA                                   C538      12      18       6   .text       
+     clearSCL                                  C54A       7       7       3   .text       
+     clearSDA                                  C551       7       7       3   .text       
+     readSCL_AllowClockStretching              C558      19      25       5   .text       
+     i2cStartCond                              C571      20      32       1   .text       
+     i2cStopCond                               C591      14      20       2   .text       
+     i2cWriteBit                               C5A5      13      19       2   .text       
+     i2cReadBit                                C5B8      17      23       2   .text       
+     I2CWriteByte                              C5CF      2D      45       1   .text       
+     I2CReadByte                               C5FC      2A      42       1   .text       
+     _LINC                                     C626       5       5       1   RUNTIME     
+     _lDivMod                                  C62B      BE     190       1   RUNTIME     
+     _LDIVU                                    C6E9       E      14       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        C6F7      14      20       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_10                                FFEA       2       2       0   .abs_section_ffea
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
@@ -1473,19 +1473,19 @@ Compass.c.o:
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC70E ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xC70B ---- SIZE       4 ---
 Filling bytes inserted
  00030500
-------- ROM-ADDRESS: 0xC712 ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xC70F ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
 Name of initialized Object : LeftTreadPower
  FF
-------- ROM-ADDRESS: 0xC713 ---- RAM-ADDRESS: 0x501 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xC710 ---- RAM-ADDRESS: 0x501 ---- SIZE       1 ---
 Name of initialized Object : RightTreadPower
  FF
-------- ROM-ADDRESS: 0xC714 ---- RAM-ADDRESS: 0x502 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xC711 ---- RAM-ADDRESS: 0x502 ---- SIZE       1 ---
 Name of initialized Object : TimeOutTime
  64
-------- ROM-ADDRESS: 0xC715 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC712 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1551,8 +1551,8 @@ HasNextTurnByTurnElement  USES RamTurnByTurnQueue
 writeByteToCompass        USES TurnOnErrorLight I2CWriteByte 
 InitializeCompass         USES writeByteToCompass False True 
 readByteFromCompass       USES I2CReadByte 
-GetDataFromCompass        USES writeByteToCompass False readByteFromCompass 
-                                rawXData rawZData rawYData True 
+GetDataFromCompass        USES writeByteToCompass readByteFromCompass rawXData 
+                                rawZData rawYData False True 
 readSCL                   USES _DDRAB _PORTAB 
 readSDA                   USES _DDRAB _PORTAB 
 clearSCL                  USES _DDRAB _PORTAB 
@@ -1567,7 +1567,7 @@ i2cWriteBit               USES readSDA clearSDA i2cDelay
 i2cReadBit                USES readSDA i2cDelay readSCL_AllowClockStretching 
                                 clearSCL 
 I2CWriteByte              USES i2cStartCond i2cWriteBit i2cReadBit i2cStopCond 
-I2CReadByte               USES i2cReadBit i2cWriteBit i2cStopCond 
+I2CReadByte               USES i2cReadBit i2cStopCond i2cWriteBit 
 _LDIVU                    USES _lDivMod 
 _Vector_17                USES MotionCompleted 
 _Vector_10                USES PeriodicTreadStabilization 
@@ -1648,9 +1648,9 @@ DEPENDENCY TREE
  |           | 
  |           +- i2cReadBit           (see above)
  |           |  
- |           +- i2cWriteBit          (see above)
- |           |  
  |           +- i2cStopCond          (see above)
+ |           |  
+ |           +- i2cWriteBit          (see above)
  |              
  +- _Startup            
     | 
@@ -1782,6 +1782,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 1823
+Number of blocks to be downloaded: 10
+Total size of all blocks to be downloaded: 1820
 

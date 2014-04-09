@@ -11,6 +11,7 @@
 static boolean_t started = 0;
 static Byte timer = 0;
 static Byte TimeOutTime = 100;
+                              
 
 void i2cDelay()
 { 
@@ -24,38 +25,33 @@ void i2cDelay()
 
 boolean_t readSCL() // Set SCL as input and return current level of line, 0 or 1
 {
-   DDR_SCL = 0;
+   boolean_t value;
    _asm
    {
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
+      LDAA  DDRB
+      ANDA  #$FE   // set DDR_SCL to input
+      STAA  DDRB 
+      LDAA  PORTB 
+      ANDA  #$01
+      STAA  value
    }
-   return SCL;
+   return value;
 }
 
 boolean_t readSDA() // Set SDA as input and return current level of line, 0 or 1
 {
-   DDR_SDA = 0;
+   boolean_t value;
    _asm
    {
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
+      LDAA  DDRB
+      ANDA  #$FD  // set DDR_SDA to input
+      STAA  DDRB 
+      LDAA  PORTB 
+      ANDA  #$2
+      LSRA
+      STAA  value
    }
-   return SDA;
+   return value;
 }
 
 void clearSCL() // Actively drive SCL signal low
@@ -191,10 +187,14 @@ Byte I2CReadByte( boolean_t nack, boolean_t sendStop )
    {
       byte = ( byte << 1 ) | i2cReadBit();
    }
-   i2cWriteBit( nack );
+   
    if ( sendStop )
    {
       i2cStopCond();
+   }
+   else
+   {
+      i2cWriteBit( nack );
    }
    return byte;
 }

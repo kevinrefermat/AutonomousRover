@@ -15,6 +15,7 @@
 #define DDR_SDA DDRB_BIT1
 #define SDA PORTB_BIT1
 
+
 void arbitrationLost( void );
 void i2CDelay( void );
 boolean_t readSCL( void );   // Set SCL as input and return current level of line, 0 or 1

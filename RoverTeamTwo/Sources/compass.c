@@ -2,9 +2,9 @@
 #include "Rover.h"
 #include "Compass.h"
 
-static const Byte SettingsCRA = 0x70;
-static const Byte SettingsCRB = 0xA0;
-static const Byte SettingsMode = 0x00;
+static const Byte SettingsCRA = 0x70; // 0x10 default
+static const Byte SettingsCRB = 0x00; // 0x20 default
+static const Byte SettingsMode = 0x00; // 0x00 default
 
 static const Byte AddressCRA = 0x00;
 static const Byte AddressCRB = 0x01;
@@ -50,6 +50,7 @@ boolean_t InitializeCompass()
    if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
    if ( writeByteToCompass( 0, 0, AddressMode ) == NACK ) return False;
    if ( writeByteToCompass( 0, 1, SettingsMode ) == NACK ) return False;
+   
    return True;
 }
 
@@ -61,14 +62,7 @@ Byte readByteFromCompass( boolean_t sendStop )
 // returns 1 on success and 0 on failure
 boolean_t GetDataFromCompass()
 {
-   // Make sure register pointer is at first register by writing nothing to it
-   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
-   if ( writeByteToCompass( 0, 1, 0x03 ) == NACK ) return False;
-   
-   //
    if ( writeByteToCompass( 1, 0, SlaveRead ) == NACK ) return False;
-   
-   
    
    rawXData.bytes.upper = readByteFromCompass( 0 );
    rawXData.bytes.lower = readByteFromCompass( 0 );
@@ -76,5 +70,10 @@ boolean_t GetDataFromCompass()
    rawZData.bytes.lower = readByteFromCompass( 0 );
    rawYData.bytes.upper = readByteFromCompass( 0 );
    rawYData.bytes.lower = readByteFromCompass( 1 );
+   
+   // Make sure register pointer is at first register by writing nothing to it
+   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
+   if ( writeByteToCompass( 0, 1, 0x03 ) == NACK ) return False;
+   
    return True;
 }
