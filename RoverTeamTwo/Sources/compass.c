@@ -13,14 +13,13 @@ static const Byte AddressMode = 0x02;
 static const Byte SlaveWrite = 0x3C;
 static const Byte SlaveRead = 0x3D;
 
+static const boolean_t NACK = 1;
+
 static const Byte MaxNumberOfFailedAttempts = 10;
 
-static Byte rawXLData;
-static Byte rawYLData;
-static Byte rawZLData;
-static Byte rawXUData;
-static Byte rawYUData;
-static Byte rawZUData;
+static fullCompassRegister_t rawXData;
+static fullCompassRegister_t rawYData;
+static fullCompassRegister_t rawZData;
 
 
 boolean_t writeByteToCompass( boolean_t sendStart, boolean_t sendStop, Byte data )
@@ -40,17 +39,17 @@ boolean_t writeByteToCompass( boolean_t sendStart, boolean_t sendStop, Byte data
 
 boolean_t InitializeCompass()
 {
-   if ( !writeByteToCompass( 1, 0, SlaveWrite ) ) return False;
-   if ( !writeByteToCompass( 0, 0, AddressCRA ) ) return False;
-   if ( !writeByteToCompass( 0, 1, SettingsCRA ) ) return False;
+   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
+   if ( writeByteToCompass( 0, 0, AddressCRA ) == NACK ) return False;
+   if ( writeByteToCompass( 0, 1, SettingsCRA ) == NACK ) return False;
    
-   if ( !writeByteToCompass( 1, 0, SlaveWrite ) ) return False;
-   if ( !writeByteToCompass( 0, 0, AddressCRB ) ) return False;
-   if ( !writeByteToCompass( 0, 1, SettingsCRB ) ) return False;
+   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
+   if ( writeByteToCompass( 0, 0, AddressCRB ) == NACK ) return False;
+   if ( writeByteToCompass( 0, 1, SettingsCRB ) == NACK ) return False;
    
-   if ( !writeByteToCompass( 1, 0, SlaveWrite ) ) return False;
-   if ( !writeByteToCompass( 0, 0, AddressMode ) ) return False;
-   if ( !writeByteToCompass( 0, 1, SettingsMode ) ) return False;
+   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
+   if ( writeByteToCompass( 0, 0, AddressMode ) == NACK ) return False;
+   if ( writeByteToCompass( 0, 1, SettingsMode ) == NACK ) return False;
    return True;
 }
 
@@ -63,16 +62,19 @@ Byte readByteFromCompass( boolean_t sendStop )
 boolean_t GetDataFromCompass()
 {
    // Make sure register pointer is at first register by writing nothing to it
-   if ( writeByteToCompass( 1, 0, SlaveWrite ) == 1 ) return False;
-   if ( writeByteToCompass( 0, 1, 0x03 ) == 1 ) return False;
+   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
+   if ( writeByteToCompass( 0, 1, 0x03 ) == NACK ) return False;
    
    //
-   if ( writeByteToCompass( 1, 0, SlaveRead ) == 1 ) return False;
-   rawXUData = readByteFromCompass( 0 );
-   rawXLData = readByteFromCompass( 0 );
-   rawZUData = readByteFromCompass( 0 );
-   rawZLData = readByteFromCompass( 0 );
-   rawYUData = readByteFromCompass( 0 );
-   rawYLData = readByteFromCompass( 1 );
+   if ( writeByteToCompass( 1, 0, SlaveRead ) == NACK ) return False;
+   
+   
+   
+   rawXData.bytes.upper = readByteFromCompass( 0 );
+   rawXData.bytes.lower = readByteFromCompass( 0 );
+   rawZData.bytes.upper = readByteFromCompass( 0 );
+   rawZData.bytes.lower = readByteFromCompass( 0 );
+   rawYData.bytes.upper = readByteFromCompass( 0 );
+   rawYData.bytes.lower = readByteFromCompass( 1 );
    return True;
 }

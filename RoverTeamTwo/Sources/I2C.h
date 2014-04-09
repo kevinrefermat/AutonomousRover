@@ -9,7 +9,7 @@
 
 // Hardware-specific support functions that MUST be customized:
 
-#define I2CSPEED 4
+#define I2CSPEED 100
 #define DDR_SCL DDRB_BIT0
 #define SCL PORTB_BIT0
 #define DDR_SDA DDRB_BIT1

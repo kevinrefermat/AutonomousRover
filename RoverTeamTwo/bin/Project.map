@@ -30,8 +30,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x500     246
-  _Copy    *toCopyDownBeg 0xC73A
+  _Range   pZeroOut       0x500     248
+  _Copy    *toCopyDownBeg 0xC70E
 } _startupData;
 
 *********************************************************************************************
@@ -41,10 +41,10 @@ Section Name                    Size  Type     From       To       Segment
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
 .rodata                            6     R     0xC03B     0xC040   ROM_C000
-.text                           1556     R     0xC041     0xC654   ROM_C000
-.copy                              8     R     0xC73A     0xC741   ROM_C000
+.text                           1512     R     0xC041     0xC628   ROM_C000
+.copy                              9     R     0xC70E     0xC716   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
-.data                              2   R/W      0x500      0x501   RAM
+.data                              3   R/W      0x500      0x502   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -269,13 +269,13 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
 .abs_section_ffea                  2     R     0xFFEA     0xFFEB   .absSeg222
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg223
-.bss                             244   R/W      0x502      0x5F5   RAM
-RUNTIME                          229     R     0xC655     0xC739   ROM_C000
+.bss                             245   R/W      0x503      0x5F7   RAM
+RUNTIME                          229     R     0xC629     0xC70D   ROM_C000
 .vectSeg224_vect                   2     R     0xFFFE     0xFFFF   .vectSeg224
 
 Summary of section sizes per section type:
-READ_ONLY (R):         74A (dec:     1866)
-READ_WRITE (R/W):      1F6 (dec:      502)
+READ_ONLY (R):         71F (dec:     1823)
+READ_WRITE (R/W):      1F8 (dec:      504)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -522,19 +522,19 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           500       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LINC                                     C655       5       5       1   RUNTIME     
-     _lDivMod                                  C65A      BE     190       1   RUNTIME     
-     _LDIVU                                    C718       E      14       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        C726      14      20       1   RUNTIME     
+     _LINC                                     C629       5       5       1   RUNTIME     
+     _lDivMod                                  C62E      BE     190       1   RUNTIME     
+     _LDIVU                                    C6EC       E      14       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        C6FA      14      20       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
      Delay                                     C041      3C      60       2   .text       
-     TurnOnErrorLight                          C07D       7       7       6   .text       
+     TurnOnErrorLight                          C07D       7       7       2   .text       
      TurnOffErrorLight                         C084       7       7       1   .text       
 - VARIABLES:
-     False                                     C03B       1       1       6   .rodata     
-     True                                      C03C       1       1       7   .rodata     
+     False                                     C03B       1       1       5   .rodata     
+     True                                      C03C       1       1       5   .rodata     
      WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C03D       4       4       2   .rodata     
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
@@ -565,11 +565,11 @@ MODULE:                 -- MotorControlSystem.c.o --
 - VARIABLES:
      LeftTreadPower                             500       1       1       6   .data       
      RightTreadPower                            501       1       1       6   .data       
-     NonPulseAccumulatorPulseCount              502       2       2       4   .bss        
-     lastPulseValue                             504       1       1       2   .bss        
-     currentPulseValue                          505       1       1       2   .bss        
-     RoverInMotionFlag                          506       1       1       2   .bss        
-     TreadStabilizationTimerCounterOffset        507       2       2       2   .bss        
+     NonPulseAccumulatorPulseCount              503       2       2       4   .bss        
+     lastPulseValue                             505       1       1       2   .bss        
+     currentPulseValue                          506       1       1       2   .bss        
+     RoverInMotionFlag                          507       1       1       2   .bss        
+     TreadStabilizationTimerCounterOffset        508       2       2       2   .bss        
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_10                                FFEA       2       2       0   .abs_section_ffea
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
@@ -581,8 +581,8 @@ MODULE:                 -- ObstacleAvoidanceSystem.c.o --
      SetPingRotationalPosition                 C396      38      56       1   .text       
      PeriodicCheckForObstacles                 C3CE      24      36       1   .text       
 - VARIABLES:
-     PingPeriodTimerCounterOffset               509       2       2       1   .bss        
-     CurrentPingAngle                           50B       2       2       2   .bss        
+     PingPeriodTimerCounterOffset               50A       2       2       1   .bss        
+     CurrentPingAngle                           50C       2       2       2   .bss        
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 MODULE:                 -- main.c.o --
 - PROCEDURES:
@@ -593,36 +593,35 @@ MODULE:                 -- NavigationSystem.c.o --
      GetNextTurnByTurnElement                  C3FF      12      18       1   .text       
      HasNextTurnByTurnElement                  C411       D      13       1   .text       
 - VARIABLES:
-     RamTurnByTurnQueue                         50D      E2     226       5   .bss        
+     RamTurnByTurnQueue                         50E      E2     226       5   .bss        
 MODULE:                 -- Compass.c.o --
 - PROCEDURES:
-     writeByteToCompass                        C41E      2B      43      11   .text       
-     InitializeCompass                         C449      75     117       1   .text       
-     readByteFromCompass                       C4BE       E      14       6   .text       
-     GetDataFromCompass                        C4CC      59      89       1   .text       
+     writeByteToCompass                        C41E      28      40      11   .text       
+     InitializeCompass                         C446      73     115       1   .text       
+     readByteFromCompass                       C4B9       C      12       6   .text       
+     GetDataFromCompass                        C4C5      59      89       1   .text       
 - VARIABLES:
-     rawXLData                                  5EF       1       1       1   .bss        
-     rawYLData                                  5F0       1       1       1   .bss        
-     rawZLData                                  5F1       1       1       1   .bss        
-     rawXUData                                  5F2       1       1       1   .bss        
-     rawYUData                                  5F3       1       1       1   .bss        
-     rawZUData                                  5F4       1       1       1   .bss        
+     rawXData                                   5F0       2       2       2   .bss        
+     rawYData                                   5F2       2       2       2   .bss        
+     rawZData                                   5F4       2       2       2   .bss        
 MODULE:                 -- I2C.c.o --
 - PROCEDURES:
-     arbitrationLost                           C525       3       3       3   .text       
-     i2cDelay                                  C528       E      14      10   .text       
-     readSCL                                   C536      12      18       4   .text       
-     readSDA                                   C548      13      19       7   .text       
-     clearSCL                                  C55B       7       7       3   .text       
-     clearSDA                                  C562       7       7       3   .text       
-     i2cStartCond                              C569      29      41       1   .text       
-     i2cStopCond                               C592      22      34       2   .text       
-     i2cWriteBit                               C5B4      2C      44       2   .text       
-     i2cReadBit                                C5E0      1D      29       2   .text       
-     I2CWriteByte                              C5FD      2F      47       1   .text       
-     I2CReadByte                               C62C      29      41       1   .text       
+     i2cDelay                                  C51E       E      14      12   .text       
+     readSCL                                   C52C      11      17       1   .text       
+     readSDA                                   C53D      12      18       6   .text       
+     clearSCL                                  C54F       7       7       3   .text       
+     clearSDA                                  C556       7       7       3   .text       
+     readSCL_AllowClockStretching              C55D      19      25       5   .text       
+     i2cStartCond                              C576      20      32       1   .text       
+     i2cStopCond                               C596      14      20       2   .text       
+     i2cWriteBit                               C5AA      13      19       2   .text       
+     i2cReadBit                                C5BD      17      23       2   .text       
+     I2CWriteByte                              C5D4      2D      45       1   .text       
+     I2CReadByte                               C601      28      40       1   .text       
 - VARIABLES:
-     started                                    5F5       1       1       3   .bss        
+     TimeOutTime                                502       1       1       1   .data       
+     started                                    5F6       1       1       3   .bss        
+     timer                                      5F7       1       1       3   .bss        
 
 *********************************************************************************************
 MODULE STATISTIC
@@ -636,9 +635,9 @@ MODULE STATISTIC
   ObstacleAvoidanceSystem.c.o                  4    216      2
   main.c.o                                     0     13      0
   NavigationSystem.c.o                       226     31      0
-  Compass.c.o                                  6    263      0
-  I2C.c.o                                      1    304      0
-  other                                      256     12      8
+  Compass.c.o                                  6    256      0
+  I2C.c.o                                      3    267      0
+  other                                      256     12      9
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
@@ -655,16 +654,16 @@ SECTION: ".text"
   MeasureReturnPulseFromPing SetPingRotationalPosition 
   PeriodicCheckForObstacles main GetNextTurnByTurnElement 
   HasNextTurnByTurnElement writeByteToCompass InitializeCompass 
-  readByteFromCompass GetDataFromCompass arbitrationLost i2cDelay readSCL 
-  readSDA clearSCL clearSDA i2cStartCond i2cStopCond i2cWriteBit i2cReadBit 
-  I2CWriteByte I2CReadByte 
+  readByteFromCompass GetDataFromCompass i2cDelay readSCL readSDA clearSCL 
+  clearSDA readSCL_AllowClockStretching i2cStartCond i2cStopCond i2cWriteBit 
+  i2cReadBit I2CWriteByte I2CReadByte 
 SECTION: ".data"
-  LeftTreadPower RightTreadPower 
+  LeftTreadPower RightTreadPower TimeOutTime 
 SECTION: ".bss"
   NonPulseAccumulatorPulseCount lastPulseValue currentPulseValue 
   RoverInMotionFlag TreadStabilizationTimerCounterOffset 
-  PingPeriodTimerCounterOffset CurrentPingAngle RamTurnByTurnQueue rawXLData 
-  rawYLData rawZLData rawXUData rawYUData rawZUData started 
+  PingPeriodTimerCounterOffset CurrentPingAngle RamTurnByTurnQueue rawXData 
+  rawYData rawZData started timer 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata"
@@ -1347,28 +1346,27 @@ OBJECT LIST SORTED BY ADDRESS
      _PPSAD                                     275       1       1       0   .abs_section_275
      LeftTreadPower                             500       1       1       6   .data       
      RightTreadPower                            501       1       1       6   .data       
-     NonPulseAccumulatorPulseCount              502       2       2       4   .bss        
-     lastPulseValue                             504       1       1       2   .bss        
-     currentPulseValue                          505       1       1       2   .bss        
-     RoverInMotionFlag                          506       1       1       2   .bss        
-     TreadStabilizationTimerCounterOffset        507       2       2       2   .bss        
-     PingPeriodTimerCounterOffset               509       2       2       1   .bss        
-     CurrentPingAngle                           50B       2       2       2   .bss        
-     RamTurnByTurnQueue                         50D      E2     226       5   .bss        
-     rawXLData                                  5EF       1       1       1   .bss        
-     rawYLData                                  5F0       1       1       1   .bss        
-     rawZLData                                  5F1       1       1       1   .bss        
-     rawXUData                                  5F2       1       1       1   .bss        
-     rawYUData                                  5F3       1       1       1   .bss        
-     rawZUData                                  5F4       1       1       1   .bss        
-     started                                    5F5       1       1       3   .bss        
+     TimeOutTime                                502       1       1       1   .data       
+     NonPulseAccumulatorPulseCount              503       2       2       4   .bss        
+     lastPulseValue                             505       1       1       2   .bss        
+     currentPulseValue                          506       1       1       2   .bss        
+     RoverInMotionFlag                          507       1       1       2   .bss        
+     TreadStabilizationTimerCounterOffset        508       2       2       2   .bss        
+     PingPeriodTimerCounterOffset               50A       2       2       1   .bss        
+     CurrentPingAngle                           50C       2       2       2   .bss        
+     RamTurnByTurnQueue                         50E      E2     226       5   .bss        
+     rawXData                                   5F0       2       2       2   .bss        
+     rawYData                                   5F2       2       2       2   .bss        
+     rawZData                                   5F4       2       2       2   .bss        
+     started                                    5F6       1       1       3   .bss        
+     timer                                      5F7       1       1       3   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     False                                     C03B       1       1       6   .rodata     
-     True                                      C03C       1       1       7   .rodata     
+     False                                     C03B       1       1       5   .rodata     
+     True                                      C03C       1       1       5   .rodata     
      WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY       C03D       4       4       2   .rodata     
      Delay                                     C041      3C      60       2   .text       
-     TurnOnErrorLight                          C07D       7       7       6   .text       
+     TurnOnErrorLight                          C07D       7       7       2   .text       
      TurnOffErrorLight                         C084       7       7       1   .text       
      EnableTreadStabilization                  C08B      19      25       1   .text       
      DisableTreadStabilization                 C0A4       4       4       1   .text       
@@ -1403,26 +1401,26 @@ OBJECT LIST SORTED BY ADDRESS
      main                                      C3F2       D      13       1   .text       
      GetNextTurnByTurnElement                  C3FF      12      18       1   .text       
      HasNextTurnByTurnElement                  C411       D      13       1   .text       
-     writeByteToCompass                        C41E      2B      43      11   .text       
-     InitializeCompass                         C449      75     117       1   .text       
-     readByteFromCompass                       C4BE       E      14       6   .text       
-     GetDataFromCompass                        C4CC      59      89       1   .text       
-     arbitrationLost                           C525       3       3       3   .text       
-     i2cDelay                                  C528       E      14      10   .text       
-     readSCL                                   C536      12      18       4   .text       
-     readSDA                                   C548      13      19       7   .text       
-     clearSCL                                  C55B       7       7       3   .text       
-     clearSDA                                  C562       7       7       3   .text       
-     i2cStartCond                              C569      29      41       1   .text       
-     i2cStopCond                               C592      22      34       2   .text       
-     i2cWriteBit                               C5B4      2C      44       2   .text       
-     i2cReadBit                                C5E0      1D      29       2   .text       
-     I2CWriteByte                              C5FD      2F      47       1   .text       
-     I2CReadByte                               C62C      29      41       1   .text       
-     _LINC                                     C655       5       5       1   RUNTIME     
-     _lDivMod                                  C65A      BE     190       1   RUNTIME     
-     _LDIVU                                    C718       E      14       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        C726      14      20       1   RUNTIME     
+     writeByteToCompass                        C41E      28      40      11   .text       
+     InitializeCompass                         C446      73     115       1   .text       
+     readByteFromCompass                       C4B9       C      12       6   .text       
+     GetDataFromCompass                        C4C5      59      89       1   .text       
+     i2cDelay                                  C51E       E      14      12   .text       
+     readSCL                                   C52C      11      17       1   .text       
+     readSDA                                   C53D      12      18       6   .text       
+     clearSCL                                  C54F       7       7       3   .text       
+     clearSDA                                  C556       7       7       3   .text       
+     readSCL_AllowClockStretching              C55D      19      25       5   .text       
+     i2cStartCond                              C576      20      32       1   .text       
+     i2cStopCond                               C596      14      20       2   .text       
+     i2cWriteBit                               C5AA      13      19       2   .text       
+     i2cReadBit                                C5BD      17      23       2   .text       
+     I2CWriteByte                              C5D4      2D      45       1   .text       
+     I2CReadByte                               C601      28      40       1   .text       
+     _LINC                                     C629       5       5       1   RUNTIME     
+     _lDivMod                                  C62E      BE     190       1   RUNTIME     
+     _LDIVU                                    C6EC       E      14       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        C6FA      14      20       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_10                                FFEA       2       2       0   .abs_section_ffea
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
@@ -1470,21 +1468,24 @@ NavigationSystem.c.o:
   previousNode distanceFromTarget 
 Compass.c.o:
   SettingsCRA SettingsCRB SettingsMode AddressCRA AddressCRB AddressMode 
-  SlaveWrite SlaveRead MaxNumberOfFailedAttempts 
+  SlaveWrite SlaveRead NACK MaxNumberOfFailedAttempts 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC73A ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xC70E ---- SIZE       4 ---
 Filling bytes inserted
- 00020500
-------- ROM-ADDRESS: 0xC73E ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
+ 00030500
+------- ROM-ADDRESS: 0xC712 ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
 Name of initialized Object : LeftTreadPower
  FF
-------- ROM-ADDRESS: 0xC73F ---- RAM-ADDRESS: 0x501 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xC713 ---- RAM-ADDRESS: 0x501 ---- SIZE       1 ---
 Name of initialized Object : RightTreadPower
  FF
-------- ROM-ADDRESS: 0xC740 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC714 ---- RAM-ADDRESS: 0x502 ---- SIZE       1 ---
+Name of initialized Object : TimeOutTime
+ 64
+------- ROM-ADDRESS: 0xC715 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1547,24 +1548,23 @@ main                      USES TurnOffErrorLight InitializeCompass
                                 GetDataFromCompass 
 GetNextTurnByTurnElement  USES RamTurnByTurnQueue 
 HasNextTurnByTurnElement  USES RamTurnByTurnQueue 
-writeByteToCompass        USES TurnOnErrorLight False I2CWriteByte True 
+writeByteToCompass        USES TurnOnErrorLight I2CWriteByte 
 InitializeCompass         USES writeByteToCompass False True 
-readByteFromCompass       USES True I2CReadByte 
+readByteFromCompass       USES I2CReadByte 
 GetDataFromCompass        USES writeByteToCompass False readByteFromCompass 
-                                rawXUData rawXLData rawZUData rawZLData rawYUData 
-                                rawYLData True 
-arbitrationLost           USES TurnOnErrorLight 
+                                rawXData rawZData rawYData True 
 readSCL                   USES _DDRAB _PORTAB 
 readSDA                   USES _DDRAB _PORTAB 
 clearSCL                  USES _DDRAB _PORTAB 
 clearSDA                  USES _DDRAB _PORTAB 
-i2cStartCond              USES started readSDA i2cDelay TurnOnErrorLight 
-                                readSCL arbitrationLost clearSDA clearSCL True 
-i2cStopCond               USES clearSDA i2cDelay TurnOnErrorLight readSCL 
-                                readSDA arbitrationLost False started 
-i2cWriteBit               USES readSDA clearSDA i2cDelay TurnOnErrorLight 
-                                readSCL arbitrationLost clearSCL 
-i2cReadBit                USES readSDA i2cDelay TurnOnErrorLight readSCL 
+readSCL_AllowClockStretching USES timer TimeOutTime TurnOnErrorLight readSCL 
+i2cStartCond              USES started readSDA i2cDelay 
+                                readSCL_AllowClockStretching clearSDA clearSCL True 
+i2cStopCond               USES clearSDA i2cDelay readSCL_AllowClockStretching 
+                                readSDA False started 
+i2cWriteBit               USES readSDA clearSDA i2cDelay 
+                                readSCL_AllowClockStretching clearSCL 
+i2cReadBit                USES readSDA i2cDelay readSCL_AllowClockStretching 
                                 clearSCL 
 I2CWriteByte              USES i2cStartCond i2cWriteBit i2cReadBit i2cStopCond 
 I2CReadByte               USES i2cReadBit i2cWriteBit i2cStopCond 
@@ -1596,14 +1596,12 @@ DEPENDENCY TREE
  |  |        |  |    
  |  |        |  +- i2cDelay            
  |  |        |  |    
- |  |        |  +- TurnOnErrorLight     (see above)
- |  |        |  |  
- |  |        |  +- readSCL             
- |  |        |  |    
- |  |        |  +- arbitrationLost     
+ |  |        |  +- readSCL_AllowClockStretching
  |  |        |  |  | 
  |  |        |  |  +- TurnOnErrorLight     (see above)
- |  |        |  |     
+ |  |        |  |  |  
+ |  |        |  |  +- readSCL             
+ |  |        |  |       
  |  |        |  +- clearSDA            
  |  |        |  |    
  |  |        |  +- clearSCL            
@@ -1616,11 +1614,7 @@ DEPENDENCY TREE
  |  |        |  |  
  |  |        |  +- i2cDelay             (see above)
  |  |        |  |  
- |  |        |  +- TurnOnErrorLight     (see above)
- |  |        |  |  
- |  |        |  +- readSCL              (see above)
- |  |        |  |  
- |  |        |  +- arbitrationLost      (see above)
+ |  |        |  +- readSCL_AllowClockStretching (see above)
  |  |        |  |  
  |  |        |  +- clearSCL             (see above)
  |  |        |     
@@ -1630,9 +1624,7 @@ DEPENDENCY TREE
  |  |        |  |  
  |  |        |  +- i2cDelay             (see above)
  |  |        |  |  
- |  |        |  +- TurnOnErrorLight     (see above)
- |  |        |  |  
- |  |        |  +- readSCL              (see above)
+ |  |        |  +- readSCL_AllowClockStretching (see above)
  |  |        |  |  
  |  |        |  +- clearSCL             (see above)
  |  |        |     
@@ -1642,13 +1634,9 @@ DEPENDENCY TREE
  |  |           |  
  |  |           +- i2cDelay             (see above)
  |  |           |  
- |  |           +- TurnOnErrorLight     (see above)
- |  |           |  
- |  |           +- readSCL              (see above)
+ |  |           +- readSCL_AllowClockStretching (see above)
  |  |           |  
  |  |           +- readSDA              (see above)
- |  |           |  
- |  |           +- arbitrationLost      (see above)
  |  |              
  |  +- GetDataFromCompass  
  |     | 
@@ -1795,5 +1783,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 1866
+Total size of all blocks to be downloaded: 1823
 

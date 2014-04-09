@@ -21,7 +21,10 @@ void main( void )
    
    
    InitializeCompass();
-   GetDataFromCompass();
+   for ( ; ; )
+   {
+      GetDataFromCompass();
+   }
    
    
    //InitializeTimers();
