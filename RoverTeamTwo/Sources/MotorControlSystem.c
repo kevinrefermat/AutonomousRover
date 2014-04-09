@@ -23,7 +23,7 @@ static pulseCount_t NonPulseAccumulatorPulseCount = 0;
 static boolean_t lastPulseValue = 0;
 static boolean_t currentPulseValue = 0;
 static registerValue8_t LeftTreadPower = 0xFF;
-static registerValue8_t RightTreadPower = 0xFC;
+static registerValue8_t RightTreadPower = 0xFF;
 
 
 /*** Flags ***/
@@ -49,7 +49,8 @@ void InitializeMotorControlSystem()
 	PWMCLK_PCLK2 = 0;
 	PWMCLK_PCLK3 = 0;
 	
-	PWMPRCLK_PCKB = 0x7;
+	//PWMPRCLK_PCKB = 0x7;
+	PWMPRCLK_PCKB = 0x0;
 	
 	PWMCAE_CAE2 = 0;
 	PWMCAE_CAE3 = 0;
@@ -314,7 +315,10 @@ interrupt VectorNumber_Vtimpaovf void MotionCompleted()
 
 interrupt VectorNumber_Vtimch2 void PeriodicTreadStabilization()
 {
-   pulseCount_t PulseAccumulatorPulseCount = PACNT;
+   pulseCount_t PulseAccumulatorPulseCount, threshhold, pulsesRemaining;
+   PulseAccumulatorPulseCount = PACNT;
+   pulsesRemaining = ~PACNT + 1;
+   threshhold = pulsesRemaining / 200;
    
    /*** TEST ***/
    DDRB_BIT1 = 1;
@@ -332,55 +336,53 @@ interrupt VectorNumber_Vtimch2 void PeriodicTreadStabilization()
    if ( lastPulseValue == 0 && currentPulseValue == 1 )
    {
       NonPulseAccumulatorPulseCount++;
-      
-   }
-   
-   //adjust power every so many pulses
-   if ( PACNT % 10 == 0 )
-   {
-      if ( PulseAccumulatorPulseCount < NonPulseAccumulatorPulseCount )  // right tread needs to speed up
+      if ( PulseAccumulatorPulseCount % 35 == 0 )
       {
-         if ( RightTreadPower == MaxPower )
+         if ( PulseAccumulatorPulseCount < NonPulseAccumulatorPulseCount )  // right tread needs to speed up
          {
-            LeftTreadPower--;
-            DDRB_BIT5 = 1;
-            DDRB_BIT7 = 1;
-            PORTB_BIT5 = 0;
-            PORTB_BIT7 = 1;
-         }
-         else
-         {
-            if ( RightTreadPower + 3 <= MaxPower )
+            if ( RightTreadPower == MaxPower )
             {
-               RightTreadPower += 3;  
+               LeftTreadPower -= threshhold;
+               DDRB_BIT5 = 1;
+               DDRB_BIT7 = 1;
+               PORTB_BIT5 = 0;
+               PORTB_BIT7 = 1;
             }
             else
             {
-               RightTreadPower++;  
-            }
-         }         
-      }
-      else if ( PulseAccumulatorPulseCount > NonPulseAccumulatorPulseCount )  // left tread needs to speed up
-      {
-         if ( LeftTreadPower == MaxPower )
-         {
-            RightTreadPower--;
-            DDRB_BIT5 = 1;
-            DDRB_BIT7 = 1;
-            PORTB_BIT5 = 1;
-            PORTB_BIT7 = 0;  
+               /*** for the sitch where there's an overflow RightTreadPower should be topped off and the rest should decrement from LeftTreadPower ***/
+               if ( RightTreadPower + threshhold < RightTreadPower )
+               {
+                  RightTreadPower = MaxPower;
+               }
+               else
+               {
+                  RightTreadPower += threshhold;
+               }
+            }         
          }
-         else
+         else if ( PulseAccumulatorPulseCount > NonPulseAccumulatorPulseCount )  // left tread needs to speed up
          {
-            if ( LeftTreadPower + 3 <= MaxPower )
+            if ( LeftTreadPower == MaxPower )
             {
-               LeftTreadPower += 3;  
+               RightTreadPower -= threshhold;
+               DDRB_BIT5 = 1;
+               DDRB_BIT7 = 1;
+               PORTB_BIT5 = 1;
+               PORTB_BIT7 = 0;  
             }
             else
             {
-               LeftTreadPower++;  
-            }
-         }     
+               if ( LeftTreadPower + threshhold < LeftTreadPower )
+               {
+                   LeftTreadPower = MaxPower;
+               }
+               else
+               {
+                  LeftTreadPower += threshhold;
+               }
+            }     
+         }
       }
       SetLeftTreadDrivePower( LeftTreadPower );
       SetRightTreadDrivePower( RightTreadPower );

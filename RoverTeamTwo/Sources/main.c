@@ -7,18 +7,31 @@
 #include "NavigationSystem.h"
 #include "ObstacleAvoidanceSystem.h"
 
+
+#include "Compass.h"
+#include "I2C.h"
+
+
 void main( void )
 {  
-   TurnOffErrorLight();
-   InitializeTimers();
    
-   InitializeMotorControlSystem();
-   0();
+   
+   TurnOffErrorLight();
+   
+   
+   
+   InitializeCompass();
+   GetDataFromCompass();
+   
+   
+   //InitializeTimers();
+   
+   //InitializeMotorControlSystem();
    //EnablePeriodicObstacleDetection( 300 );
 
    
 
-   MoveForward( 1200 );
+   //MoveForward( 1200 );
    
    //MoveForward( 60 ); 
    //Rotate( 90 ); 

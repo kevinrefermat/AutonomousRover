@@ -1,0 +1,28 @@
+/*
+ * main implementation: use this 'C' sample to create your own application
+ *
+ */
+
+
+
+
+#include <stdio.h>
+#include "derivative.h" /* include peripheral declarations */
+
+
+
+int main(void)
+{
+	int counter, i;
+	
+	for( counter = 0; counter < 1000; counter++ )
+	{
+		i += 2;
+		i *= 3;
+		i -= 4
+	}
+	printf( "done %d \n", counter );
+	for( ; ; );
+	
+	return 0;
+}

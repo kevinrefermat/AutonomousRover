@@ -79,10 +79,6 @@ void TurnOnErrorLight()
 {
    DDRB_BIT7 = 1;
    PORTB_BIT7 = 0;
-   _asm
-   {
-      swi
-   }
 }
 
 void TurnOffErrorLight()
