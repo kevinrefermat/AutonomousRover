@@ -2,7 +2,7 @@
 #include "Rover.h"
 #include "Compass.h"
 
-static const Byte SettingsCRA = 0x70; // 0x10 default
+static const Byte SettingsCRA = 0x7C; // 0x10 default
 static const Byte SettingsCRB = 0x00; // 0x20 default
 static const Byte SettingsMode = 0x00; // 0x00 default
 
@@ -13,9 +13,15 @@ static const Byte AddressMode = 0x02;
 static const Byte SlaveWrite = 0x3C;
 static const Byte SlaveRead = 0x3D;
 
+static const sWord xShiftValue = 189;
+static const sWord yShiftValue = 175;
+static const sWord yScaleValueNumerator = 18;
+static const sWord yScaleValueDenominator = 100;
+
 static const boolean_t NACK = 1;
 
 static const Byte MaxNumberOfFailedAttempts = 10;
+static const degree_t MaxTolerableDifferenceBetweenTwoConsecutiveCompassReadings = 2;
 
 static fullCompassRegister_t rawXData;
 static fullCompassRegister_t rawYData;
@@ -76,4 +82,45 @@ boolean_t GetDataFromCompass()
    if ( writeByteToCompass( 0, 1, 0x03 ) == NACK ) return False;
    
    return True;
+}
+
+// returns calculated bearing compared to magnetic north
+degree_t GetASingleCompassReading()
+{
+   degree_t angle;
+   sWord balancedX, balancedY;
+   
+   GetDataFromCompass();
+   balancedX = rawXData.value + xShiftValue;
+   balancedY = rawYData.value + yShiftValue;
+   balancedY = balancedY + ( balancedY * yScaleValueNumerator ) / yScaleValueDenominator;
+   
+   angle = arcTangent( balancedY, balancedX );
+   
+   if ( angle < 0 )
+   {
+      angle += 360;  
+   }
+   return angle;
+}
+
+// takes two back to back measurements and returns angle on success or -1 on failure.
+degree_t GetAnAccurateCompassReading()
+{
+   degree_t reading1, reading2, difference1And2;
+   reading1 = GetASingleCompassReading();
+   reading2 = GetASingleCompassReading();
+   
+   difference1And2 = reading1 - reading2;
+   
+   //absolute value
+   difference1And2 = difference1And2 > 0 ? difference1And2 : -difference1And2;
+   
+   if ( difference1And2 <= MaxTolerableDifferenceBetweenTwoConsecutiveCompassReadings ||
+        difference1And2 >= 360 - MaxTolerableDifferenceBetweenTwoConsecutiveCompassReadings ) // for reading1 = 358 and reading2 = 0
+   {
+      //return the more current measurement
+      return reading2;
+   }
+   return -1;
 }

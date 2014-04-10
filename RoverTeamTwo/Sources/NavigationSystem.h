@@ -52,7 +52,6 @@ static inches_t GetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column )
 
 void UpdateTurnByTurnQueueFromNodeSequence( void );
 
-degree_t arcTangent( inches_t y, inches_t x );
 coordinates_t* GetNodeCoordinates( nodeNumber_t nodeId );
 
 turnByTurnElement_t* GetNextTurnByTurnElement( void );
