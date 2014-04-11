@@ -32,7 +32,7 @@ void InitializeObstacleAvoidanceSystem()
    TFLG1_C1F = 1;
    
    SetPingRotationalPosition( 0 );
-   Delay( 300000 );
+   Delay( 300 );
 } 
 
 void EnablePeriodicObstacleDetection( milliseconds_t period )

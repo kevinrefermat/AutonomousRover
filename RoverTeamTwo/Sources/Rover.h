@@ -15,7 +15,7 @@ typedef Word registerValue16_t;
 
 // Time  
 typedef Word milliseconds_t;
-typedef LWord microseconds_t;
+typedef Word microseconds_t;
 typedef Word timerCount_t;
 
 // Distance
@@ -36,12 +36,30 @@ typedef struct
 
 /*** ROVER IO CONTROL ***/
 
+// TIMER 0 = Ping sensor
+// TIMER 1 = Periodic obstacle detection
+// TIMER 2 = TreadStabilization left or right (not sure which)
+// TIMER 3 = TreadStabilization right or left (not sure which)
+// TIMER 7 = pulse accumulator to calculate rover's distance
+
+// PWM0 = Ping sensor servo signal
+// PWM2 = left tread motor driver enable
+// PWM3 = right tread motor drive enable
+
+// PORTA_BIT0 = Motor driver left input 0 
+// PORTA_BIT1 = Motor driver left input 1
+// PORTA_BIT2 = Motor driver right input 0
+// PORTA_BIT3 = Motor driver right input 1
+
+// PORTB_BIT0 = Compass module SCL line
+// PORTB_BIT1 = Compass module SDA line
+// PORTB_BIT3 = LED light on microcontroller BUT NOT SURE WHAT IT DOES
+// PORTB_BIT7 = LED error light on microcontroller
+
 extern const direction_t FORWARD_MOTION;
 extern const direction_t REVERSE_MOTION;
 extern const direction_t STOP_MOTION;
 extern const direction_t ROTATE_MOTION;
-
-extern const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY;
 
 #define MOTOR_DRIVE_IO PORTA
 #define MOTOR_DRIVE_DDR DDRA
@@ -56,8 +74,8 @@ extern const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY;
 #define MOTOR_DRIVE_RIGHT_PERIOD PWMPER3
 #define MOTOR_DRIVE_RIGHT_DUTY PWMDTY3
  
-#define OBJECT_DETECTION_PIN PTT_PTT0
-#define OBJECT_DETECTION_DDR DDRT_DDRT0
+#define OBJECT_DETECTION_PIN PTT_PTT0     // change to obstacle detection not object detection
+#define OBJECT_DETECTION_DDR DDRT_DDRT0   // ALSO THIS ONE: change to obstacle detection not object detection
 
 
 /*** CONSTANTS ***/
@@ -65,7 +83,7 @@ extern const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY;
 #define MAX_16_BIT_VALUE 65535
 
 #define CLOCK_SPEED_HZ 2000000
-#define TIMER_COUNTER_PRESCALE 128
+#define TIMER_COUNTER_PRESCALE 8
 #define TIMER_COUNTER_TICKS_PER_S ( CLOCK_SPEED_HZ / TIMER_COUNTER_PRESCALE )
 #define TIMER_COUNTER_TICKS_PER_MS ( TIMER_COUNTER_TICKS_PER_S / 1000 )
 
@@ -81,7 +99,7 @@ extern const boolean_t True;
 
 /*** USEFUL FUNCTIONS ***/
 
-void Delay( microseconds_t time );
+void Delay( milliseconds_t time );
 
 void TurnOnErrorLight( void );
 void TurnOffErrorLight( void );

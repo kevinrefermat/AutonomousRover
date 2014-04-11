@@ -18,6 +18,17 @@ static degree_t bearings[ SIZE ];
 void main( void )
 {  
    sWord i;
+   InitializeTimers();
+   InitializeMotorControlSystem();
+   MoveForward( 10000 );
+   for ( ; ; );
+
+
+   TurnOnErrorLight();
+   Delay ( 5000 );
+   TurnOffErrorLight();
+
+   for (;;);
 
    TurnOffErrorLight();
    
@@ -33,27 +44,5 @@ void main( void )
    
    TurnOffErrorLight();
    for( ; ; );
-   //InitializeTimers();
 
-   //InitializeMotorControlSystem();
-   //EnablePeriodicObstacleDetection( 300 );
-
-
-
-   //MoveForward( 1200 );
-
-   //MoveForward( 60 ); 
-   //Rotate( 90 ); 
-   
-
-
-   InitializeNavigationSystem();
-
-   Dijkstra( 17, 18 );
-    
-   EnableInterrupts;    
-   CommenceTurnByTurnExecution();
-   
-   for (;;); 
-   //initializePeriodicObjectDetection();
 }

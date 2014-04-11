@@ -7,6 +7,12 @@
 
 /*** Static Constant Definitions ***/
 
+static const pulseCount_t InitialRightTreadPower = 0xE1;  // 90% ( out of 255 )
+static const pulseCount_t InitialLeftTreadPower = 0xE1;   // 90% ( out of 255 )
+static const pulseCount_t MaxPower = 0xFF;
+                                                                 
+static const milliseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY = 200;
+
 static const pulseCount_t PulsesPerInch = 12;
 static const pulseCount_t PulsesPerFoot = 137;
 static const pulseCount_t PulsesPerFiveFeet = 712;
@@ -15,18 +21,19 @@ static const pulseCount_t PulsesPerTwentyFiveFeet = 3560;
 static const pulseCount_t PULSES_PER_DEGREE_NUMERATOR = 100;
 static const pulseCount_t PULSES_PER_DEGREE_DENOMINATOR = 72;
 
-static const pulseCount_t MaxPower = 0xFF;
 
 /*** Static Variables ***/
-static timerCount_t TreadStabilizationTimerCounterOffset;
-static pulseCount_t NonPulseAccumulatorPulseCount = 0;
-static boolean_t lastPulseValue = 0;
-static boolean_t currentPulseValue = 0;
-static registerValue8_t LeftTreadPower = 0xFF;
-static registerValue8_t RightTreadPower = 0xFF;
+
+// SETS SPEED OF ROVER
+#define DESIRED_ENCODER_PERIOD_IN_MICROSECONDS 10000  // 10000 is microseconds should be average speed
+static timerCount_t DesiredEncoderPeriod = DESIRED_ENCODER_PERIOD_IN_MICROSECONDS * 2 / TIMER_COUNTER_PRESCALE; 
+
+static registerValue8_t LeftTreadPower = 0;
+static registerValue8_t RightTreadPower = 0;
 
 
 /*** Flags ***/
+
 static boolean_t RoverInMotionFlag = 0;
 
 /*** Constant Definitions ***/
@@ -41,7 +48,7 @@ const direction_t ROTATE_MOTION = 0x3;
 
 void InitializeMotorControlSystem()
 {
-	MOTOR_DRIVE_DDR |= 0x0F;
+   MOTOR_DRIVE_DDR |= 0x0F;
 	
    PWMPOL_PPOL2 = 1;
 	PWMPOL_PPOL3 = 1;
@@ -49,65 +56,162 @@ void InitializeMotorControlSystem()
 	PWMCLK_PCLK2 = 0;
 	PWMCLK_PCLK3 = 0;
 	
-	//PWMPRCLK_PCKB = 0x7;
 	PWMPRCLK_PCKB = 0x0;
 	
 	PWMCAE_CAE2 = 0;
 	PWMCAE_CAE3 = 0;
 	
 	PWMCTL_CON23 = 0;
-	
-	SetLeftTreadDrivePower( LeftTreadPower );
-	SetRightTreadDrivePower( RightTreadPower );
+
+   SetLeftTreadDrivePower( InitialLeftTreadPower );
+	SetRightTreadDrivePower( InitialRightTreadPower );
 	
 	StopMotion();
 }
 
-void EnableTreadStabilization()
-{
-   milliseconds_t period = 1000 / ( 4 * DC_MOTOR_ENCODER_FREQ );
-    
-    // set ioc2 to output compare
-   TIOS_IOS2 = 1;
-   
-   // disconnect timer from pin oc2
-   TCTL2_OL2 = 0;
-   TCTL2_OM2 = 0;
- 
-   if ( period > MAX_PERIOD_OF_INTERRUPT_MS )
-   {
-      period = MAX_PERIOD_OF_INTERRUPT_MS;  
-   }
- 
-   TreadStabilizationTimerCounterOffset = period * TIMER_COUNTER_TICKS_PER_MS;
 
-   SetTreadStabilizationTimer();   
+
+
+void StabilizeTreads()
+{
+   microseconds_t dt;
+   boolean_t isFirstMeasurement[ 2 ];
+   Byte index;
    
-   // Clear flag
-   TFLG1_C2F = 1;
+   // these should timerCount_t but they need to be signed
+   sWord integralError[ 2 ], previousError[ 2 ], currentError, derivativeError;
+   timerCount_t currentPulsePeriod, currentRisingEdge, lastRisingEdge[ 2 ];
    
-   // enable interrupt caused by channel 2 for periodic tread stabilization check
-   TIE_C2I = 1;
+   
+   // FIGURE THIS OUT TO INCREASE RESOLUTION
+   // *** ALSO CHANGE TO CONSTS
+   sByte proportionalErrorGain, integralErrorGain, derivativeErrorGain, adjustment;
+   
+   
+   DDRT_DDRT2 = 0;
+   DDRT_DDRT3 = 0;
+   
+   proportionalErrorGain = 6;
+   integralErrorGain = 0;
+   derivativeErrorGain = 0;
+
+   integralError[ 0 ] = 0;
+   integralError[ 1 ] = 0;
+   
+   previousError[ 0 ] = 0;
+   previousError[ 1 ] = 0;
+
+   isFirstMeasurement[ 0 ] = True;
+   isFirstMeasurement[ 1 ] = True;
+
+   // initialize timers
+   
+   TIOS_IOS2 = 0; // input capture
+   TIOS_IOS3 = 0; // input capture
+           
+   TIE_C2I = 0; // disable interrupts
+   TIE_C3I = 0; // disable interrupts
+      
+   TFLG1_C2F = 1; // clear the flags
+   TFLG1_C3F = 1; // clear the flags
+      
+   TCTL4_EDG2x = 0x01; // capture rising edge
+   TCTL4_EDG3x = 0x01; // capture rising edge
+   
+  
+   while( RoverInMotionFlag )
+   {
+      if ( TFLG1_C2F || TFLG1_C3F )
+      {
+         if ( TFLG1_C2F )
+         {
+            index = 0;
+            TFLG1_C2F = 1;       // clear the flag
+            TCTL4_EDG2x = 0x01;  // capture rising edge
+            currentRisingEdge = TC2;
+         }
+         else                    // then TFGL1_C3F is set
+         {
+            index = 1;
+            TFLG1_C3F = 1;       // clear the flag
+            TCTL4_EDG3x = 0x01;  // capture rising edge
+            currentRisingEdge = TC3;
+         }
+         
+         if ( isFirstMeasurement[ index ] )
+         {
+            lastRisingEdge[ index ] = currentRisingEdge;
+            isFirstMeasurement[ index ] = False;
+            continue;  
+         }
+         
+         currentPulsePeriod = currentRisingEdge - lastRisingEdge[ index ];
+         currentError = ( sWord ) ( currentPulsePeriod - DesiredEncoderPeriod );    //****** NOT SURE ABOUT THIS BEING UNSIGNED AND ALL
+         dt = currentPulsePeriod / 100;        // Arbitrarily scale down dt by 100
+         integralError[ index ] += currentError * dt;
+         derivativeError = ( currentError - previousError[ index ] ) / dt;
+         adjustment = ( proportionalErrorGain * currentError + integralErrorGain * integralError[ index ] + derivativeErrorGain * derivativeError ) / 100; // arbitrarily divide by 100
+         
+         if ( index = 0 )
+         {
+            AdjustLeftTreadDrivePower( adjustment );
+         }
+         else
+         {
+            AdjustRightTreadDrivePower( adjustment );
+         }
+      }
+   }
+
+   // RETURN TO MOVEFORWARD OR MOVEREVERSE
 }
+
+
+
+
 
 void DisableTreadStabilization()
 {
-   TIE_C2I = 0;
 }
 
-static void SetTreadStabilizationTimer()
+
+
+
+static void AdjustLeftTreadDrivePower( sByte adjustment )
 {
-   TC2 = TCNT + TreadStabilizationTimerCounterOffset;  
+   if ( ( adjustment > 0 ) && ( LeftTreadPower + adjustment < LeftTreadPower ) )
+   {
+      SetLeftTreadDrivePower( MaxPower ); // MAYBE DECREASE ATTEMPT POWER LEVEL SO THAT ROVER CAN MANAGE
+   }
+   else
+   {
+      SetLeftTreadDrivePower( LeftTreadPower + adjustment );
+   }
 }
+
+static void AdjustRightTreadDrivePower( sByte adjustment )
+{
+   if ( ( adjustment > 0 ) && ( RightTreadPower + adjustment < RightTreadPower ) )
+   {
+      SetRightTreadDrivePower( MaxPower );
+   }
+   else
+   {
+      SetRightTreadDrivePower( RightTreadPower + adjustment );
+   }
+}
+
 
 static void SetLeftTreadDrivePower( registerValue8_t power )
 {
+   LeftTreadPower = power;
 	MOTOR_DRIVE_LEFT_DUTY = power;
 	MOTOR_DRIVE_LEFT_PERIOD = 0xFF;
 }
 
 static void SetRightTreadDrivePower( registerValue8_t power )
-{
+{                         
+   RightTreadPower = power;
 	MOTOR_DRIVE_RIGHT_DUTY = power;
 	MOTOR_DRIVE_RIGHT_PERIOD = 0xFF;
 }
@@ -167,6 +271,7 @@ void MoveForward( inches_t distance )
  	                    
  	EnableTreads();
  	EnableInterrupts;
+ 	StabilizeTreads();
 }
 
 void MoveReverse( inches_t distance )
@@ -253,12 +358,9 @@ static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt
 {
    // Write the negative number of encoder pulses to PACNT and enable PAOVI to interrupt when
 	PACNT = ~numberOfPulsesTillInterrupt + 1;
-	NonPulseAccumulatorPulseCount = ~numberOfPulsesTillInterrupt + 1;
 	
 	// Initialize pulse accumulator for encoders.
 	PACTL = 0x52;
-	
-	EnableTreadStabilization(); 
 }
 
 static pulseCount_t DistanceToPulses( inches_t distance ) 
@@ -311,84 +413,4 @@ interrupt VectorNumber_Vtimpaovf void MotionCompleted()
 	StopMotion();
 	DisableTreadStabilization();
 	ExecuteNextTurnByTurnInstruction();
-}
-
-interrupt VectorNumber_Vtimch2 void PeriodicTreadStabilization()
-{
-   pulseCount_t PulseAccumulatorPulseCount, threshhold, pulsesRemaining;
-   PulseAccumulatorPulseCount = PACNT;
-   pulsesRemaining = ~PACNT + 1;
-   threshhold = pulsesRemaining / 200;
-   
-   /*** TEST ***/
-   DDRB_BIT1 = 1;
-   PORTB_BIT1 = 0;
-   PORTB_BIT1 = 1;
-   PORTB_BIT1 = 0;
-   /*** END TEST ***/
-   
-   SetTreadStabilizationTimer();
-   
-   DDRB_BIT0 = 0;
-   currentPulseValue = PORTB_BIT0;
-   
-   // count pulses
-   if ( lastPulseValue == 0 && currentPulseValue == 1 )
-   {
-      NonPulseAccumulatorPulseCount++;
-      if ( PulseAccumulatorPulseCount % 35 == 0 )
-      {
-         if ( PulseAccumulatorPulseCount < NonPulseAccumulatorPulseCount )  // right tread needs to speed up
-         {
-            if ( RightTreadPower == MaxPower )
-            {
-               LeftTreadPower -= threshhold;
-               DDRB_BIT5 = 1;
-               DDRB_BIT7 = 1;
-               PORTB_BIT5 = 0;
-               PORTB_BIT7 = 1;
-            }
-            else
-            {
-               /*** for the sitch where there's an overflow RightTreadPower should be topped off and the rest should decrement from LeftTreadPower ***/
-               if ( RightTreadPower + threshhold < RightTreadPower )
-               {
-                  RightTreadPower = MaxPower;
-               }
-               else
-               {
-                  RightTreadPower += threshhold;
-               }
-            }         
-         }
-         else if ( PulseAccumulatorPulseCount > NonPulseAccumulatorPulseCount )  // left tread needs to speed up
-         {
-            if ( LeftTreadPower == MaxPower )
-            {
-               RightTreadPower -= threshhold;
-               DDRB_BIT5 = 1;
-               DDRB_BIT7 = 1;
-               PORTB_BIT5 = 1;
-               PORTB_BIT7 = 0;  
-            }
-            else
-            {
-               if ( LeftTreadPower + threshhold < LeftTreadPower )
-               {
-                   LeftTreadPower = MaxPower;
-               }
-               else
-               {
-                  LeftTreadPower += threshhold;
-               }
-            }     
-         }
-      }
-      SetLeftTreadDrivePower( LeftTreadPower );
-      SetRightTreadDrivePower( RightTreadPower );
-   }
-   lastPulseValue = currentPulseValue;
-   
-   // Clear flag
-   TFLG1_C2F = 1;
 }

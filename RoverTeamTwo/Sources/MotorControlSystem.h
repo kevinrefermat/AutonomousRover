@@ -48,6 +48,9 @@ static boolean_t ExecuteNextTurnByTurnInstruction( void );
 static void SetRoverInMotionFlag( void );
 static void ClearRoverInMotionFlag( void );
 
+static void AdjustLeftTreadDrivePower( sByte adjustment );
+static void AdjustRightTreadDrivePower( sByte adjustment );
+
 
 /*** Interrupt Service Routine ***/
 

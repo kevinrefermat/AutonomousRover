@@ -5,29 +5,26 @@
 const boolean_t False = 0;
 const boolean_t True = 1;
 
-// At 100000 with no load at all it works. With load it must be higher
-const microseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY = 200000;
-
 
 /*** USEFUL FUNCTIONS ***/
 
 // actual delay time is 12.5us (of overhead) and 10us for each
 // iteration of the for loop          
-void Delay( microseconds_t time )
+void Delay( milliseconds_t time )
 {  
-  microseconds_t i, iMax;
-  iMax = time / 10;
-  for ( i = 0; i < iMax; i++ )
+  milliseconds_t i, j;
+  
+  for ( i = 0; i < time; i++ )
   {
-    _asm
-    {
-      nop
-      nop
-      nop
-      nop
-      nop 
-    }
-  }
+     // 1 millisecond loop
+     for ( j = 0; j < 284; j++ )
+     {
+       _asm
+       {
+         nop 
+       }
+     }
+   }  
 }
 
 void InitializeTimers()
