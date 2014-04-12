@@ -22,6 +22,8 @@ typedef Word timerCount_t;
 typedef Word inches_t; 
 typedef Byte feet_t;
 
+// PositioningSystem Types
+typedef sByte beaconId_t;
 
 // NavigationSystem Types
 
@@ -40,6 +42,7 @@ typedef struct
 // TIMER 1 = Periodic obstacle detection
 // TIMER 2 = TreadStabilization left or right (not sure which)
 // TIMER 3 = TreadStabilization right or left (not sure which)
+// TIMER 4 = Positioning system sound measurement
 // TIMER 7 = pulse accumulator to calculate rover's distance
 
 // PWM0 = Ping sensor servo signal
@@ -50,6 +53,10 @@ typedef struct
 // PORTA_BIT1 = Motor driver left input 1
 // PORTA_BIT2 = Motor driver right input 0
 // PORTA_BIT3 = Motor driver right input 1
+// PORTA_BIT4 = Beacon transmitter enable
+// PORTA_BIT5 = Beacon signal pin 0
+// PORTA_BIT6 = Beacon signal pin 1
+
 
 // PORTB_BIT0 = Compass module SCL line
 // PORTB_BIT1 = Compass module SDA line
@@ -61,12 +68,15 @@ extern const direction_t REVERSE_MOTION;
 extern const direction_t STOP_MOTION;
 extern const direction_t ROTATE_MOTION;
 
-#define MOTOR_DRIVE_IO PORTA
-#define MOTOR_DRIVE_DDR DDRA
 #define MOTOR_DRIVE_LEFT_IN_0 PORTA_BIT0
+#define MOTOR_DRIVE_LEFT_IN_0_DDR DDRA_BIT0
 #define MOTOR_DRIVE_LEFT_IN_1 PORTA_BIT1
+#define MOTOR_DRIVE_LEFT_IN_1_DDR DDRA_BIT1
 #define MOTOR_DRIVE_RIGHT_IN_0 PORTA_BIT2
+#define MOTOR_DRIVE_RIGHT_IN_0_DDR DDRA_BIT2
 #define MOTOR_DRIVE_RIGHT_IN_1 PORTA_BIT3
+#define MOTOR_DRIVE_RIGHT_IN_1_DDR DDRA_BIT3
+
 #define MOTOR_DRIVE_LEFT_ENABLE PWME_PWME2  
 #define MOTOR_DRIVE_LEFT_PERIOD PWMPER2
 #define MOTOR_DRIVE_LEFT_DUTY PWMDTY2
@@ -77,8 +87,20 @@ extern const direction_t ROTATE_MOTION;
 #define OBJECT_DETECTION_PIN PTT_PTT0     // change to obstacle detection not object detection
 #define OBJECT_DETECTION_DDR DDRT_DDRT0   // ALSO THIS ONE: change to obstacle detection not object detection
 
+#define BEACON_TRANSMITTER_ENABLE PORTA_BIT4
+#define BEACON_TRANSMITTER_ENABLE_DDR DRRA_BIT4
+#define BEACON_TRANSMITTER_ACKNOWLEDGE_PIN PORTA_BIT5
+#define BEACON_TRANSMITTER_ACKNOWLEDGE_PIN_DDR DDRA_BIT5
+
+#define BEACON_TRANSMITTER_SIGNAL_0 PORTA_BIT6
+#define BEACON_TRANSMITTER_SIGNAL_0_DDR DDRA_BIT6
+#define BEACON_TRANSMITTER_SIGNAL_1 PORTA_BIT7
+#define BEACON_TRANSMITTER_SIGNAL_1_DDR DDRA_BIT7
 
 /*** CONSTANTS ***/
+
+#define INPUT 0
+#define OUTPUT 1
 
 #define MAX_16_BIT_VALUE 65535
 
