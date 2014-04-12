@@ -1,7 +1,6 @@
 #include "Rover.h"
 #include "PositioningSystem.h"
 
-
 static const TimeOutTime = MAX_16_BIT_VALUE;
 
 // Could implement check at initialization to ensure that the beacons are correctly
@@ -22,7 +21,7 @@ void InitializePositioningSystem()
 inches_t GetDistanceToBeacon( beaconId_t beaconId )
 {
    boolean_t success;
-   timerCount_t startTimerCount, endTimerCount;
+   timerCount_t startTimerCount, endTimerCount, lengthOfSoundInTimerClockCycles;
    inches_t distance;
 
    switch ( beaconId )
@@ -57,19 +56,29 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
    // After acknowledge disable
    BEACON_TRANSMITTER_ENABLE = 0;
 
-   success = waitForAndDetecReceivedSonarPulse();
+   success = waitForAndDetectReceivedSonarPulse();
    endTimerCount = TCNT;
    if ( success == False )
    {
       return -1;
    }
+   lengthOfSoundInTimerClockCycles = ( endTimerCount - startTimerCount - TransmittingOverhead );
+   distance = lengthOfSoundInTimerClockCycles;
 
-   distance = ( endTimerCount - startTimerCount ) * ( SPEED_OF_SOUND_INCH_PER_SEC / ( CLOCK_SPEED_HZ / TIMER_COUNTER_PRESCALE ) );
    return distance;
 }
 
-static boolean_t waitForAndDetecReceivedSonarPulse()
+// function blocks until it detect and returns True if successful and False if timed out
+static boolean_t waitForAndDetectReceivedSonarPulse()
 {
+   ATDCTL2 = 0xC0; // fast flag clear
+   ATDCTL3 = 0x0A;
+   ATDCTL4 = 0x80 // speed/accuracy of conversion
+   ATDCTL5 = ; // 00100000
+
+   ATDSTAT0_SCF
+   ATTDIEN??
+
    // get noise threshold
    // add time out structure
    // repeatedly loop and check for signal that is significantly more powerful than

@@ -14,6 +14,9 @@ static const inches_t ObstacleDetectionThreshhold = 24;
 static timerCount_t PingPeriodTimerCounterOffset;
 static degree_t CurrentPingAngle;
 
+// MAKE SURE THERE IS NO OVERFLOW IN THE MEASURE RETURN PULSE CONSIDERING VARIABLE TIMER_PRESCALER
+
+
 void InitializeObstacleAvoidanceSystem()
 {  
    // disable interrupt caused by channel 0 for measuring PING echo
