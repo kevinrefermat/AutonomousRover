@@ -332,10 +332,10 @@ MODULE:                 -- MC9S12C128.c.o --
      _TCTL1                                      48       1       1       0   .abs_section_48
      _TCTL2                                      49       1       1       0   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
-     _TCTL4                                      4B       1       1      10   .abs_section_4b
+     _TCTL4                                      4B       1       1       8   .abs_section_4b
      _TIE                                        4C       1       1       2   .abs_section_4c
      _TSCR2                                      4D       1       1       3   .abs_section_4d
-     _TFLG1                                      4E       1       1      13   .abs_section_4e
+     _TFLG1                                      4E       1       1      11   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
      _PACTL                                      60       1       1       2   .abs_section_60
      _PAFLG                                      61       1       1       1   .abs_section_61
@@ -429,7 +429,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _CANTXTBPR                                 17D       1       1       0   .abs_section_17d
      _PTT                                       240       1       1       3   .abs_section_240
      _PTIT                                      241       1       1       0   .abs_section_241
-     _DDRT                                      242       1       1       4   .abs_section_242
+     _DDRT                                      242       1       1       2   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
      _PERT                                      244       1       1       0   .abs_section_244
      _PPST                                      245       1       1       0   .abs_section_245
@@ -470,8 +470,8 @@ MODULE:                 -- MC9S12C128.c.o --
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     _PORTAB                                      0       2       2      10   .abs_section_0
-     _DDRAB                                       2       2       2       2   .abs_section_2
+     _PORTAB                                      0       2       2      13   .abs_section_0
+     _DDRAB                                       2       2       2       5   .abs_section_2
      _PARTID                                     1A       2       2       0   .abs_section_1a
      _DBGTB                                      22       2       2       0   .abs_section_22
      _DBGCC                                      26       2       2       0   .abs_section_26
@@ -481,7 +481,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _TC0                                        50       2       2       4   .abs_section_50
      _TC1                                        52       2       2       1   .abs_section_52
      _TC2                                        54       2       2       1   .abs_section_54
-     _TC3                                        56       2       2       1   .abs_section_56
+     _TC3                                        56       2       2       0   .abs_section_56
      _TC4                                        58       2       2       0   .abs_section_58
      _TC5                                        5A       2       2       0   .abs_section_5a
      _TC6                                        5C       2       2       0   .abs_section_5c
@@ -505,7 +505,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _PWMPER23                                   F4       2       2       2   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
      _PWMDTY01                                   F8       2       2       1   .abs_section_f8
-     _PWMDTY23                                   FA       2       2       2   .abs_section_fa
+     _PWMDTY23                                   FA       2       2       4   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _CANRXTSR                                  16E       2       2       0   .abs_section_16e
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
@@ -532,22 +532,23 @@ MODULE:                 -- Rover.c.o --
      True                                      C03C       1       1       3   .rodata     
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     InitializeMotorControlSystem              C09B      28      40       1   .text       
-     StabilizeTreads                           C0C3     115     277       3   .text       
-     DisableTreadStabilization                 C1D8       1       1       1   .text       
-     AdjustRightTreadDrivePower                C1D9      25      37       1   .text       
-     SetLeftTreadDrivePower                    C1FE       A      10       1   .text       
-     SetRightTreadDrivePower                   C208       A      10       2   .text       
-     LeftTreadForward                          C212       7       7       2   .text       
-     RightTreadForward                         C219       7       7       2   .text       
-     LeftTreadReverse                          C220       7       7       2   .text       
-     RightTreadReverse                         C227       7       7       2   .text       
-     BrakeTreads                               C22E       4       4       1   .text       
-     DisableTreads                             C232       7       7       4   .text       
-     EnableTreads                              C239       7       7       4   .text       
-     MoveForward                               C240      18      24       2   .text       
-     MoveReverse                               C258      16      22       1   .text       
-     Rotate                                    C26E      2B      43       1   .text       
+     InitializeMotorControlSystem              C09B      31      49       1   .text       
+     StabilizeTreads                           C0CC      D9     217       3   .text       
+     DisableTreadStabilization                 C1A5       1       1       1   .text       
+     AdjustLeftTreadDrivePower                 C1A6      25      37       1   .text       
+     AdjustRightTreadDrivePower                C1CB      25      37       1   .text       
+     SetLeftTreadDrivePower                    C1F0       C      12       2   .text       
+     SetRightTreadDrivePower                   C1FC       C      12       2   .text       
+     LeftTreadForward                          C208       7       7       2   .text       
+     RightTreadForward                         C20F       7       7       2   .text       
+     LeftTreadReverse                          C216       7       7       2   .text       
+     RightTreadReverse                         C21D       7       7       2   .text       
+     BrakeTreads                               C224       D      13       1   .text       
+     DisableTreads                             C231       7       7       4   .text       
+     EnableTreads                              C238       7       7       4   .text       
+     MoveForward                               C23F      18      24       2   .text       
+     MoveReverse                               C257      16      22       1   .text       
+     Rotate                                    C26D      2C      44       1   .text       
      StopMotion                                C299      1A      26       4   .text       
      SetRoverInMotionFlag                      C2B3       7       7       3   .text       
      ClearRoverInMotionFlag                    C2BA       7       7       1   .text       
@@ -558,7 +559,7 @@ MODULE:                 -- MotorControlSystem.c.o --
      MotionCompleted                           C391       9       9       1   .text       
 - VARIABLES:
      DesiredEncoderPeriod                       500       2       2       1   .data       
-     LeftTreadPower                             502       1       1       1   .bss        
+     LeftTreadPower                             502       1       1       3   .bss        
      RightTreadPower                            503       1       1       3   .bss        
      RoverInMotionFlag                          504       1       1       3   .bss        
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
@@ -604,16 +605,16 @@ SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
   Delay InitializeTimers TurnOnErrorLight InitializeMotorControlSystem 
-  StabilizeTreads DisableTreadStabilization AdjustRightTreadDrivePower 
-  SetLeftTreadDrivePower SetRightTreadDrivePower LeftTreadForward 
-  RightTreadForward LeftTreadReverse RightTreadReverse BrakeTreads 
-  DisableTreads EnableTreads MoveForward MoveReverse Rotate StopMotion 
-  SetRoverInMotionFlag ClearRoverInMotionFlag InitializePulseAccumulator 
-  DistanceToPulses DegreesToPulses ExecuteNextTurnByTurnInstruction 
-  MotionCompleted SetPingTimer DetectClosestObstacle OutputPulseToPing 
-  MeasureReturnPulseFromPing SetPingRotationalPosition 
-  PeriodicCheckForObstacles main GetNextTurnByTurnElement 
-  HasNextTurnByTurnElement 
+  StabilizeTreads DisableTreadStabilization AdjustLeftTreadDrivePower 
+  AdjustRightTreadDrivePower SetLeftTreadDrivePower SetRightTreadDrivePower 
+  LeftTreadForward RightTreadForward LeftTreadReverse RightTreadReverse 
+  BrakeTreads DisableTreads EnableTreads MoveForward MoveReverse Rotate 
+  StopMotion SetRoverInMotionFlag ClearRoverInMotionFlag 
+  InitializePulseAccumulator DistanceToPulses DegreesToPulses 
+  ExecuteNextTurnByTurnInstruction MotionCompleted SetPingTimer 
+  DetectClosestObstacle OutputPulseToPing MeasureReturnPulseFromPing 
+  SetPingRotationalPosition PeriodicCheckForObstacles main 
+  GetNextTurnByTurnElement HasNextTurnByTurnElement 
 SECTION: ".data"
   DesiredEncoderPeriod 
 SECTION: ".bss"
@@ -1076,8 +1077,8 @@ SECTION: ".abs_section_ffec"
 OBJECT LIST SORTED BY ADDRESS
      Name                                      Addr   hSize   dSize     Ref    Section   RLIB
 ---------------------------------------------------------------------------------------------
-     _PORTAB                                      0       2       2      10   .abs_section_0
-     _DDRAB                                       2       2       2       2   .abs_section_2
+     _PORTAB                                      0       2       2      13   .abs_section_0
+     _DDRAB                                       2       2       2       5   .abs_section_2
      _PORTE                                       8       1       1       0   .abs_section_8
      _DDRE                                        9       1       1       0   .abs_section_9
      _PEAR                                        A       1       1       0   .abs_section_a
@@ -1128,15 +1129,15 @@ OBJECT LIST SORTED BY ADDRESS
      _TCTL1                                      48       1       1       0   .abs_section_48
      _TCTL2                                      49       1       1       0   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
-     _TCTL4                                      4B       1       1      10   .abs_section_4b
+     _TCTL4                                      4B       1       1       8   .abs_section_4b
      _TIE                                        4C       1       1       2   .abs_section_4c
      _TSCR2                                      4D       1       1       3   .abs_section_4d
-     _TFLG1                                      4E       1       1      13   .abs_section_4e
+     _TFLG1                                      4E       1       1      11   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
      _TC0                                        50       2       2       4   .abs_section_50
      _TC1                                        52       2       2       1   .abs_section_52
      _TC2                                        54       2       2       1   .abs_section_54
-     _TC3                                        56       2       2       1   .abs_section_56
+     _TC3                                        56       2       2       0   .abs_section_56
      _TC4                                        58       2       2       0   .abs_section_58
      _TC5                                        5A       2       2       0   .abs_section_5a
      _TC6                                        5C       2       2       0   .abs_section_5c
@@ -1186,7 +1187,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PWMPER23                                   F4       2       2       2   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
      _PWMDTY01                                   F8       2       2       1   .abs_section_f8
-     _PWMDTY23                                   FA       2       2       2   .abs_section_fa
+     _PWMDTY23                                   FA       2       2       4   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _PWMSDN                                     FE       1       1       0   .abs_section_fe
      _FCLKDIV                                   100       1       1       0   .abs_section_100
@@ -1256,7 +1257,7 @@ OBJECT LIST SORTED BY ADDRESS
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
      _PTT                                       240       1       1       3   .abs_section_240
      _PTIT                                      241       1       1       0   .abs_section_241
-     _DDRT                                      242       1       1       4   .abs_section_242
+     _DDRT                                      242       1       1       2   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
      _PERT                                      244       1       1       0   .abs_section_244
      _PPST                                      245       1       1       0   .abs_section_245
@@ -1298,7 +1299,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
      DesiredEncoderPeriod                       500       2       2       1   .data       
-     LeftTreadPower                             502       1       1       1   .bss        
+     LeftTreadPower                             502       1       1       3   .bss        
      RightTreadPower                            503       1       1       3   .bss        
      RoverInMotionFlag                          504       1       1       3   .bss        
      PingPeriodTimerCounterOffset               505       2       2       1   .bss        
@@ -1311,22 +1312,23 @@ OBJECT LIST SORTED BY ADDRESS
      Delay                                     C03D      20      32       2   .text       
      InitializeTimers                          C05D      37      55       1   .text       
      TurnOnErrorLight                          C094       7       7       1   .text       
-     InitializeMotorControlSystem              C09B      28      40       1   .text       
-     StabilizeTreads                           C0C3     115     277       3   .text       
-     DisableTreadStabilization                 C1D8       1       1       1   .text       
-     AdjustRightTreadDrivePower                C1D9      25      37       1   .text       
-     SetLeftTreadDrivePower                    C1FE       A      10       1   .text       
-     SetRightTreadDrivePower                   C208       A      10       2   .text       
-     LeftTreadForward                          C212       7       7       2   .text       
-     RightTreadForward                         C219       7       7       2   .text       
-     LeftTreadReverse                          C220       7       7       2   .text       
-     RightTreadReverse                         C227       7       7       2   .text       
-     BrakeTreads                               C22E       4       4       1   .text       
-     DisableTreads                             C232       7       7       4   .text       
-     EnableTreads                              C239       7       7       4   .text       
-     MoveForward                               C240      18      24       2   .text       
-     MoveReverse                               C258      16      22       1   .text       
-     Rotate                                    C26E      2B      43       1   .text       
+     InitializeMotorControlSystem              C09B      31      49       1   .text       
+     StabilizeTreads                           C0CC      D9     217       3   .text       
+     DisableTreadStabilization                 C1A5       1       1       1   .text       
+     AdjustLeftTreadDrivePower                 C1A6      25      37       1   .text       
+     AdjustRightTreadDrivePower                C1CB      25      37       1   .text       
+     SetLeftTreadDrivePower                    C1F0       C      12       2   .text       
+     SetRightTreadDrivePower                   C1FC       C      12       2   .text       
+     LeftTreadForward                          C208       7       7       2   .text       
+     RightTreadForward                         C20F       7       7       2   .text       
+     LeftTreadReverse                          C216       7       7       2   .text       
+     RightTreadReverse                         C21D       7       7       2   .text       
+     BrakeTreads                               C224       D      13       1   .text       
+     DisableTreads                             C231       7       7       4   .text       
+     EnableTreads                              C238       7       7       4   .text       
+     MoveForward                               C23F      18      24       2   .text       
+     MoveReverse                               C257      16      22       1   .text       
+     Rotate                                    C26D      2C      44       1   .text       
      StopMotion                                C299      1A      26       4   .text       
      SetRoverInMotionFlag                      C2B3       7       7       3   .text       
      ClearRoverInMotionFlag                    C2BA       7       7       1   .text       
@@ -1362,7 +1364,7 @@ rtshc12.c.o (ansisf.lib):
 Rover.c.o:
   TurnOffErrorLight 
 MotorControlSystem.c.o:
-  AdjustLeftTreadDrivePower GetRoverInMotionFlag CommenceTurnByTurnExecution 
+  GetRoverInMotionFlag CommenceTurnByTurnExecution 
 ObstacleAvoidanceSystem.c.o:
   InitializeObstacleAvoidanceSystem EnablePeriodicObstacleDetection 
   DisablePeriodicObstacleDetection 
@@ -1383,8 +1385,6 @@ MotorControlSystem.c.o:
   ROTATE_MOTION 
 ObstacleAvoidanceSystem.c.o:
   LookLeftPwmDuty LookRightPwmDuty ObstacleDetectionThreshhold 
-main.c.o:
-  bearings 
 NavigationSystem.c.o:
   NO_CONNECTION MaxRamNumberOfNodes RomNumberOfNodes MaxTotalNumberOfNodes 
   MaxRamNumberOfObstacles RomNumberOfObstacles MaxTotalNumberOfObstacles 
@@ -1418,12 +1418,13 @@ TurnOnErrorLight          USES _DDRAB _PORTAB
 InitializeMotorControlSystem USES _DDRAB _PWMPOL _PWMCLK _PWMPRCLK _PWMCAE 
                                 _PWMCTL SetLeftTreadDrivePower SetRightTreadDrivePower 
                                 StopMotion 
-StabilizeTreads           USES _DDRT True _TIOS _TIE _TFLG1 StabilizeTreads 
-                                _TCTL4 _TC2 _TC3 False DesiredEncoderPeriod 
-                                AdjustRightTreadDrivePower RoverInMotionFlag 
+StabilizeTreads           USES True _TIOS _TIE _TFLG1 StabilizeTreads _TCTL4 
+                                _TC2 False DesiredEncoderPeriod 
+                                AdjustLeftTreadDrivePower AdjustRightTreadDrivePower RoverInMotionFlag 
+AdjustLeftTreadDrivePower USES LeftTreadPower SetLeftTreadDrivePower 
 AdjustRightTreadDrivePower USES RightTreadPower SetRightTreadDrivePower 
-SetLeftTreadDrivePower    USES LeftTreadPower _PWMDTY23 _PWMPER23 
-SetRightTreadDrivePower   USES RightTreadPower _PWMDTY23 _PWMPER23 
+SetLeftTreadDrivePower    USES _PWMDTY23 _PWMPER23 LeftTreadPower 
+SetRightTreadDrivePower   USES _PWMDTY23 _PWMPER23 RightTreadPower 
 LeftTreadForward          USES _PORTAB 
 RightTreadForward         USES _PORTAB 
 LeftTreadReverse          USES _PORTAB 
@@ -1515,6 +1516,10 @@ DEPENDENCY TREE
  |     |  
  |     +- StabilizeTreads     
  |        | 
+ |        +- AdjustLeftTreadDrivePower
+ |        |  | 
+ |        |  +- SetLeftTreadDrivePower (see above)
+ |        |     
  |        +- AdjustRightTreadDrivePower
  |           | 
  |           +- SetRightTreadDrivePower (see above)

@@ -53,9 +53,11 @@ typedef struct
 // PORTA_BIT1 = Motor driver left input 1
 // PORTA_BIT2 = Motor driver right input 0
 // PORTA_BIT3 = Motor driver right input 1
+
 // PORTA_BIT4 = Beacon transmitter enable
-// PORTA_BIT5 = Beacon signal pin 0
-// PORTA_BIT6 = Beacon signal pin 1
+// PORTA_BIT5 = Beacon acknowledge pin
+// PORTA_BIT6 = Beacon signal pin 0
+// PORTA_BIT7 = Beacon signal pin 1
 
 
 // PORTB_BIT0 = Compass module SCL line

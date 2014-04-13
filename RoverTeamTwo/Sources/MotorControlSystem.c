@@ -7,8 +7,8 @@
 
 /*** Static Constant Definitions ***/
 
-static const pulseCount_t InitialRightTreadPower = 0xE1;  // 90% ( out of 255 )
-static const pulseCount_t InitialLeftTreadPower = 0xE1;   // 90% ( out of 255 )
+static const pulseCount_t InitialRightTreadPower = 0xF0;  // 0xE1 90% ( out of 255 )
+static const pulseCount_t InitialLeftTreadPower = 0xF0;   // 0xE1 90% ( out of 255 )
 static const pulseCount_t MaxPower = 0xFF;
                                                                  
 static const milliseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY = 200;
@@ -48,7 +48,10 @@ const direction_t ROTATE_MOTION = 0x3;
 
 void InitializeMotorControlSystem()
 {
-   MOTOR_DRIVE_DDR |= 0x0F;
+   MOTOR_DRIVE_LEFT_IN_0_DDR = OUTPUT;
+   MOTOR_DRIVE_LEFT_IN_1_DDR = OUTPUT;
+   MOTOR_DRIVE_RIGHT_IN_0_DDR = OUTPUT;
+   MOTOR_DRIVE_RIGHT_IN_1_DDR = OUTPUT;
 	
    PWMPOL_PPOL2 = 1;
 	PWMPOL_PPOL3 = 1;
@@ -77,23 +80,19 @@ void StabilizeTreads()
    microseconds_t dt;
    boolean_t isFirstMeasurement[ 2 ];
    Byte index;
+   sByte adjustment8Bit;
    
    // these should timerCount_t but they need to be signed
    sWord integralError[ 2 ], previousError[ 2 ], currentError, derivativeError;
    timerCount_t currentPulsePeriod, currentRisingEdge, lastRisingEdge[ 2 ];
    
-   
    // FIGURE THIS OUT TO INCREASE RESOLUTION
    // *** ALSO CHANGE TO CONSTS
-   sByte proportionalErrorGain, integralErrorGain, derivativeErrorGain, adjustment;
-   
-   
-   DDRT_DDRT2 = 0;
-   DDRT_DDRT3 = 0;
-   
-   proportionalErrorGain = 6;
-   integralErrorGain = 0;
-   derivativeErrorGain = 0;
+   sWord proportionalErrorGainReciprocal, integralErrorGainReciprocal, derivativeErrorGainReciprocal, adjustment;
+
+   proportionalErrorGainReciprocal = 0x01FF;
+   integralErrorGainReciprocal = 0x7FFF;
+   derivativeErrorGainReciprocal = 0x7FFF;
 
    integralError[ 0 ] = 0;
    integralError[ 1 ] = 0;
@@ -121,7 +120,7 @@ void StabilizeTreads()
   
    while( RoverInMotionFlag )
    {
-      if ( TFLG1_C2F || TFLG1_C3F )
+      if ( TFLG1_C2F )//|| TFLG1_C3F )
       {
          if ( TFLG1_C2F )
          {
@@ -130,13 +129,13 @@ void StabilizeTreads()
             TCTL4_EDG2x = 0x01;  // capture rising edge
             currentRisingEdge = TC2;
          }
-         else                    // then TFGL1_C3F is set
+         /*else                    // then TFGL1_C3F is set
          {
             index = 1;
             TFLG1_C3F = 1;       // clear the flag
             TCTL4_EDG3x = 0x01;  // capture rising edge
             currentRisingEdge = TC3;
-         }
+         } */
          
          if ( isFirstMeasurement[ index ] )
          {
@@ -147,18 +146,32 @@ void StabilizeTreads()
          
          currentPulsePeriod = currentRisingEdge - lastRisingEdge[ index ];
          currentError = ( sWord ) ( currentPulsePeriod - DesiredEncoderPeriod );    //****** NOT SURE ABOUT THIS BEING UNSIGNED AND ALL
-         dt = currentPulsePeriod / 100;        // Arbitrarily scale down dt by 100
+         dt = currentPulsePeriod;
          integralError[ index ] += currentError * dt;
          derivativeError = ( currentError - previousError[ index ] ) / dt;
-         adjustment = ( proportionalErrorGain * currentError + integralErrorGain * integralError[ index ] + derivativeErrorGain * derivativeError ) / 100; // arbitrarily divide by 100
+         adjustment = currentError / proportionalErrorGainReciprocal;
          
-         if ( index = 0 )
+         //16 bit signed to  8 bit signed
+         if ( adjustment < ( sWord ) 0xFF80 )
          {
-            AdjustLeftTreadDrivePower( adjustment );
+            adjustment8Bit = ( sByte ) 0x80;
+         }
+         else if ( adjustment > ( sWord ) 0x007F )
+         {
+            adjustment8Bit = ( sByte ) 0x7F;
          }
          else
          {
-            AdjustRightTreadDrivePower( adjustment );
+            adjustment8Bit = ( sByte ) adjustment;
+         }
+         
+         if ( index == 0 )
+         {
+            AdjustLeftTreadDrivePower( adjustment8Bit );
+         }
+         else
+         {
+            AdjustRightTreadDrivePower( adjustment8Bit );
          }
       }
    }
@@ -179,21 +192,39 @@ void DisableTreadStabilization()
 
 static void AdjustLeftTreadDrivePower( sByte adjustment )
 {
-   if ( ( adjustment > 0 ) && ( LeftTreadPower + adjustment < LeftTreadPower ) )
+   Byte maxAdjustment = MaxPower - LeftTreadPower;
+   
+   if ( adjustment > 0 )
    {
-      SetLeftTreadDrivePower( MaxPower ); // MAYBE DECREASE ATTEMPT POWER LEVEL SO THAT ROVER CAN MANAGE
+      if ( adjustment >= maxAdjustment )
+      {
+         SetLeftTreadDrivePower( MaxPower ); // MAYBE DECREASE ATTEMPT POWER LEVEL SO THAT ROVER CAN MANAGE
+      }
+      else
+      {
+         SetLeftTreadDrivePower( LeftTreadPower + adjustment );
+      }
    }
    else
-   {
+   {            
       SetLeftTreadDrivePower( LeftTreadPower + adjustment );
    }
+
 }
 
 static void AdjustRightTreadDrivePower( sByte adjustment )
 {
-   if ( ( adjustment > 0 ) && ( RightTreadPower + adjustment < RightTreadPower ) )
-   {
-      SetRightTreadDrivePower( MaxPower );
+   Byte maxAdjustment = MaxPower - RightTreadPower;
+   if ( adjustment > 0 )
+   {       
+      if ( adjustment >= maxAdjustment )
+      {
+         SetRightTreadDrivePower( MaxPower );
+      }
+      else
+      {
+         SetRightTreadDrivePower( RightTreadPower + adjustment );
+      }
    }
    else
    {
@@ -204,16 +235,16 @@ static void AdjustRightTreadDrivePower( sByte adjustment )
 
 static void SetLeftTreadDrivePower( registerValue8_t power )
 {
-   LeftTreadPower = power;
 	MOTOR_DRIVE_LEFT_DUTY = power;
 	MOTOR_DRIVE_LEFT_PERIOD = 0xFF;
+   LeftTreadPower = MOTOR_DRIVE_LEFT_DUTY;
 }
 
 static void SetRightTreadDrivePower( registerValue8_t power )
-{                         
-   RightTreadPower = power;
+{               
 	MOTOR_DRIVE_RIGHT_DUTY = power;
-	MOTOR_DRIVE_RIGHT_PERIOD = 0xFF;
+	MOTOR_DRIVE_RIGHT_PERIOD = 0xFF;           
+   RightTreadPower = MOTOR_DRIVE_RIGHT_DUTY;
 }
 
 static void LeftTreadForward()
@@ -242,7 +273,10 @@ static void RightTreadReverse()
 
 static void BrakeTreads()
 {
-   MOTOR_DRIVE_IO |= 0x0F; 
+   MOTOR_DRIVE_LEFT_IN_0 = 1;
+   MOTOR_DRIVE_LEFT_IN_1 = 1;
+   MOTOR_DRIVE_RIGHT_IN_0 = 1;
+   MOTOR_DRIVE_RIGHT_IN_1 = 1;
 }
 
 static void DisableTreads()
