@@ -21,6 +21,8 @@ static const pulseCount_t PulsesPerTwentyFiveFeet = 3560;
 static const pulseCount_t PULSES_PER_DEGREE_NUMERATOR = 100;
 static const pulseCount_t PULSES_PER_DEGREE_DENOMINATOR = 72;
 
+static const Byte LEFT_TREAD = 0;
+static const Byte RIGHT_TREAD = 1;
 
 /*** Static Variables ***/
 
@@ -72,9 +74,6 @@ void InitializeMotorControlSystem()
 	StopMotion();
 }
 
-
-
-
 void StabilizeTreads()
 {
    microseconds_t dt;
@@ -82,21 +81,11 @@ void StabilizeTreads()
    Byte index;
    sByte adjustment8Bit;
    
-   // these should timerCount_t but they need to be signed
-   sWord integralError[ 2 ], previousError[ 2 ], currentError, derivativeError;
+   sWord previousError[ 2 ], currentError, errorAttenuation, adjustment;
    timerCount_t currentPulsePeriod, currentRisingEdge, lastRisingEdge[ 2 ];
-   
-   // FIGURE THIS OUT TO INCREASE RESOLUTION
-   // *** ALSO CHANGE TO CONSTS
-   sWord proportionalErrorGainReciprocal, integralErrorGainReciprocal, derivativeErrorGainReciprocal, adjustment;
+  
+   errorAttenuation = 0x7FFF;
 
-   proportionalErrorGainReciprocal = 0x01FF;
-   integralErrorGainReciprocal = 0x7FFF;
-   derivativeErrorGainReciprocal = 0x7FFF;
-
-   integralError[ 0 ] = 0;
-   integralError[ 1 ] = 0;
-   
    previousError[ 0 ] = 0;
    previousError[ 1 ] = 0;
 
@@ -115,27 +104,26 @@ void StabilizeTreads()
    TFLG1_C3F = 1; // clear the flags
       
    TCTL4_EDG2x = 0x01; // capture rising edge
-   TCTL4_EDG3x = 0x01; // capture rising edge
-   
+   TCTL4_EDG3x = 0x01; // capture rising edge 
   
    while( RoverInMotionFlag )
    {
-      if ( TFLG1_C2F )//|| TFLG1_C3F )
+      if ( TFLG1_C2F || TFLG1_C3F )
       {
          if ( TFLG1_C2F )
          {
-            index = 0;
+            index = LEFT_TREAD;
             TFLG1_C2F = 1;       // clear the flag
             TCTL4_EDG2x = 0x01;  // capture rising edge
             currentRisingEdge = TC2;
          }
-         /*else                    // then TFGL1_C3F is set
+         else                    // then TFGL1_C3F is set
          {
-            index = 1;
+            index = RIGHT_TREAD;
             TFLG1_C3F = 1;       // clear the flag
             TCTL4_EDG3x = 0x01;  // capture rising edge
             currentRisingEdge = TC3;
-         } */
+         }
          
          if ( isFirstMeasurement[ index ] )
          {
@@ -145,93 +133,46 @@ void StabilizeTreads()
          }
          
          currentPulsePeriod = currentRisingEdge - lastRisingEdge[ index ];
-         currentError = ( sWord ) ( currentPulsePeriod - DesiredEncoderPeriod );    //****** NOT SURE ABOUT THIS BEING UNSIGNED AND ALL
-         dt = currentPulsePeriod;
-         integralError[ index ] += currentError * dt;
-         derivativeError = ( currentError - previousError[ index ] ) / dt;
-         adjustment = currentError / proportionalErrorGainReciprocal;
-         
-         //16 bit signed to  8 bit signed
-         if ( adjustment < ( sWord ) 0xFF80 )
-         {
-            adjustment8Bit = ( sByte ) 0x80;
-         }
-         else if ( adjustment > ( sWord ) 0x007F )
-         {
-            adjustment8Bit = ( sByte ) 0x7F;
-         }
-         else
-         {
-            adjustment8Bit = ( sByte ) adjustment;
-         }
-         
-         if ( index == 0 )
-         {
-            AdjustLeftTreadDrivePower( adjustment8Bit );
-         }
-         else
-         {
-            AdjustRightTreadDrivePower( adjustment8Bit );
-         }
+         error = ( sWord ) currentPulsePeriod - ( sWord ) DesiredEncoderPeriod;
+
+         adjustment = error / errorAttenuation;
+         adjustment8bit = ConvertSignedWordToSignedByte( adjustment );
+
+         AdjustTreadDrivePower( index, adjustment8bit );
       }
    }
-
-   // RETURN TO MOVEFORWARD OR MOVEREVERSE
 }
-
-
-
-
 
 void DisableTreadStabilization()
 {
 }
 
-
-
-
-static void AdjustLeftTreadDrivePower( sByte adjustment )
+static sByte ConvertSignedWordToSignedByte( sWord adjustment16 )
 {
-   Byte maxAdjustment = MaxPower - LeftTreadPower;
-   
-   if ( adjustment > 0 )
-   {
-      if ( adjustment >= maxAdjustment )
-      {
-         SetLeftTreadDrivePower( MaxPower ); // MAYBE DECREASE ATTEMPT POWER LEVEL SO THAT ROVER CAN MANAGE
-      }
-      else
-      {
-         SetLeftTreadDrivePower( LeftTreadPower + adjustment );
-      }
-   }
-   else
-   {            
-      SetLeftTreadDrivePower( LeftTreadPower + adjustment );
-   }
-
+   sByte adjustment8 = adjustment16;
+   adjustment8 = adjustment16 > 127 ? 127 : adjustment8;
+   adjustment8 = adjustment16 < -128 ? -128 : adjustment8;
+   return adjustment8;
 }
 
-static void AdjustRightTreadDrivePower( sByte adjustment )
+static void AdjustTreadDrivePower( Byte treadId, sByte adjustment )
 {
-   Byte maxAdjustment = MaxPower - RightTreadPower;
-   if ( adjustment > 0 )
-   {       
-      if ( adjustment >= maxAdjustment )
-      {
-         SetRightTreadDrivePower( MaxPower );
-      }
-      else
-      {
-         SetRightTreadDrivePower( RightTreadPower + adjustment );
-      }
+   Byte newPWMDTY, oldPWMDTY;
+   oldPWMDTY = treadId == LEFT_TREAD ? LeftTreadPower : RightTreadPower;
+   newPWMDTY = oldPWMDTY + adjustment;
+   if ( adjustment > 0 && newPWMDTY < oldPWMDTY )
+   {
+      newPWMDTY = MaxPower;
+   }
+   if ( treadId == LEFT_TREAD )
+   {
+      SetLeftTreadDrivePower( newPWMDTY );
    }
    else
    {
-      SetRightTreadDrivePower( RightTreadPower + adjustment );
+      SetRightTreadDrivePower( newPWMDTY );
    }
 }
-
 
 static void SetLeftTreadDrivePower( registerValue8_t power )
 {
