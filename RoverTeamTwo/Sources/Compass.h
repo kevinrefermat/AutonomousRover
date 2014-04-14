@@ -12,6 +12,7 @@ typedef union
 } fullCompassRegister_t;
 
 boolean_t InitializeCompass( void );
+degree_t GetAnAccurateCompassReading( void );
 boolean_t GetDataFromCompass( void );
 
 boolean_t writeByteToCompass( Byte register, Byte data );

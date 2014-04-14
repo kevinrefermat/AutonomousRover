@@ -4,6 +4,7 @@
 #include "Rover.h"
 #include "MotorControlSystem.h"
 #include "NavigationSystem.h"
+#include "Compass.h"
 
 /*** Static Constant Definitions ***/
 
@@ -50,6 +51,7 @@ const direction_t ROTATE_MOTION = 0x3;
 
 void InitializeMotorControlSystem()
 {
+   InitializeCompass();
    MOTOR_DRIVE_LEFT_IN_0_DDR = OUTPUT;
    MOTOR_DRIVE_LEFT_IN_1_DDR = OUTPUT;
    MOTOR_DRIVE_RIGHT_IN_0_DDR = OUTPUT;
@@ -266,13 +268,19 @@ void MoveReverse( inches_t distance )
 
 void Rotate( degree_t degrees )
 {
+   degree_t initialBearing, desiredBearing;
+
+   initialBearing = GetAnAccurateCompassReading();
+   desiredBearing = initialBearing + degrees;
+   if ( desiredBearing > 359 ) desiredBearing -= 360;
+   if ( desiredBearing < 0 ) desiredBearing += 360;
+
    DisableInterrupts;
    InitializePulseAccumulator( DegreesToPulses( degrees ) );
+   
    DisableTreads();
-   if ( degrees == 0 )
-   {
-      StopMotion();
-   }
+
+   if ( degrees == 0 ) StopMotion();
    else
    {
       if ( degrees > 0 )
@@ -386,6 +394,5 @@ static boolean_t ExecuteNextTurnByTurnInstruction()
 interrupt VectorNumber_Vtimpaovf void MotionCompleted()
 {
 	StopMotion();
-	DisableTreadStabilization();
 	ExecuteNextTurnByTurnInstruction();
 }
