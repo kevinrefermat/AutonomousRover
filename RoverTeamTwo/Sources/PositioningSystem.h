@@ -7,5 +7,6 @@
 void InitializePositioningSystem( void );
 
 inches_t GetDistanceToBeacon( beaconId_t beaconId );
+boolean_t waitForAndDetectReceivedSonarPulse( void );
 
 #endif

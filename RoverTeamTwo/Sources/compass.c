@@ -3,7 +3,7 @@
 #include "Compass.h"
 
 static const Byte SettingsCRA = 0x7C; // 0x10 default
-static const Byte SettingsCRB = 0x00; // 0x20 default
+static const Byte SettingsCRB = 0x40; // 0x20 default
 static const Byte SettingsMode = 0x00; // 0x00 default
 
 static const Byte AddressCRA = 0x00;
@@ -13,10 +13,10 @@ static const Byte AddressMode = 0x02;
 static const Byte SlaveWrite = 0x3C;
 static const Byte SlaveRead = 0x3D;
 
-static const sWord xShiftValue = 189;
-static const sWord yShiftValue = 175;
-static const sWord yScaleValueNumerator = 18;
-static const sWord yScaleValueDenominator = 100;
+static sWord xShiftValue = -28;
+static sWord yShiftValue = 109;
+static sWord yScaleValueNumerator = 0;
+static sWord yScaleValueDenominator = 100;
 
 static const boolean_t NACK = 1;
 
@@ -63,6 +63,35 @@ boolean_t InitializeCompass()
 Byte readByteFromCompass( boolean_t sendStop )
 {
    return I2CReadByte( 0, sendStop ); // send nack = 0 as the response byte
+}
+
+void CalibrateCompass()
+{     
+   sWord i, minX, maxX, minY, maxY;
+   TurnOnErrorLight();
+   GetDataFromCompass();
+   minX = rawXData.value;
+   maxX = minX;
+   minY = rawYData.value;
+   maxY = minY;
+   
+   for ( i = 0; i < 1000; i++ )
+   {
+      GetDataFromCompass();
+      if ( rawXData.value < minX ) minX = rawXData.value;
+      if ( rawXData.value > maxX ) maxX = rawXData.value;
+      if ( rawYData.value < minY ) minY = rawYData.value;
+      if ( rawYData.value > maxY ) maxY = rawYData.value;
+   }
+   
+   TurnOffErrorLight();
+   
+   xShiftValue = -( maxX + minX ) / 2;
+   yShiftValue = -( maxY + minY ) / 2;
+   yScaleValueNumerator = ( 10 * ( maxX - minX ) / 2 ) % ( ( maxY - minY ) / 2 / 10 );
+   yScaleValueDenominator = 100;
+   
+   //GetDataFromCompass();  
 }
 
 // returns 1 on success and 0 on failure

@@ -48,8 +48,10 @@ static boolean_t ExecuteNextTurnByTurnInstruction( void );
 static void SetRoverInMotionFlag( void );
 static void ClearRoverInMotionFlag( void );
 
-static void AdjustLeftTreadDrivePower( sByte adjustment );
-static void AdjustRightTreadDrivePower( sByte adjustment );
+static void AdjustTreadDrivePower( Byte leftOrRight, sByte value );
+
+static sByte ConvertSignedWordToSignedByte( sWord adjustment16 );
+
 
 
 /*** Interrupt Service Routine ***/
