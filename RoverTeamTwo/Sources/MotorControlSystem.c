@@ -8,8 +8,8 @@
 
 /*** Static Constant Definitions ***/
 
-static const pulseCount_t InitialRightTreadPower = 0xF0;  // 0xE1 90% ( out of 255 )
-static const pulseCount_t InitialLeftTreadPower = 0xF0;   // 0xE1 90% ( out of 255 )
+static const pulseCount_t InitialRightTreadPower = 0xFC;  // 0xE1 90% ( out of 255 )
+static const pulseCount_t InitialLeftTreadPower = 0xFF;   // 0xE1 90% ( out of 255 )
 static const pulseCount_t MaxPower = 0xFF;
                                                                  
 static const milliseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY = 200;
@@ -82,17 +82,22 @@ void StabilizeTreads()
    Byte index;
    sByte adjustment8Bit;
    
-   sWord previousError[ 2 ], error, errorAttenuationLeft, errorAttenuationRight, adjustment;
+   sWord error, errorAttenuation[ 2 ], adjustment, integralError[ 2 ], integralErrorAttenuation[ 2 ];
    timerCount_t currentPulsePeriod, currentRisingEdge, lastRisingEdge[ 2 ];
   
-   errorAttenuationLeft = 0x007F;
-   errorAttenuationRight = 0x007F;
+   timerCount_t standardPulsePeriod = 1000;
+  
+   errorAttenuation[ LEFT_TREAD ] = 0x007F;
+   errorAttenuation[ RIGHT_TREAD ] = 0x7ffF;
+   
+   integralErrorAttenuation[ LEFT_TREAD ] = 0x04FF;
+   integralErrorAttenuation[ RIGHT_TREAD ] = 0x03FF;
 
-   previousError[ 0 ] = 0;
-   previousError[ 1 ] = 0;
+   integralError[ LEFT_TREAD ] = 0;
+   integralError[ RIGHT_TREAD ] = 0;
 
-   isFirstMeasurement[ 0 ] = True;
-   isFirstMeasurement[ 1 ] = True;
+   isFirstMeasurement[ LEFT_TREAD ] = True;
+   isFirstMeasurement[ RIGHT_TREAD ] = True;
 
    // initialize timers
    
@@ -136,13 +141,20 @@ void StabilizeTreads()
             continue;  
          }
          
+         if ( index == RIGHT_TREAD )
+         {
+            standardPulsePeriod = currentRisingEdge - lastRisingEdge[ index ];
+            lastRisingEdge[ index ] = currentRisingEdge;
+            continue;
+         }
+         
          currentPulsePeriod = currentRisingEdge - lastRisingEdge[ index ];
-         error = ( sWord ) currentPulsePeriod - ( sWord ) DesiredEncoderPeriod;
+         error = ( sWord ) currentPulsePeriod - ( sWord ) standardPulsePeriod;
+         integralError[ index ] += error;
          
          lastRisingEdge[ index ] = currentRisingEdge;
 
-         if ( index == LEFT_TREAD ) adjustment = error / errorAttenuationLeft;
-         else adjustment = error / errorAttenuationRight;
+         adjustment = error / errorAttenuation[ index ] + integralError[ index ] / integralErrorAttenuation[ index ];
          adjustment8Bit = ConvertSignedWordToSignedByte( adjustment );
 
          AdjustTreadDrivePower( index, adjustment8Bit );
@@ -208,7 +220,7 @@ void MoveForward( inches_t distance )
  	                    
  	EnableTreads();
  	EnableInterrupts;
- 	StabilizeTreads();
+ 	//StabilizeTreads();
 }
 
 void MoveReverse( inches_t distance )

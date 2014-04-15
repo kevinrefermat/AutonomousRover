@@ -20,7 +20,6 @@ MotorControlSystem.c.o                  Model: SMALL,         Lang: ANSI-C
 ObstacleAvoidanceSystem.c.o             Model: SMALL,         Lang: ANSI-C
 main.c.o                                Model: SMALL,         Lang: ANSI-C
 I2C.c.o                                 Model: SMALL,         Lang: ANSI-C
-Math.c.o                                Model: SMALL,         Lang: ANSI-C
 Compass.c.o                             Model: SMALL,         Lang: ANSI-C
 
 *********************************************************************************************
@@ -30,8 +29,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x500     24
-  _Copy    *toCopyDownBeg 0xC705
+  _Range   pZeroOut       0x500     10
+  _Copy    *toCopyDownBeg 0xC443
 } _startupData;
 
 *********************************************************************************************
@@ -40,11 +39,11 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata                          182     R     0xC03B     0xC0F0   ROM_C000
-.text                           1530     R     0xC0F1     0xC6EA   ROM_C000
-.copy                             13     R     0xC705     0xC711   ROM_C000
+.rodata                            2     R     0xC03B     0xC03C   ROM_C000
+.text                           1004     R     0xC03D     0xC428   ROM_C000
+.copy                              7     R     0xC443     0xC449   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
-.data                              7   R/W      0x500      0x506   RAM
+.data                              1   R/W      0x500      0x500   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -268,13 +267,13 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_17e                   2   N/I      0x17E      0x17F   .absSeg220
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg222
-.bss                              17   R/W      0x507      0x517   RAM
-RUNTIME                           26     R     0xC6EB     0xC704   ROM_C000
+.bss                               9   R/W      0x501      0x509   RAM
+RUNTIME                           26     R     0xC429     0xC442   ROM_C000
 .vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):         718 (dec:     1816)
-READ_WRITE (R/W):      118 (dec:      280)
+READ_ONLY (R):         450 (dec:     1104)
+READ_WRITE (R/W):      10A (dec:      266)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -472,7 +471,7 @@ MODULE:                 -- MC9S12C128.c.o --
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     _PORTAB                                      0       2       2      17   .abs_section_0
+     _PORTAB                                      0       2       2      13   .abs_section_0
      _DDRAB                                       2       2       2      11   .abs_section_2
      _PARTID                                     1A       2       2       0   .abs_section_1a
      _DBGTB                                      22       2       2       0   .abs_section_22
@@ -521,96 +520,76 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           500       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _CASE_SEARCH_8_BYTE                       C6EB      1A      26       1   RUNTIME     
+     _CASE_SEARCH_8_BYTE                       C429      1A      26       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
-     Delay                                     C0F1      20      32       3   .text       
-     InitializeTimers                          C111      37      55       1   .text       
-     TurnOnErrorLight                          C148       7       7       3   .text       
+     Delay                                     C03D      20      32       2   .text       
+     InitializeTimers                          C05D      37      55       1   .text       
+     TurnOnErrorLight                          C094       7       7       3   .text       
 - VARIABLES:
-     False                                     C03B       1       1       4   .rodata     
-     True                                      C03C       1       1       5   .rodata     
+     False                                     C03B       1       1       3   .rodata     
+     True                                      C03C       1       1       3   .rodata     
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     InitializeMotorControlSystem              C14F      34      52       1   .text       
-     SetLeftTreadDrivePower                    C183       C      12       1   .text       
-     SetRightTreadDrivePower                   C18F       C      12       1   .text       
-     Rotate                                    C19B      90     144       7   .text       
-     StopMotion                                C22B      1D      29       4   .text       
-     GetRoverInMotionFlag                      C248       4       4       1   .text       
-     SetRoverInMotionFlag                      C24C       7       7       1   .text       
-     ClearRoverInMotionFlag                    C253       7       7       1   .text       
-     InitializePulseAccumulator                C25A       C      12       1   .text       
-     DegreesToPulses                           C266      1F      31       1   .text       
-     MotionCompleted                           C285       4       4       1   .text       
-     LeftTreadForward                          C289       7       7       1   .text       
-     RightTreadForward                         C290       7       7       1   .text       
-     LeftTreadReverse                          C297       7       7       1   .text       
-     RightTreadReverse                         C29E       7       7       1   .text       
-     BrakeTreads                               C2A5       D      13       1   .text       
-     DisableTreads                             C2B2       7       7       2   .text       
-     EnableTreads                              C2B9       7       7       2   .text       
+     InitializeMotorControlSystem              C09B      34      52       1   .text       
+     SetLeftTreadDrivePower                    C0CF       C      12       1   .text       
+     SetRightTreadDrivePower                   C0DB       C      12       1   .text       
+     MoveForward                               C0E7      1A      26       1   .text       
+     StopMotion                                C101      1D      29       3   .text       
+     SetRoverInMotionFlag                      C11E       7       7       1   .text       
+     ClearRoverInMotionFlag                    C125       7       7       1   .text       
+     InitializePulseAccumulator                C12C       C      12       1   .text       
+     DistanceToPulses                          C138      64     100       1   .text       
+     MotionCompleted                           C19C       4       4       1   .text       
+     LeftTreadForward                          C1A0       7       7       1   .text       
+     RightTreadForward                         C1A7       7       7       1   .text       
+     BrakeTreads                               C1AE       D      13       1   .text       
+     DisableTreads                             C1BB       7       7       2   .text       
+     EnableTreads                              C1C2       7       7       2   .text       
 - VARIABLES:
-     LeftTreadPower                             507       1       1       1   .bss        
-     RightTreadPower                            508       1       1       1   .bss        
-     RoverInMotionFlag                          509       1       1       3   .bss        
+     LeftTreadPower                             501       1       1       1   .bss        
+     RightTreadPower                            502       1       1       1   .bss        
+     RoverInMotionFlag                          503       1       1       2   .bss        
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
 - PROCEDURES:
-     SetPingTimer                              C2C0       8       8       1   .text       
-     DetectClosestObstacle                     C2C8      1B      27       1   .text       
-     OutputPulseToPing                         C2E3      17      23       1   .text       
-     MeasureReturnPulseFromPing                C2FA      41      65       1   .text       
-     SetPingRotationalPosition                 C33B      38      56       1   .text       
-     PeriodicCheckForObstacles                 C373      21      33       1   .text       
+     SetPingTimer                              C1C9       8       8       1   .text       
+     DetectClosestObstacle                     C1D1      1B      27       1   .text       
+     OutputPulseToPing                         C1EC      17      23       1   .text       
+     MeasureReturnPulseFromPing                C203      41      65       1   .text       
+     SetPingRotationalPosition                 C244      38      56       1   .text       
+     PeriodicCheckForObstacles                 C27C      21      33       1   .text       
 - VARIABLES:
-     PingPeriodTimerCounterOffset               50A       2       2       1   .bss        
-     CurrentPingAngle                           50C       2       2       2   .bss        
+     PingPeriodTimerCounterOffset               504       2       2       1   .bss        
+     CurrentPingAngle                           506       2       2       2   .bss        
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C394      2C      44       1   .text       
+     main                                      C29D       E      14       1   .text       
 - VARIABLES:
 MODULE:                 -- I2C.c.o --
 - PROCEDURES:
-     i2cDelay                                  C3C0       E      14      12   .text       
-     readSCL                                   C3CE      11      17       1   .text       
-     readSDA                                   C3DF      12      18       6   .text       
-     clearSCL                                  C3F1       7       7       3   .text       
-     clearSDA                                  C3F8       7       7       3   .text       
-     readSCL_AllowClockStretching              C3FF      19      25       5   .text       
-     i2cStartCond                              C418      20      32       1   .text       
-     i2cStopCond                               C438      14      20       2   .text       
-     i2cWriteBit                               C44C      13      19       2   .text       
-     i2cReadBit                                C45F      17      23       2   .text       
-     I2CWriteByte                              C476      2D      45       1   .text       
-     I2CReadByte                               C4A3      2A      42       1   .text       
+     i2cDelay                                  C2AB       E      14      12   .text       
+     readSCL                                   C2B9      11      17       1   .text       
+     readSDA                                   C2CA      12      18       6   .text       
+     clearSCL                                  C2DC       7       7       3   .text       
+     clearSDA                                  C2E3       7       7       3   .text       
+     readSCL_AllowClockStretching              C2EA      19      25       5   .text       
+     i2cStartCond                              C303      20      32       1   .text       
+     i2cStopCond                               C323      14      20       1   .text       
+     i2cWriteBit                               C337      13      19       1   .text       
+     i2cReadBit                                C34A      17      23       1   .text       
+     I2CWriteByte                              C361      2D      45       1   .text       
 - VARIABLES:
      TimeOutTime                                500       1       1       1   .data       
-     started                                    50E       1       1       3   .bss        
-     timer                                      50F       1       1       3   .bss        
-MODULE:                 -- Math.c.o --
-- PROCEDURES:
-     arcTangent                                C4CD      BA     186       1   .text       
-- VARIABLES:
-     TangentLut                                C03D      B4     180       1   .rodata     
+     started                                    508       1       1       3   .bss        
+     timer                                      509       1       1       3   .bss        
 MODULE:                 -- Compass.c.o --
 - PROCEDURES:
-     writeByteToCompass                        C587      28      40      11   .text       
-     InitializeCompass                         C5AF      73     115       1   .text       
-     readByteFromCompass                       C622       C      12       6   .text       
-     GetDataFromCompass                        C62E      5F      95       1   .text       
-     GetASingleCompassReading                  C68D      36      54       2   .text       
-     GetAnAccurateCompassReading               C6C3      28      40       2   .text       
+     writeByteToCompass                        C38E      28      40       8   .text       
+     InitializeCompass                         C3B6      73     115       1   .text       
 - VARIABLES:
-     xShiftValue                                501       2       2       1   .data       
-     yShiftValue                                503       2       2       1   .data       
-     yScaleValueDenominator                     505       2       2       1   .data       
-     yScaleValueNumerator                       510       2       2       1   .bss        
-     rawXData                                   512       2       2       3   .bss        
-     rawYData                                   514       2       2       3   .bss        
-     rawZData                                   516       2       2       2   .bss        
 
 *********************************************************************************************
 MODULE STATISTIC
@@ -620,40 +599,35 @@ MODULE STATISTIC
   Start12.c.o                                  0     49      0
   rtshc12.c.o (ansisf.lib)                     0     26      0
   Rover.c.o                                    0     94      2
-  MotorControlSystem.c.o                       3    369      2
+  MotorControlSystem.c.o                       3    302      2
   ObstacleAvoidanceSystem.c.o                  4    212      2
-  main.c.o                                     0     44      0
-  I2C.c.o                                      3    269      0
-  Math.c.o                                     0    186    180
-  Compass.c.o                                 14    356      0
-  other                                      256     12     13
+  main.c.o                                     0     14      0
+  I2C.c.o                                      3    227      0
+  Compass.c.o                                  0    155      0
+  other                                      256     12      7
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
   Delay InitializeTimers TurnOnErrorLight InitializeMotorControlSystem 
-  SetLeftTreadDrivePower SetRightTreadDrivePower Rotate StopMotion 
-  GetRoverInMotionFlag SetRoverInMotionFlag ClearRoverInMotionFlag 
-  InitializePulseAccumulator DegreesToPulses MotionCompleted LeftTreadForward 
-  RightTreadForward LeftTreadReverse RightTreadReverse BrakeTreads 
-  DisableTreads EnableTreads SetPingTimer DetectClosestObstacle 
+  SetLeftTreadDrivePower SetRightTreadDrivePower MoveForward StopMotion 
+  SetRoverInMotionFlag ClearRoverInMotionFlag InitializePulseAccumulator 
+  DistanceToPulses MotionCompleted LeftTreadForward RightTreadForward 
+  BrakeTreads DisableTreads EnableTreads SetPingTimer DetectClosestObstacle 
   OutputPulseToPing MeasureReturnPulseFromPing SetPingRotationalPosition 
   PeriodicCheckForObstacles main i2cDelay readSCL readSDA clearSCL clearSDA 
   readSCL_AllowClockStretching i2cStartCond i2cStopCond i2cWriteBit i2cReadBit 
-  I2CWriteByte I2CReadByte arcTangent writeByteToCompass InitializeCompass 
-  readByteFromCompass GetDataFromCompass GetASingleCompassReading 
-  GetAnAccurateCompassReading 
+  I2CWriteByte writeByteToCompass InitializeCompass 
 SECTION: ".data"
-  TimeOutTime xShiftValue yShiftValue yScaleValueDenominator 
+  TimeOutTime 
 SECTION: ".bss"
   LeftTreadPower RightTreadPower RoverInMotionFlag 
   PingPeriodTimerCounterOffset CurrentPingAngle started timer 
-  yScaleValueNumerator rawXData rawYData rawZData 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata"
-  False True TangentLut 
+  False True 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1107,7 +1081,7 @@ SECTION: ".abs_section_ffec"
 OBJECT LIST SORTED BY ADDRESS
      Name                                      Addr   hSize   dSize     Ref    Section   RLIB
 ---------------------------------------------------------------------------------------------
-     _PORTAB                                      0       2       2      17   .abs_section_0
+     _PORTAB                                      0       2       2      13   .abs_section_0
      _DDRAB                                       2       2       2      11   .abs_section_2
      _PORTE                                       8       1       1       0   .abs_section_8
      _DDRE                                        9       1       1       0   .abs_section_9
@@ -1329,73 +1303,56 @@ OBJECT LIST SORTED BY ADDRESS
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
      TimeOutTime                                500       1       1       1   .data       
-     xShiftValue                                501       2       2       1   .data       
-     yShiftValue                                503       2       2       1   .data       
-     yScaleValueDenominator                     505       2       2       1   .data       
-     LeftTreadPower                             507       1       1       1   .bss        
-     RightTreadPower                            508       1       1       1   .bss        
-     RoverInMotionFlag                          509       1       1       3   .bss        
-     PingPeriodTimerCounterOffset               50A       2       2       1   .bss        
-     CurrentPingAngle                           50C       2       2       2   .bss        
-     started                                    50E       1       1       3   .bss        
-     timer                                      50F       1       1       3   .bss        
-     yScaleValueNumerator                       510       2       2       1   .bss        
-     rawXData                                   512       2       2       3   .bss        
-     rawYData                                   514       2       2       3   .bss        
-     rawZData                                   516       2       2       2   .bss        
+     LeftTreadPower                             501       1       1       1   .bss        
+     RightTreadPower                            502       1       1       1   .bss        
+     RoverInMotionFlag                          503       1       1       2   .bss        
+     PingPeriodTimerCounterOffset               504       2       2       1   .bss        
+     CurrentPingAngle                           506       2       2       2   .bss        
+     started                                    508       1       1       3   .bss        
+     timer                                      509       1       1       3   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     False                                     C03B       1       1       4   .rodata     
-     True                                      C03C       1       1       5   .rodata     
-     TangentLut                                C03D      B4     180       1   .rodata     
-     Delay                                     C0F1      20      32       3   .text       
-     InitializeTimers                          C111      37      55       1   .text       
-     TurnOnErrorLight                          C148       7       7       3   .text       
-     InitializeMotorControlSystem              C14F      34      52       1   .text       
-     SetLeftTreadDrivePower                    C183       C      12       1   .text       
-     SetRightTreadDrivePower                   C18F       C      12       1   .text       
-     Rotate                                    C19B      90     144       7   .text       
-     StopMotion                                C22B      1D      29       4   .text       
-     GetRoverInMotionFlag                      C248       4       4       1   .text       
-     SetRoverInMotionFlag                      C24C       7       7       1   .text       
-     ClearRoverInMotionFlag                    C253       7       7       1   .text       
-     InitializePulseAccumulator                C25A       C      12       1   .text       
-     DegreesToPulses                           C266      1F      31       1   .text       
-     MotionCompleted                           C285       4       4       1   .text       
-     LeftTreadForward                          C289       7       7       1   .text       
-     RightTreadForward                         C290       7       7       1   .text       
-     LeftTreadReverse                          C297       7       7       1   .text       
-     RightTreadReverse                         C29E       7       7       1   .text       
-     BrakeTreads                               C2A5       D      13       1   .text       
-     DisableTreads                             C2B2       7       7       2   .text       
-     EnableTreads                              C2B9       7       7       2   .text       
-     SetPingTimer                              C2C0       8       8       1   .text       
-     DetectClosestObstacle                     C2C8      1B      27       1   .text       
-     OutputPulseToPing                         C2E3      17      23       1   .text       
-     MeasureReturnPulseFromPing                C2FA      41      65       1   .text       
-     SetPingRotationalPosition                 C33B      38      56       1   .text       
-     PeriodicCheckForObstacles                 C373      21      33       1   .text       
-     main                                      C394      2C      44       1   .text       
-     i2cDelay                                  C3C0       E      14      12   .text       
-     readSCL                                   C3CE      11      17       1   .text       
-     readSDA                                   C3DF      12      18       6   .text       
-     clearSCL                                  C3F1       7       7       3   .text       
-     clearSDA                                  C3F8       7       7       3   .text       
-     readSCL_AllowClockStretching              C3FF      19      25       5   .text       
-     i2cStartCond                              C418      20      32       1   .text       
-     i2cStopCond                               C438      14      20       2   .text       
-     i2cWriteBit                               C44C      13      19       2   .text       
-     i2cReadBit                                C45F      17      23       2   .text       
-     I2CWriteByte                              C476      2D      45       1   .text       
-     I2CReadByte                               C4A3      2A      42       1   .text       
-     arcTangent                                C4CD      BA     186       1   .text       
-     writeByteToCompass                        C587      28      40      11   .text       
-     InitializeCompass                         C5AF      73     115       1   .text       
-     readByteFromCompass                       C622       C      12       6   .text       
-     GetDataFromCompass                        C62E      5F      95       1   .text       
-     GetASingleCompassReading                  C68D      36      54       2   .text       
-     GetAnAccurateCompassReading               C6C3      28      40       2   .text       
-     _CASE_SEARCH_8_BYTE                       C6EB      1A      26       1   RUNTIME     
+     False                                     C03B       1       1       3   .rodata     
+     True                                      C03C       1       1       3   .rodata     
+     Delay                                     C03D      20      32       2   .text       
+     InitializeTimers                          C05D      37      55       1   .text       
+     TurnOnErrorLight                          C094       7       7       3   .text       
+     InitializeMotorControlSystem              C09B      34      52       1   .text       
+     SetLeftTreadDrivePower                    C0CF       C      12       1   .text       
+     SetRightTreadDrivePower                   C0DB       C      12       1   .text       
+     MoveForward                               C0E7      1A      26       1   .text       
+     StopMotion                                C101      1D      29       3   .text       
+     SetRoverInMotionFlag                      C11E       7       7       1   .text       
+     ClearRoverInMotionFlag                    C125       7       7       1   .text       
+     InitializePulseAccumulator                C12C       C      12       1   .text       
+     DistanceToPulses                          C138      64     100       1   .text       
+     MotionCompleted                           C19C       4       4       1   .text       
+     LeftTreadForward                          C1A0       7       7       1   .text       
+     RightTreadForward                         C1A7       7       7       1   .text       
+     BrakeTreads                               C1AE       D      13       1   .text       
+     DisableTreads                             C1BB       7       7       2   .text       
+     EnableTreads                              C1C2       7       7       2   .text       
+     SetPingTimer                              C1C9       8       8       1   .text       
+     DetectClosestObstacle                     C1D1      1B      27       1   .text       
+     OutputPulseToPing                         C1EC      17      23       1   .text       
+     MeasureReturnPulseFromPing                C203      41      65       1   .text       
+     SetPingRotationalPosition                 C244      38      56       1   .text       
+     PeriodicCheckForObstacles                 C27C      21      33       1   .text       
+     main                                      C29D       E      14       1   .text       
+     i2cDelay                                  C2AB       E      14      12   .text       
+     readSCL                                   C2B9      11      17       1   .text       
+     readSDA                                   C2CA      12      18       6   .text       
+     clearSCL                                  C2DC       7       7       3   .text       
+     clearSDA                                  C2E3       7       7       3   .text       
+     readSCL_AllowClockStretching              C2EA      19      25       5   .text       
+     i2cStartCond                              C303      20      32       1   .text       
+     i2cStopCond                               C323      14      20       1   .text       
+     i2cWriteBit                               C337      13      19       1   .text       
+     i2cReadBit                                C34A      17      23       1   .text       
+     I2CWriteByte                              C361      2D      45       1   .text       
+     writeByteToCompass                        C38E      28      40       8   .text       
+     InitializeCompass                         C3B6      73     115       1   .text       
+     _CASE_SEARCH_8_BYTE                       C429      1A      26       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
@@ -1414,13 +1371,17 @@ Rover.c.o:
   TurnOffErrorLight 
 MotorControlSystem.c.o:
   StabilizeTreads DisableTreadStabilization ConvertSignedWordToSignedByte 
-  AdjustTreadDrivePower MoveForward MoveReverse DistanceToPulses 
-  CommenceTurnByTurnExecution ExecuteNextTurnByTurnInstruction 
+  AdjustTreadDrivePower MoveReverse Rotate GetRoverInMotionFlag DegreesToPulses 
+  CommenceTurnByTurnExecution ExecuteNextTurnByTurnInstruction LeftTreadReverse 
+  RightTreadReverse 
 ObstacleAvoidanceSystem.c.o:
   InitializeObstacleAvoidanceSystem EnablePeriodicObstacleDetection 
   DisablePeriodicObstacleDetection 
+I2C.c.o:
+  I2CReadByte 
 Compass.c.o:
-  CalibrateCompass 
+  readByteFromCompass CalibrateCompass GetDataFromCompass 
+  GetASingleCompassReading GetAnAccurateCompassReading 
 NOT USED VARIABLES
 rtshc12.c.o (ansisf.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
@@ -1437,33 +1398,20 @@ main.c.o:
 Compass.c.o:
   SettingsCRA SettingsCRB SettingsMode AddressCRA AddressCRB AddressMode 
   SlaveWrite SlaveRead NACK MaxNumberOfFailedAttempts 
-  MaxTolerableDifferenceBetweenTwoConsecutiveCompassReadings 
+  MaxTolerableDifferenceBetweenTwoConsecutiveCompassReadings xShiftValue 
+  yShiftValue yScaleValueDenominator yScaleValueNumerator rawXData rawYData 
+  rawZData 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC705 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xC443 ---- SIZE       4 ---
 Filling bytes inserted
- 00070500
-------- ROM-ADDRESS: 0xC709 ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
+ 00010500
+------- ROM-ADDRESS: 0xC447 ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
 Name of initialized Object : TimeOutTime
  64
-------- ROM-ADDRESS: 0xC70A ---- RAM-ADDRESS: 0x501 ---- SIZE       2 ---
-Name of initialized Object : xShiftValue
- FFE4
-------- ROM-ADDRESS: 0xC70C ---- SIZE       1 ---
-Filling bytes inserted
- 00
-------- ROM-ADDRESS: 0xC70D ---- RAM-ADDRESS: 0x504 ---- SIZE       1 ---
-Name of initialized Object : yShiftValue:1
- 6D
-------- ROM-ADDRESS: 0xC70E ---- SIZE       1 ---
-Filling bytes inserted
- 00
-------- ROM-ADDRESS: 0xC70F ---- RAM-ADDRESS: 0x506 ---- SIZE       1 ---
-Name of initialized Object : yScaleValueDenominator:1
- 64
-------- ROM-ADDRESS: 0xC710 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC448 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1480,22 +1428,17 @@ InitializeMotorControlSystem USES InitializeCompass _DDRAB _PWMPOL _PWMCLK
                                 SetRightTreadDrivePower StopMotion 
 SetLeftTreadDrivePower    USES _PWMDTY23 _PWMPER23 LeftTreadPower 
 SetRightTreadDrivePower   USES _PWMDTY23 _PWMPER23 RightTreadPower 
-Rotate                    USES GetAnAccurateCompassReading DegreesToPulses 
-                                InitializePulseAccumulator DisableTreads StopMotion LeftTreadForward 
-                                RightTreadReverse LeftTreadReverse RightTreadForward 
-                                SetRoverInMotionFlag EnableTreads GetRoverInMotionFlag True Delay 
-                                Rotate 
+MoveForward               USES DistanceToPulses InitializePulseAccumulator 
+                                DisableTreads LeftTreadForward RightTreadForward 
+                                SetRoverInMotionFlag EnableTreads 
 StopMotion                USES DisableTreads BrakeTreads EnableTreads Delay 
                                 _PACTL _PAFLG ClearRoverInMotionFlag 
-GetRoverInMotionFlag      USES RoverInMotionFlag 
 SetRoverInMotionFlag      USES True RoverInMotionFlag 
 ClearRoverInMotionFlag    USES False RoverInMotionFlag 
 InitializePulseAccumulator USES _PACNT _PACTL 
 MotionCompleted           USES StopMotion 
 LeftTreadForward          USES _PORTAB 
 RightTreadForward         USES _PORTAB 
-LeftTreadReverse          USES _PORTAB 
-RightTreadReverse         USES _PORTAB 
 BrakeTreads               USES _PORTAB 
 DisableTreads             USES _PWME 
 EnableTreads              USES _PWME 
@@ -1508,7 +1451,7 @@ SetPingRotationalPosition USES _PWMPOL _PWMCLK _PWMPRCLK _PWMCAE _PWMCTL
 PeriodicCheckForObstacles USES SetPingTimer CurrentPingAngle 
                                 SetPingRotationalPosition Delay DetectClosestObstacle StopMotion _TFLG1 
 main                      USES InitializeTimers InitializeMotorControlSystem 
-                                Rotate 
+                                MoveForward 
 readSCL                   USES _DDRAB _PORTAB 
 readSDA                   USES _DDRAB _PORTAB 
 clearSCL                  USES _DDRAB _PORTAB 
@@ -1523,17 +1466,8 @@ i2cWriteBit               USES readSDA clearSDA i2cDelay
 i2cReadBit                USES readSDA i2cDelay readSCL_AllowClockStretching 
                                 clearSCL 
 I2CWriteByte              USES i2cStartCond i2cWriteBit i2cReadBit i2cStopCond 
-I2CReadByte               USES i2cReadBit i2cStopCond i2cWriteBit 
-arcTangent                USES TangentLut 
 writeByteToCompass        USES TurnOnErrorLight I2CWriteByte 
 InitializeCompass         USES writeByteToCompass False True 
-readByteFromCompass       USES I2CReadByte 
-GetDataFromCompass        USES writeByteToCompass readByteFromCompass rawXData 
-                                rawZData rawYData False True 
-GetASingleCompassReading  USES GetDataFromCompass rawXData xShiftValue 
-                                rawYData yShiftValue yScaleValueNumerator 
-                                yScaleValueDenominator arcTangent 
-GetAnAccurateCompassReading USES GetASingleCompassReading 
 _Vector_17                USES MotionCompleted 
 _Vector_9                 USES PeriodicCheckForObstacles 
 
@@ -1624,51 +1558,21 @@ DEPENDENCY TREE
  |  |     |    
  |  |     +- ClearRoverInMotionFlag
  |  |          
- |  +- Rotate              
+ |  +- MoveForward         
  |     | 
- |     +- GetAnAccurateCompassReading
- |     |  | 
- |     |  +- GetASingleCompassReading
- |     |     | 
- |     |     +- GetDataFromCompass  
- |     |     |  | 
- |     |     |  +- writeByteToCompass   (see above)
- |     |     |  |  
- |     |     |  +- readByteFromCompass 
- |     |     |     | 
- |     |     |     +- I2CReadByte         
- |     |     |        | 
- |     |     |        +- i2cReadBit           (see above)
- |     |     |        |  
- |     |     |        +- i2cStopCond          (see above)
- |     |     |        |  
- |     |     |        +- i2cWriteBit          (see above)
- |     |     |           
- |     |     +- arcTangent          
- |     |          
- |     +- DegreesToPulses     
+ |     +- DistanceToPulses    
  |     |    
  |     +- InitializePulseAccumulator
  |     |    
  |     +- DisableTreads        (see above)
  |     |  
- |     +- StopMotion           (see above)
- |     |  
  |     +- LeftTreadForward    
- |     |    
- |     +- RightTreadReverse   
- |     |    
- |     +- LeftTreadReverse    
  |     |    
  |     +- RightTreadForward   
  |     |    
  |     +- SetRoverInMotionFlag
  |     |    
  |     +- EnableTreads         (see above)
- |     |  
- |     +- GetRoverInMotionFlag
- |     |    
- |     +- Delay                (see above)
  |        
  +- _Startup            
     | 
@@ -1706,6 +1610,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 1816
+Number of blocks to be downloaded: 8
+Total size of all blocks to be downloaded: 1104
 
