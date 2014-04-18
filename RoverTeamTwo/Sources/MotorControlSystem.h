@@ -21,8 +21,8 @@ boolean_t GetRoverInMotionFlag( void );
 
 /*** Static Function Prototypes ***/
 
-static void SetLeftTreadDrivePower( registerValue8_t power );
-static void SetRightTreadDrivePower( registerValue8_t power );
+static void SetLeftTreadDrivePower( Byte power );
+static void SetRightTreadDrivePower( Byte power );
 
 static void EnableTreads( void );
 static void DisableTreads( void );

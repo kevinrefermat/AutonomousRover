@@ -38,33 +38,18 @@ degree_t arcTangent( sWord y, sWord x )
    
    while ( high - low > 1 )
    {
-      if ( uRatio > TangentLut[ ( low + high ) / 2 ] )
-      {
-         low = ( low + high ) / 2;
-      }
-      else
-      {          
-         high = ( low + high ) / 2;
-      }
+      if ( uRatio > TangentLut[ ( low + high ) / 2 ] ) low = ( low + high ) / 2;
+      else high = ( low + high ) / 2;
    }
-
 
    if ( y >= 0 )
    {
-      // Quadrant I
-      if ( x > 0 )
-         return low;
-      // Quadrant II
-      else
-         return 180 - low;
+      if ( x > 0 ) return low;         // Quadrant I
+      else return 180 - low;           // Quadrant II
    }
    else
    {
-      // Quadrant III
-      if ( x < 0 )
-         return low - 180;
-      // Quadrant IV
-      else
-         return ~low + 1;
+      if ( x < 0 ) return low - 180;   // Quadrant III
+      else return ~low + 1;            // Quadrant IV
    }
 }

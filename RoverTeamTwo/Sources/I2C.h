@@ -10,24 +10,18 @@
 // Hardware-specific support functions that MUST be customized:
 
 #define I2CSPEED 10
-#define DDR_SCL DDRB_BIT0
-#define SCL PORTB_BIT0
-#define DDR_SDA DDRB_BIT1
-#define SDA PORTB_BIT1
-
-
-void arbitrationLost( void );
-void i2CDelay( void );
-boolean_t readSCL( void );   // Set SCL as input and return current level of line, 0 or 1
-boolean_t readSDA();   // Set SDA as input and return current level of line, 0 or 1
-void clearSCL();       // Actively drive SCL signal low
-void clearSDA();       // Actively drive SDA signal low
-void i2cStartCond();
-void i2cStopCond();
-void i2cWriteBit( boolean_t bit );
-boolean_t i2cReadBit();
 
 boolean_t I2CWriteByte( boolean_t sendStart, boolean_t sendStop, Byte byte );
 Byte I2CReadByte( boolean_t nack, boolean_t sendStop );
+
+void i2CDelay( void );
+boolean_t readSCL( void );          // Set SCL as input and return current level of line, 0 or 1
+boolean_t readSDA( void );          // Set SDA as input and return current level of line, 0 or 1
+void clearSCL( void );              // Actively drive SCL signal low
+void clearSDA( void );              // Actively drive SDA signal low
+void i2cStartCond( void );
+void i2cStopCond( void );
+void i2cWriteBit( boolean_t bit );
+boolean_t i2cReadBit( void );
 
 #endif

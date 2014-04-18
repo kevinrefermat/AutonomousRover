@@ -104,7 +104,7 @@ void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
    
    for ( i = 0; i < NumberOfNodes; i++ )
    {
-      beenVisited[ i ] = False;
+      beenVisited[ i ] = FALSE;
       distanceFromTarget[ i ] = 0x7FFF;
    }
    
@@ -126,7 +126,7 @@ void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
          }
       }
       if ( currentNodeId == sourceNodeId ) break;
-      beenVisited[ currentNodeId ] = True;
+      beenVisited[ currentNodeId ] = TRUE;
 
       for ( j = 0; j < NumberOfNodes; j++ )
       {
@@ -284,17 +284,17 @@ static boolean_t IntersectWithObstacle( segment_t* segment )
    {
       if ( IntersectWithShape( ( tetragon_t* )&( RomObstacleList[ i ] ), segment ) ) 
       {
-        return True;
+        return TRUE;
       }
    }
    for ( i = 0; i < RamNumberOfObstacles; i++ )
    {
       if ( IntersectWithShape( &( RamObstacleList[ i ] ), segment ) ) 
       {
-        return True;
+        return TRUE;
       }
    }
-   return False;
+   return FALSE;
 }
 
 static boolean_t IntersectWithShape( tetragon_t* tetragon, segment_t* segment )

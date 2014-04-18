@@ -18,7 +18,7 @@ static const sWord yShiftValue = 175;
 static const sWord yScaleValueNumerator = 18;
 static const sWord yScaleValueDenominator = 100;
 
-static const boolean_t NACK = 1;
+static const boolean_t NACK = TRUE;
 
 static const Byte MaxNumberOfFailedAttempts = 10;
 static const degree_t MaxTolerableDifferenceBetweenTwoConsecutiveCompassReadings = 2;
@@ -27,11 +27,10 @@ static fullCompassRegister_t rawXData;
 static fullCompassRegister_t rawYData;
 static fullCompassRegister_t rawZData;
 
-
 boolean_t writeByteToCompass( boolean_t sendStart, boolean_t sendStop, Byte data )
 {
    Byte numberOfFailedAttempts = 0;
-   while ( I2CWriteByte( sendStart, sendStop, data ) == 1 ) // I2CWriteByte returned nack = 1
+   while ( I2CWriteByte( sendStart, sendStop, data ) == TRUE ) // I2CWriteByte returned nack = 1
    {  
       numberOfFailedAttempts++;
       if ( numberOfFailedAttempts == MaxNumberOfFailedAttempts )
@@ -45,19 +44,19 @@ boolean_t writeByteToCompass( boolean_t sendStart, boolean_t sendStop, Byte data
 
 boolean_t InitializeCompass()
 {
-   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
-   if ( writeByteToCompass( 0, 0, AddressCRA ) == NACK ) return False;
-   if ( writeByteToCompass( 0, 1, SettingsCRA ) == NACK ) return False;
+   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return FALSE;
+   if ( writeByteToCompass( 0, 0, AddressCRA ) == NACK ) return FALSE;
+   if ( writeByteToCompass( 0, 1, SettingsCRA ) == NACK ) return FALSE;
    
-   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
-   if ( writeByteToCompass( 0, 0, AddressCRB ) == NACK ) return False;
-   if ( writeByteToCompass( 0, 1, SettingsCRB ) == NACK ) return False;
+   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return FALSE;
+   if ( writeByteToCompass( 0, 0, AddressCRB ) == NACK ) return FALSE;
+   if ( writeByteToCompass( 0, 1, SettingsCRB ) == NACK ) return FALSE;
    
-   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
-   if ( writeByteToCompass( 0, 0, AddressMode ) == NACK ) return False;
-   if ( writeByteToCompass( 0, 1, SettingsMode ) == NACK ) return False;
+   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return FALSE;
+   if ( writeByteToCompass( 0, 0, AddressMode ) == NACK ) return FALSE;
+   if ( writeByteToCompass( 0, 1, SettingsMode ) == NACK ) return FALSE;
    
-   return True;
+   return TRUE;
 }
 
 Byte readByteFromCompass( boolean_t sendStop )
@@ -68,7 +67,7 @@ Byte readByteFromCompass( boolean_t sendStop )
 // returns 1 on success and 0 on failure
 boolean_t GetDataFromCompass()
 {
-   if ( writeByteToCompass( 1, 0, SlaveRead ) == NACK ) return False;
+   if ( writeByteToCompass( 1, 0, SlaveRead ) == NACK ) return FALSE;
    
    rawXData.bytes.upper = readByteFromCompass( 0 );
    rawXData.bytes.lower = readByteFromCompass( 0 );
@@ -78,10 +77,10 @@ boolean_t GetDataFromCompass()
    rawYData.bytes.lower = readByteFromCompass( 1 );
    
    // Make sure register pointer is at first register by writing nothing to it
-   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return False;
-   if ( writeByteToCompass( 0, 1, 0x03 ) == NACK ) return False;
+   if ( writeByteToCompass( 1, 0, SlaveWrite ) == NACK ) return FALSE;
+   if ( writeByteToCompass( 0, 1, 0x03 ) == NACK ) return FALSE;
    
-   return True;
+   return TRUE;
 }
 
 // returns calculated bearing compared to magnetic north
@@ -97,10 +96,7 @@ degree_t GetASingleCompassReading()
    
    angle = arcTangent( balancedY, balancedX );
    
-   if ( angle < 0 )
-   {
-      angle += 360;  
-   }
+   if ( angle < 0 ) angle += 360;
    return angle;
 }
 

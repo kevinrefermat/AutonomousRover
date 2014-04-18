@@ -1,15 +1,7 @@
 #include "Rover.h"
 
-/*** Constants ***/
-
-const boolean_t False = 0;
-const boolean_t True = 1;
-
-
 /*** USEFUL FUNCTIONS ***/
 
-// actual delay time is 12.5us (of overhead) and 10us for each
-// iteration of the for loop          
 void Delay( milliseconds_t time )
 {  
   milliseconds_t i, j;
@@ -29,7 +21,7 @@ void Delay( milliseconds_t time )
 
 void InitializeTimers()
 {
-   registerValue8_t offset, timerCounterPrescale;
+   Byte offset, timerCounterPrescale;
    offset = 0;
 
    // enable timer and disable fast flag clear

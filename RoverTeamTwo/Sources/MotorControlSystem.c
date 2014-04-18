@@ -6,33 +6,31 @@
 #include "NavigationSystem.h"
 #include "Compass.h"
 
-/*** Static Constant Definitions ***/
+/*** STATIC CONSTANTS ***/
 
-static const pulseCount_t InitialRightTreadPower = 0xF0;  // 0xE1 90% ( out of 255 )
-static const pulseCount_t InitialLeftTreadPower = 0xF0;   // 0xE1 90% ( out of 255 )
-static const pulseCount_t MaxPower = 0xFF;
+static const Byte MaxPower = 0xFF;
                                                                  
-static const milliseconds_t WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY = 200;
+static const milliseconds_t WaitForRoverToActuallyStopDelay = 200;
 
 static const pulseCount_t PulsesPerInch = 12;
 static const pulseCount_t PulsesPerFoot = 137;
 static const pulseCount_t PulsesPerFiveFeet = 712;
 static const pulseCount_t PulsesPerTwentyFiveFeet = 3560;
 
-static const pulseCount_t PULSES_PER_DEGREE_NUMERATOR = 100;
-static const pulseCount_t PULSES_PER_DEGREE_DENOMINATOR = 72;
+static const pulseCount_t PulsesPerDegreeNumerator = 100;
+static const pulseCount_t PulsesPerDegreeDenominator = 72;
 
 static const Byte LEFT_TREAD = 0;
 static const Byte RIGHT_TREAD = 1;
 
-/*** Static Variables ***/
+/*** STATIC VARIABLES ***/
 
 // SETS SPEED OF ROVER
 #define DESIRED_ENCODER_PERIOD_IN_MICROSECONDS 10000  // 10000 is microseconds should be average speed
 static timerCount_t DesiredEncoderPeriod = DESIRED_ENCODER_PERIOD_IN_MICROSECONDS * 2 / TIMER_COUNTER_PRESCALE; 
 
-static registerValue8_t LeftTreadPower = 0;
-static registerValue8_t RightTreadPower = 0;
+static Byte LeftTreadPower = 0;
+static Byte RightTreadPower = 0;
 
 
 /*** Flags ***/
@@ -91,8 +89,8 @@ void StabilizeTreads()
    previousError[ 0 ] = 0;
    previousError[ 1 ] = 0;
 
-   isFirstMeasurement[ 0 ] = True;
-   isFirstMeasurement[ 1 ] = True;
+   isFirstMeasurement[ 0 ] = TRUE;
+   isFirstMeasurement[ 1 ] = TRUE;
 
    // initialize timers
    
@@ -130,7 +128,7 @@ void StabilizeTreads()
          if ( isFirstMeasurement[ index ] )
          {
             lastRisingEdge[ index ] = currentRisingEdge;
-            isFirstMeasurement[ index ] = False;
+            isFirstMeasurement[ index ] = FALSE;
             continue;  
          }
          
@@ -162,28 +160,19 @@ static void AdjustTreadDrivePower( Byte treadId, sByte adjustment )
    Byte newPWMDTY, oldPWMDTY;
    oldPWMDTY = treadId == LEFT_TREAD ? LeftTreadPower : RightTreadPower;
    newPWMDTY = oldPWMDTY + adjustment;
-   if ( adjustment > 0 && newPWMDTY < oldPWMDTY )
-   {
-      newPWMDTY = MaxPower;
-   }
-   if ( treadId == LEFT_TREAD )
-   {
-      SetLeftTreadDrivePower( newPWMDTY );
-   }
-   else
-   {
-      SetRightTreadDrivePower( newPWMDTY );
-   }
+   if ( adjustment > 0 && newPWMDTY < oldPWMDTY ) newPWMDTY = MaxPower;
+   if ( treadId == LEFT_TREAD ) SetLeftTreadDrivePower( newPWMDTY );
+   else SetRightTreadDrivePower( newPWMDTY );
 }
 
-static void SetLeftTreadDrivePower( registerValue8_t power )
+static void SetLeftTreadDrivePower( Byte power )
 {
 	MOTOR_DRIVE_LEFT_DUTY = power;
 	MOTOR_DRIVE_LEFT_PERIOD = 0xFF;
    LeftTreadPower = MOTOR_DRIVE_LEFT_DUTY;
 }
 
-static void SetRightTreadDrivePower( registerValue8_t power )
+static void SetRightTreadDrivePower( Byte power )
 {               
 	MOTOR_DRIVE_RIGHT_DUTY = power;
 	MOTOR_DRIVE_RIGHT_PERIOD = 0xFF;           
@@ -307,7 +296,7 @@ void StopMotion( void )
    DisableTreads();
    BrakeTreads();
    EnableTreads();
-   Delay( WAIT_FOR_ROVER_TO_ACTUALLY_STOP_DELAY );
+   Delay( WaitForRoverToActuallyStopDelay );
 	
 	// Clear the PA overflow flag and stop the PA
 	// Writing a 1 to the PAOVF flag clears it but TEN in TSCR1 must be enabled.
@@ -329,12 +318,12 @@ boolean_t GetRoverInMotionFlag()
 
 static void SetRoverInMotionFlag()
 {
-   RoverInMotionFlag = True;
+   RoverInMotionFlag = TRUE;
 }
 
 static void ClearRoverInMotionFlag()
 {
-   RoverInMotionFlag = False;
+   RoverInMotionFlag = FALSE;
 }
 
 static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt )
@@ -365,7 +354,7 @@ static pulseCount_t DistanceToPulses( inches_t distance )
 
 static pulseCount_t DegreesToPulses( degree_t degrees) 
 {  
-	return ( ( pulseCount_t ) ( ( 2 * ( degrees >= 0 ) - 1 ) * degrees ) ) * PULSES_PER_DEGREE_NUMERATOR / PULSES_PER_DEGREE_DENOMINATOR;
+	return ( ( pulseCount_t ) ( ( 2 * ( degrees >= 0 ) - 1 ) * degrees ) ) * PulsesPerDegreeNumerator / PulsesPerDegreeDenominator;
 }
 
 void CommenceTurnByTurnExecution()
@@ -386,9 +375,9 @@ static boolean_t ExecuteNextTurnByTurnInstruction()
          case ROTATE_MOTION: Rotate( TurnByTurnElement->value ); break;
          default: break;
       }
-      return True;
+      return TRUE;
    } 
-   return False;
+   return FALSE;
 }
 
 interrupt VectorNumber_Vtimpaovf void MotionCompleted()

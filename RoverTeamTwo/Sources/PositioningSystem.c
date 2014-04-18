@@ -58,7 +58,7 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
 
    success = waitForAndDetectReceivedSonarPulse();
    endTimerCount = TCNT;
-   if ( success == False )
+   if ( success == FALSE )
    {
       return -1;
    }
@@ -68,7 +68,7 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
    return distance;
 }
 
-// function blocks until it detect and returns True if successful and False if timed out
+// function blocks until it detect and returns TRUE if successful and FALSE if timed out
 static boolean_t waitForAndDetectReceivedSonarPulse()
 {
    ATDCTL2 = 0xC0; // fast flag clear

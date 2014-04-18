@@ -6,8 +6,8 @@
 #include "ObstacleAvoidanceSystem.h"
 #include "MotorControlSystem.h"
 
-static const registerValue8_t LookLeftPwmDuty = 18;
-static const registerValue8_t LookRightPwmDuty = 3;
+static const Byte LookLeftPwmDuty = 18;
+static const Byte LookRightPwmDuty = 3;
 
 static const inches_t ObstacleDetectionThreshhold = 24;
 
@@ -77,43 +77,42 @@ static void SetPingTimer()
 
 inches_t DetectClosestObstacle()
 {
-   timerCount_t lengthOfEchoInClockCycles;
+   timerCount_t lengthOfEchoInTimerClockCycles;
    
    DisableInterrupts;
    
    OutputPulseToPing();
-   lengthOfEchoInClockCycles = MeasureReturnPulseFromPing();
-   lengthOfEchoInClockCycles *= TIMER_COUNTER_PRESCALE;
+   lengthOfEchoInTimerClockCycles = MeasureReturnPulseFromPing();
    
    EnableInterrupts;
    
-   return ( inches_t ) lengthOfEchoInClockCycles / CLOCK_TICKS_PER_INCH_OF_SOUND_TRAVEL / 2 ;
+   return ( inches_t ) lengthOfEchoInTimerClockCycles / TIMER_CLOCK_TICKS_PER_INCH_OF_SOUND_TRAVEL / 2 ;
 }
 
 static void OutputPulseToPing()
 {
 // creates a 5us pulse. It looks like it would make 3.5us pulse but it's actually 5us
-    OBJECT_DETECTION_DDR = 1;
+   OBSTACLE_DETECTION_DDR = 1;
 
-    OBJECT_DETECTION_PIN = 0;
-    OBJECT_DETECTION_PIN = 1;
-    _asm
-    {
+   OBSTACLE_DETECTION_PIN = 0;
+   OBSTACLE_DETECTION_PIN = 1;
+   _asm
+   {
       nop
       nop
       nop
       nop
       nop
       nop
-    }
-    OBJECT_DETECTION_PIN = 0;
+   }
+   OBSTACLE_DETECTION_PIN = 0;
 }
 
 static timerCount_t MeasureReturnPulseFromPing()
 {
    timerCount_t risingEdge;
    
-   OBJECT_DETECTION_DDR = 0;
+   OBSTACLE_DETECTION_DDR = 0;
    
    // capture rising edge
    TCTL4_EDG0x = 0x01;
@@ -129,19 +128,12 @@ static timerCount_t MeasureReturnPulseFromPing()
    while ( !( TFLG1_C0F ) );
    TFLG1_C0F = 1;
 
-   if ( risingEdge < TC0 )
-   {
-      return TC0 - risingEdge;
-   }
-   else
-   {
-      return ( ~risingEdge + 1 ) + TC0;
-   }
+   return TC0 - risingEdge;
 }
 
 void SetPingRotationalPosition( degree_t degrees )
 {
-   registerValue8_t clockCycles;
+   Byte dutyCount;
 
    PWMPOL_PPOL0 = 1;
    PWMCLK_PCLK0 = 1;
@@ -154,8 +146,8 @@ void SetPingRotationalPosition( degree_t degrees )
    PWMPER0 = 167;
   
    degrees += 90;
-   clockCycles = ( ( degree_t ) ( degrees * ( LookLeftPwmDuty - LookRightPwmDuty ) / 180 ) ) + LookRightPwmDuty;
-   PWMDTY0 = clockCycles;
+   dutyCount = ( ( degree_t ) ( degrees * ( LookLeftPwmDuty - LookRightPwmDuty ) / 180 ) ) + LookRightPwmDuty;
+   PWMDTY0 = dutyCount;
   
    PWME_PWME0 = 1;
    CurrentPingAngle = degrees - 90;
@@ -175,6 +167,5 @@ interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
       StopMotion();
    }
    
-   // Clear flag
    TFLG1_C1F = 1;
 }
