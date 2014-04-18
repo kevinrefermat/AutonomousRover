@@ -9,6 +9,10 @@
 /*** STATIC CONSTANTS ***/
 
 static const Byte MaxPower = 0xFF;
+
+static const pulseCount_t InitialRightTreadPower = 0xFC;  // 0xE1 90% ( out of 255 )
+static const pulseCount_t InitialLeftTreadPower = 0xFF;   // 0xE1 90% ( out of 255 )
+static const pulseCount_t MaxPower = 0xFF;
                                                                  
 static const milliseconds_t WaitForRoverToActuallyStopDelay = 200;
 
@@ -76,21 +80,29 @@ void InitializeMotorControlSystem()
 
 void StabilizeTreads()
 {
-   microseconds_t dt;
    boolean_t isFirstMeasurement[ 2 ];
    Byte index;
    sByte adjustment8Bit;
    
-   sWord previousError[ 2 ], currentError, errorAttenuation, adjustment;
+   sWord error, errorAttenuation[ 2 ], adjustment, integralError[ 2 ], integralErrorAttenuation[ 2 ];
    timerCount_t currentPulsePeriod, currentRisingEdge, lastRisingEdge[ 2 ];
   
-   errorAttenuation = 0x7FFF;
+   timerCount_t standardPulsePeriod = 1000;
+  
+   errorAttenuation[ LEFT_TREAD ] = 0x007F;
+   errorAttenuation[ RIGHT_TREAD ] = 0x7ffF;
+   
+   integralErrorAttenuation[ LEFT_TREAD ] = 0x04FF;
+   integralErrorAttenuation[ RIGHT_TREAD ] = 0x03FF;
 
-   previousError[ 0 ] = 0;
-   previousError[ 1 ] = 0;
+   integralError[ LEFT_TREAD ] = 0;
+   integralError[ RIGHT_TREAD ] = 0;
 
    isFirstMeasurement[ 0 ] = TRUE;
    isFirstMeasurement[ 1 ] = TRUE;
+   
+   isFirstMeasurement[ LEFT_TREAD ] = True;
+   isFirstMeasurement[ RIGHT_TREAD ] = True;
 
    // initialize timers
    
@@ -108,21 +120,23 @@ void StabilizeTreads()
   
    while( RoverInMotionFlag )
    {
-      if ( TFLG1_C2F || TFLG1_C3F )
-      {
          if ( TFLG1_C2F )
          {
+            currentRisingEdge = TC2;
             index = LEFT_TREAD;
             TFLG1_C2F = 1;       // clear the flag
             TCTL4_EDG2x = 0x01;  // capture rising edge
-            currentRisingEdge = TC2;
-         }
-         else                    // then TFGL1_C3F is set
+         } 
+         else if ( TFLG1_C3F )   // then TFGL1_C3F is set
          {
+            currentRisingEdge = TC3;
             index = RIGHT_TREAD;
             TFLG1_C3F = 1;       // clear the flag
             TCTL4_EDG3x = 0x01;  // capture rising edge
-            currentRisingEdge = TC3;
+         }
+         else
+         {
+            continue;
          }
          
          if ( isFirstMeasurement[ index ] )
@@ -132,15 +146,24 @@ void StabilizeTreads()
             continue;  
          }
          
+         if ( index == RIGHT_TREAD )
+         {
+            standardPulsePeriod = currentRisingEdge - lastRisingEdge[ index ];
+            lastRisingEdge[ index ] = currentRisingEdge;
+            continue;
+         }
+         
          currentPulsePeriod = currentRisingEdge - lastRisingEdge[ index ];
-         error = ( sWord ) currentPulsePeriod - ( sWord ) DesiredEncoderPeriod;
+         error = ( sWord ) currentPulsePeriod - ( sWord ) standardPulsePeriod;
+         integralError[ index ] += error;
+         
+         lastRisingEdge[ index ] = currentRisingEdge;
 
-         adjustment = error / errorAttenuation;
-         adjustment8bit = ConvertSignedWordToSignedByte( adjustment );
+         adjustment = error / errorAttenuation[ index ] + integralError[ index ] / integralErrorAttenuation[ index ];
+         adjustment8Bit = ConvertSignedWordToSignedByte( adjustment );
 
-         AdjustTreadDrivePower( index, adjustment8bit );
+         AdjustTreadDrivePower( index, adjustment8Bit );
       }
-   }
 }
 
 void DisableTreadStabilization()
@@ -179,50 +202,6 @@ static void SetRightTreadDrivePower( Byte power )
    RightTreadPower = MOTOR_DRIVE_RIGHT_DUTY;
 }
 
-static void LeftTreadForward()
-{
-   MOTOR_DRIVE_LEFT_IN_0 = 1;
-	MOTOR_DRIVE_LEFT_IN_1 = 0;
-}
-
-static void RightTreadForward()
-{
-   MOTOR_DRIVE_RIGHT_IN_0 = 0;
-	MOTOR_DRIVE_RIGHT_IN_1 = 1;
-}
-
-static void LeftTreadReverse()
-{
-   MOTOR_DRIVE_LEFT_IN_0 = 0;
-	MOTOR_DRIVE_LEFT_IN_1 = 1;
-}
-
-static void RightTreadReverse()
-{
-   MOTOR_DRIVE_RIGHT_IN_0 = 1;
-	MOTOR_DRIVE_RIGHT_IN_1 = 0;
-}
-
-static void BrakeTreads()
-{
-   MOTOR_DRIVE_LEFT_IN_0 = 1;
-   MOTOR_DRIVE_LEFT_IN_1 = 1;
-   MOTOR_DRIVE_RIGHT_IN_0 = 1;
-   MOTOR_DRIVE_RIGHT_IN_1 = 1;
-}
-
-static void DisableTreads()
-{
-   MOTOR_DRIVE_LEFT_ENABLE = 0;
-   MOTOR_DRIVE_RIGHT_ENABLE = 0;
-}
-
-static void EnableTreads()
-{
-   MOTOR_DRIVE_LEFT_ENABLE = 1;
-   MOTOR_DRIVE_RIGHT_ENABLE = 1;
-} 
-
 
 void MoveForward( inches_t distance )
 { 
@@ -237,7 +216,7 @@ void MoveForward( inches_t distance )
  	                    
  	EnableTreads();
  	EnableInterrupts;
- 	StabilizeTreads();
+ 	//StabilizeTreads();
 }
 
 void MoveReverse( inches_t distance )
@@ -257,36 +236,50 @@ void MoveReverse( inches_t distance )
 
 void Rotate( degree_t degrees )
 {
-   degree_t initialBearing, desiredBearing;
-
-   initialBearing = GetAnAccurateCompassReading();
-   desiredBearing = initialBearing + degrees;
+   degree_t currentBearing, desiredBearing;
+   currentBearing = GetAnAccurateCompassReading();
+   desiredBearing = currentBearing + degrees;
    if ( desiredBearing > 359 ) desiredBearing -= 360;
    if ( desiredBearing < 0 ) desiredBearing += 360;
 
-   DisableInterrupts;
+   if ( degrees > 180 ) degrees -= 360;
+   
    InitializePulseAccumulator( DegreesToPulses( degrees ) );
    
    DisableTreads();
 
-   if ( degrees == 0 ) StopMotion();
-   else
+   if ( degrees == 0 )
    {
-      if ( degrees > 0 )
-      {
-         LeftTreadReverse();
-         RightTreadForward();
-      }
-      else if ( degrees < 0 )
-      {    
-         LeftTreadForward();
-         RightTreadReverse();
-	   }       
-      SetRoverInMotionFlag();   
+      StopMotion();
+      return;
    }
    
+   DisableInterrupts;
+   
+   if ( degrees > 0 )
+   {
+      LeftTreadForward();
+      RightTreadReverse();
+   }
+   else if ( degrees < 0 )
+   {    
+      LeftTreadReverse();
+      RightTreadForward();
+   }       
+   SetRoverInMotionFlag(); 
+   
    EnableTreads();
-   EnableInterrupts;            
+   EnableInterrupts;  
+   
+   while ( GetRoverInMotionFlag() == True );
+   Delay( 200 );
+   currentBearing = GetAnAccurateCompassReading();
+   if ( currentBearing - desiredBearing <= -2 && currentBearing - desiredBearing >= -358 ||
+        currentBearing - desiredBearing >= 2 && currentBearing - desiredBearing <= 358 ) 
+   {
+      Rotate( desiredBearing - currentBearing );
+      return;
+   }       
 }
 
 void StopMotion( void )
@@ -383,5 +376,51 @@ static boolean_t ExecuteNextTurnByTurnInstruction()
 interrupt VectorNumber_Vtimpaovf void MotionCompleted()
 {
 	StopMotion();
-	ExecuteNextTurnByTurnInstruction();
+	//ExecuteNextTurnByTurnInstruction();
 }
+
+
+static void LeftTreadForward()
+{
+   MOTOR_DRIVE_LEFT_IN_0 = 1;
+	MOTOR_DRIVE_LEFT_IN_1 = 0;
+}
+
+static void RightTreadForward()
+{
+   MOTOR_DRIVE_RIGHT_IN_0 = 0;
+	MOTOR_DRIVE_RIGHT_IN_1 = 1;
+}
+
+static void LeftTreadReverse()
+{
+   MOTOR_DRIVE_LEFT_IN_0 = 0;
+	MOTOR_DRIVE_LEFT_IN_1 = 1;
+}
+
+static void RightTreadReverse()
+{
+   MOTOR_DRIVE_RIGHT_IN_0 = 1;
+	MOTOR_DRIVE_RIGHT_IN_1 = 0;
+}
+
+static void BrakeTreads()
+{
+   MOTOR_DRIVE_LEFT_IN_0 = 1;
+   MOTOR_DRIVE_LEFT_IN_1 = 1;
+   MOTOR_DRIVE_RIGHT_IN_0 = 1;
+   MOTOR_DRIVE_RIGHT_IN_1 = 1;
+}
+
+static void DisableTreads()
+{
+   MOTOR_DRIVE_LEFT_ENABLE = 0;
+   MOTOR_DRIVE_RIGHT_ENABLE = 0;
+}
+
+static void EnableTreads()
+{
+   MOTOR_DRIVE_LEFT_ENABLE = 1;
+   MOTOR_DRIVE_RIGHT_ENABLE = 1;
+} 
+

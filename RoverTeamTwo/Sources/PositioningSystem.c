@@ -1,7 +1,10 @@
 #include "Rover.h"
 #include "PositioningSystem.h"
+#include "MC9S12C128.h"
+
 
 static const TimeOutTime = MAX_16_BIT_VALUE;
+static const TransmittingOverhead = 10000;
 
 // Could implement check at initialization to ensure that the beacons are correctly
 // indexed
@@ -49,6 +52,8 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
    // delay to guarantee it sees the rising edge. Implement feedback from transmitter
    // so freescale can accurately start the timer
 
+   BEACON_TRANSMITTER_ENABLE = 1;
+
    // ADD TIMEOUT 
    while ( BEACON_TRANSMITTER_ACKNOWLEDGE_PIN == 0 );
    startTimerCount = TCNT;
@@ -73,11 +78,9 @@ static boolean_t waitForAndDetectReceivedSonarPulse()
 {
    ATDCTL2 = 0xC0; // fast flag clear
    ATDCTL3 = 0x0A;
-   ATDCTL4 = 0x80 // speed/accuracy of conversion
-   ATDCTL5 = ; // 00100000
+   ATDCTL4 = 0x80; // speed/accuracy of conversion
+   ATDCTL5 = 0x20; // 00100000
 
-   ATDSTAT0_SCF
-   ATTDIEN??
 
    // get noise threshold
    // add time out structure
