@@ -13,6 +13,7 @@ void InitializePositioningSystem()
    BEACON_TRANSMITTER_ENABLE_DDR = OUTPUT;
    BEACON_TRANSMITTER_SIGNAL_0_DDR = OUTPUT;
    BEACON_TRANSMITTER_SIGNAL_1_DDR = OUTPUT;
+   BEACON_TRANSMITTER_SIGNAL_2_DDR = OUTPUT;
    BEACON_TRANSMITTER_ACKNOWLEDGE_PIN_DDR = INPUT;
    
    BEACON_TRANSMITTER_ENABLE = 0;
@@ -61,7 +62,8 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
    // After acknowledge disable
    BEACON_TRANSMITTER_ENABLE = 0;
 
-   success = waitForAndDetectReceivedSonarPulse();
+   success = TRUE;
+   //success = waitForAndDetectReceivedSonarPulse();
    endTimerCount = TCNT;
    if ( success == FALSE )
    {
@@ -74,17 +76,41 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
 }
 
 // function blocks until it detect and returns TRUE if successful and FALSE if timed out
-static boolean_t waitForAndDetectReceivedSonarPulse()
+/*static*/ boolean_t waitForAndDetectReceivedSonarPulse()
 {
+   Word noSignalLevel16;
+   Byte i, noSignalLevel8;
+   const Byte NumberOfNoSignalSamples = 100;
+   const Byte SignalThreshhold = 25;
+   noSignalLevel16 = 0;
+   
    ATDCTL2 = 0xC0; // fast flag clear
    ATDCTL3 = 0x0A;
    ATDCTL4 = 0x80; // speed/accuracy of conversion
-   ATDCTL5 = 0x20; // 00100000
-
-
+   ATDCTL5 = 0xA0; // 10100000
+   
    // get noise threshold
+   for ( i = 0; i < NumberOfNoSignalSamples; i++ )
+   {
+      while ( ATDSTAT1_CCF0 == 0 );
+      noSignalLevel16 += ATDDR0L;
+   }
+   noSignalLevel16 /= NumberOfNoSignalSamples;
+   noSignalLevel8 = noSignalLevel16;
+   
+   for ( ; ; )
+   {
+      while ( ATDSTAT1_CCF0 == 0 );
+      if ( ATDDR0L > noSignalLevel8 + SignalThreshhold || ATDDR0L < noSignalLevel8 - SignalThreshhold )
+      {
+         return TRUE;
+      }
+   }
    // add time out structure
    // repeatedly loop and check for signal that is significantly more powerful than
    // the noise and of some significant duration
+   
+   
+   //DISABLE ATD
 }
 

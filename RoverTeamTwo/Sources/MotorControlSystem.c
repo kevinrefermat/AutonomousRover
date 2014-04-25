@@ -10,9 +10,8 @@
 
 static const Byte MaxPower = 0xFF;
 
-static const pulseCount_t InitialRightTreadPower = 0xFC;  // 0xE1 90% ( out of 255 )
-static const pulseCount_t InitialLeftTreadPower = 0xFF;   // 0xE1 90% ( out of 255 )
-static const pulseCount_t MaxPower = 0xFF;
+static const Byte InitialRightTreadPower = 0xFC;  // 0xE1 90% ( out of 255 )
+static const Byte InitialLeftTreadPower = 0xFF;   // 0xE1 90% ( out of 255 )
                                                                  
 static const milliseconds_t WaitForRoverToActuallyStopDelay = 200;
 
@@ -101,8 +100,8 @@ void StabilizeTreads()
    isFirstMeasurement[ 0 ] = TRUE;
    isFirstMeasurement[ 1 ] = TRUE;
    
-   isFirstMeasurement[ LEFT_TREAD ] = True;
-   isFirstMeasurement[ RIGHT_TREAD ] = True;
+   isFirstMeasurement[ LEFT_TREAD ] = TRUE;
+   isFirstMeasurement[ RIGHT_TREAD ] = TRUE;
 
    // initialize timers
    
@@ -271,7 +270,7 @@ void Rotate( degree_t degrees )
    EnableTreads();
    EnableInterrupts;  
    
-   while ( GetRoverInMotionFlag() == True );
+   while ( GetRoverInMotionFlag() == TRUE );
    Delay( 200 );
    currentBearing = GetAnAccurateCompassReading();
    if ( currentBearing - desiredBearing <= -2 && currentBearing - desiredBearing >= -358 ||
