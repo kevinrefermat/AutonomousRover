@@ -12,17 +12,17 @@
 #include "Compass.h"
 #include "I2C.h"
 
-static degree_t bearing[ 5 ];
+static inches_t distance;
 
 void main( void )
 {  
    Byte i;
-  /* InitializePositioningSystem();
+   InitializeTimers();
+   InitializePositioningSystem();
    for ( ; ; )
-   {        
-      GetDistanceToBeacon( 2 );
-      Delay( 1000 );
-   }*/
+   {      
+      distance = GetDistanceToBeacon( 2 );
+   }
    
    waitForAndDetectReceivedSonarPulse();
    TurnOnErrorLight();

@@ -4,12 +4,20 @@
 
 
 static const TimeOutTime = MAX_16_BIT_VALUE;
-static const TransmittingOverhead = 10000;
+static const pulseCount_t TransmittingOverhead = 0;
+static const inches_t NO_SIGNAL_DETECTED = -1;
+static const inches_t TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST = -2;
 
 // Could implement check at initialization to ensure that the beacons are correctly
 // indexed
 void InitializePositioningSystem()
-{
+{  
+   // Setup ATD for Sonar detection
+   ATDCTL2 = 0xC0; // fast flag clear
+   ATDCTL3 = 0x0A;
+   ATDCTL4 = 0x80; // speed/accuracy of conversion
+   ATDCTL5 = 0xA0; // 10100000
+                                      
    BEACON_TRANSMITTER_ENABLE_DDR = OUTPUT;
    BEACON_TRANSMITTER_SIGNAL_0_DDR = OUTPUT;
    BEACON_TRANSMITTER_SIGNAL_1_DDR = OUTPUT;
@@ -22,29 +30,43 @@ void InitializePositioningSystem()
 
 
 // Must disable interrupts and ensure that beacon is not transmitting from previous function call
+// At thirty feet this function takes 90ms and times out around 170ms
 inches_t GetDistanceToBeacon( beaconId_t beaconId )
 {
    boolean_t success;
    timerCount_t startTimerCount, endTimerCount, lengthOfSoundInTimerClockCycles;
    inches_t distance;
+   Word timeOutCount;
+   const Word TimeOutThreshhold = 7000; // My only test said that it normally takes 3700 counts
+
+   timeOutCount = 0;
 
    switch ( beaconId )
    {
       case 0:
         BEACON_TRANSMITTER_SIGNAL_0 = 0;
         BEACON_TRANSMITTER_SIGNAL_1 = 0;
+        BEACON_TRANSMITTER_SIGNAL_2 = 0;
         break;
       case 1:
         BEACON_TRANSMITTER_SIGNAL_0 = 1;
         BEACON_TRANSMITTER_SIGNAL_1 = 0;
+        BEACON_TRANSMITTER_SIGNAL_2 = 0;
         break;
       case 2:
         BEACON_TRANSMITTER_SIGNAL_0 = 0;
         BEACON_TRANSMITTER_SIGNAL_1 = 1;
+        BEACON_TRANSMITTER_SIGNAL_2 = 0;
         break;
       case 3:
         BEACON_TRANSMITTER_SIGNAL_0 = 1;
         BEACON_TRANSMITTER_SIGNAL_1 = 1;
+        BEACON_TRANSMITTER_SIGNAL_2 = 0;
+        break;
+      case 4:
+        BEACON_TRANSMITTER_SIGNAL_0 = 0;
+        BEACON_TRANSMITTER_SIGNAL_1 = 0;
+        BEACON_TRANSMITTER_SIGNAL_2 = 1;
         break;
    }
    
@@ -56,18 +78,25 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
    BEACON_TRANSMITTER_ENABLE = 1;
 
    // ADD TIMEOUT 
-   while ( BEACON_TRANSMITTER_ACKNOWLEDGE_PIN == 0 );
+   while ( BEACON_TRANSMITTER_ACKNOWLEDGE_PIN == 0 )
+   {
+      timeOutCount++;
+      if ( timeOutCount > TimeOutThreshhold )
+      {
+         BEACON_TRANSMITTER_ENABLE = 0;
+         return TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST;
+      }
+   }
    startTimerCount = TCNT;
    
    // After acknowledge disable
    BEACON_TRANSMITTER_ENABLE = 0;
 
-   success = TRUE;
-   //success = waitForAndDetectReceivedSonarPulse();
+   success = waitForAndDetectReceivedSonarPulse();
    endTimerCount = TCNT;
    if ( success == FALSE )
    {
-      return -1;
+      return NO_SIGNAL_DETECTED;
    }
    lengthOfSoundInTimerClockCycles = ( endTimerCount - startTimerCount - TransmittingOverhead );
    distance = lengthOfSoundInTimerClockCycles;
@@ -76,18 +105,20 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
 }
 
 // function blocks until it detect and returns TRUE if successful and FALSE if timed out
-/*static*/ boolean_t waitForAndDetectReceivedSonarPulse()
+static boolean_t waitForAndDetectReceivedSonarPulse()
 {
    Word noSignalLevel16;
    Byte i, noSignalLevel8;
-   const Byte NumberOfNoSignalSamples = 100;
-   const Byte SignalThreshhold = 25;
-   noSignalLevel16 = 0;
+   Word timeOutCount;
    
-   ATDCTL2 = 0xC0; // fast flag clear
-   ATDCTL3 = 0x0A;
-   ATDCTL4 = 0x80; // speed/accuracy of conversion
-   ATDCTL5 = 0xA0; // 10100000
+   const Byte NumberOfNoSignalSamples = 100;
+   const Byte SignalThreshhold = 15;
+   const Word TimeOutThreshhold = 6000;  // 30 feet away takes 2500 iterations of the loop
+   
+   noSignalLevel16 = 0;
+   timeOutCount = 0;
+   
+   // CHECK InitializePositioningSystem() for ATD settings
    
    // get noise threshold
    for ( i = 0; i < NumberOfNoSignalSamples; i++ )
@@ -100,17 +131,18 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
    
    for ( ; ; )
    {
-      while ( ATDSTAT1_CCF0 == 0 );
+      timeOutCount++;
+      //while ( ATDSTAT1_CCF0 == 0 ); // DONT NEED TO CHECK JUST ASSUME ADC IS READY
       if ( ATDDR0L > noSignalLevel8 + SignalThreshhold || ATDDR0L < noSignalLevel8 - SignalThreshhold )
       {
          return TRUE;
       }
+      if ( timeOutCount > TimeOutThreshhold )
+      {
+         return FALSE;
+      }
    }
-   // add time out structure
    // repeatedly loop and check for signal that is significantly more powerful than
    // the noise and of some significant duration
-   
-   
-   //DISABLE ATD
 }
 
