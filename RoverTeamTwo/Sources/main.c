@@ -16,7 +16,18 @@ static degree_t bearing[ 5 ];
 
 void main( void )
 {  
-   Byte i;   
+   Byte i;
+  /* InitializePositioningSystem();
+   for ( ; ; )
+   {        
+      GetDistanceToBeacon( 2 );
+      Delay( 1000 );
+   }*/
+   
+   waitForAndDetectReceivedSonarPulse();
+   TurnOnErrorLight();
+   for(;;); 
+      
    InitializeTimers();
    InitializeMotorControlSystem();
    //CalibrateCompass();
