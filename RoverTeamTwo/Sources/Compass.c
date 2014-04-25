@@ -61,7 +61,7 @@ boolean_t InitializeCompass()
 
 Byte readByteFromCompass( boolean_t sendStop )
 {
-   return I2CReadByte( 0, sendStop ); // send nack = 0 as the response byte
+   return I2CReadByte( FALSE, sendStop ); // send nack = 0 as the response byte
 }
 
 void CalibrateCompass()
@@ -89,8 +89,6 @@ void CalibrateCompass()
    yShiftValue = -( maxY + minY ) / 2;
    yScaleValueNumerator = ( 10 * ( maxX - minX ) / 2 ) % ( ( maxY - minY ) / 2 / 10 );
    yScaleValueDenominator = 100;
-   
-   //GetDataFromCompass();  
 }
 
 // returns 1 on success and 0 on failure

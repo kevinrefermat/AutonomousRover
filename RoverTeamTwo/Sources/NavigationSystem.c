@@ -87,7 +87,6 @@ static const tetragon_t RomObstacleList[] =
    { 390, RIGHT_OF_ROOM, TOP_OF_ROOM, 612 }  // high right corner
 };
 
-
 static boolean_t beenVisited[ MAX_TOTAL_NUMBER_OF_NODES ];
 static nodeNumber_t previousNode[ MAX_TOTAL_NUMBER_OF_NODES ];
 static inches_t distanceFromTarget[ MAX_TOTAL_NUMBER_OF_NODES ];
@@ -204,10 +203,7 @@ void UpdateSingleNodeConnections( nodeNumber_t node )
          otherNodeCoords = otherNode < RomNumberOfNodes ? RomNodeCoordinateList[ otherNode ] : RamNodeCoordinateList[ otherNode - RomNumberOfNodes ];
          SetAdjacencyMatrixValue( node, otherNode, Distance( nodeCoords, otherNodeCoords ) );
       }
-      else
-      {
-         SetAdjacencyMatrixValue( node, otherNode, NO_CONNECTION );
-      }
+      else SetAdjacencyMatrixValue( node, otherNode, NO_CONNECTION );
    }
 }
 

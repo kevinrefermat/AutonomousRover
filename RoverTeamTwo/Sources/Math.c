@@ -1,7 +1,6 @@
 #include "Math.h"
 #include "Rover.h"
 
-
 static const Word TangentLut[] = 
 {
    0, 1, 3, 5, 6, 8, 10, 12, 14,
@@ -15,7 +14,6 @@ static const Word TangentLut[] =
    307, 327, 348, 373, 401, 433, 470, 514, 567,
    631, 711, 814, 951, 1142, 1430, 1908, 2863, 5728
 };
-
 
 degree_t arcTangent( sWord y, sWord x )
 {
