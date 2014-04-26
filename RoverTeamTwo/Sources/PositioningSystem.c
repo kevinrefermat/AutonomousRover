@@ -108,40 +108,41 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
 static boolean_t waitForAndDetectReceivedSonarPulse()
 {
    Word noSignalLevel16;
-   Byte i, noSignalLevel8;
+   Byte i, noSignalLevel8, maxNoiseLevel, minNoiseLevel, ATDReading;
    Word timeOutCount;
    
    const Byte NumberOfNoSignalSamples = 100;
-   const Byte SignalThreshhold = 15;
+   const Byte SignalThreshhold = 5;
    const Word TimeOutThreshhold = 6000;  // 30 feet away takes 2500 iterations of the loop
    
    noSignalLevel16 = 0;
-   timeOutCount = 0;
-   
+   maxNoiseLevel = 0xFF;
+   minNoiseLevel = 0x00;
+
    // CHECK InitializePositioningSystem() for ATD settings
    
    // get noise threshold
    for ( i = 0; i < NumberOfNoSignalSamples; i++ )
    {
+      ATDReading = ATDDR0L;
       while ( ATDSTAT1_CCF0 == 0 );
-      noSignalLevel16 += ATDDR0L;
+      maxNoiseLevel = maxNoiseLevel < ATDReading ? ATDReading : maxNoiseLevel;
+      minNoiseLevel = minNoiseLevel > ATDReading ? ATDReading : minNoiseLevel;
    }
-   noSignalLevel16 /= NumberOfNoSignalSamples;
-   noSignalLevel8 = noSignalLevel16;
+   maxNoiseLevel += SignalThreshhold;
+   minNoiseLevel -= SignalThreshhold;
+
+   //noSignalLevel16 /= NumberOfNoSignalSamples;
+   //noSignalLevel8 = noSignalLevel16;
    
-   for ( ; ; )
+   for ( timeOutCount = 0; timeOutCount < TimeOutThreshhold; timeOutCount++; )
    {
-      timeOutCount++;
-      //while ( ATDSTAT1_CCF0 == 0 ); // DONT NEED TO CHECK JUST ASSUME ADC IS READY
-      if ( ATDDR0L > noSignalLevel8 + SignalThreshhold || ATDDR0L < noSignalLevel8 - SignalThreshhold )
+      if ( ATDReading > maxNoiseLevel || ATDReading < minNoiseLevel )
       {
          return TRUE;
       }
-      if ( timeOutCount > TimeOutThreshhold )
-      {
-         return FALSE;
-      }
    }
+   return FALSE;
    // repeatedly loop and check for signal that is significantly more powerful than
    // the noise and of some significant duration
 }
