@@ -12,15 +12,26 @@ typedef struct
 
 typedef coordinates_t beacon_t;
 
+
 static const inches_t COARSE_RESOLUTION = 18;
 
-static const beacon_t beacon1 = { 0, 720 };
-static const beacon_t beacon2 = { 0, 0 };
-static const beacon_t beacon3 = { 450, 0 };
+static const beacon_t beacon[] =
+{
+   { 0, 720 },
+   { 0, 0 },
+   { 450, 0 },
+   { 450, 720 },
+   { 225, 360 }
+};
 
-static inches_t distanceToBeacon1 = 0x7FFF;
-static inches_t distanceToBeacon2 = 0x7FFF;
-static inches_t distanceToBeacon3 = 0x7FFF;
+static inches_t distanceToBeacon[] =
+{
+   0x7FFF,
+   0x7FFF,
+   0x7FFF,
+   0x7FFF,
+   0x7FFF,
+};
 
 static inches_t SquareRoot( int32_t operand )
 {
