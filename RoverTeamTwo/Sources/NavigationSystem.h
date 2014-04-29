@@ -38,8 +38,6 @@ void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId );
 
 void UpdateSingleNodeConnections( nodeNumber_t node );
 void UpdateAllNodeConnections( void );
-static inches_t Distance( coordinates_t A, coordinates_t B );
-static inches_t SquareRoot( sLWord operand );
 
 boolean_t NodesAreVisibleToEachOther( nodeNumber_t nodeId1, nodeNumber_t nodeId2 );
 static boolean_t IntersectWithObstacle( segment_t* segment );

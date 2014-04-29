@@ -7,12 +7,14 @@
 #include "NavigationSystem.h"
 #include "ObstacleAvoidanceSystem.h"
 #include "PositioningSystem.h"
+#include "Math.h"
+#include "Triangulation.h"
 
 
 #include "Compass.h"
 #include "I2C.h"
 
-static inches_t distance;
+static inches_t distance[ 5 ];
 
 void main( void )
 {  
@@ -20,8 +22,8 @@ void main( void )
    InitializeTimers();
    InitializePositioningSystem();
    for ( ; ; )
-   {      
-      distance = GetDistanceToBeacon( 2 );
+   {  
+      GetAccurateDistanceToBeacon( 2 );
    }
    
    waitForAndDetectReceivedSonarPulse();

@@ -230,33 +230,6 @@ void UpdateAllNodeConnections()
    }
 }
 
-static inches_t Distance( coordinates_t A, coordinates_t B )
-{
-   sLWord Ax, Bx, Ay, By;
-   Ax = A.x;
-   Bx = B.x;
-   Ay = A.y;
-   By = B.y;
-   return SquareRoot( ( Ax - Bx ) * ( Ax - Bx ) + ( Ay - By ) * ( Ay - By ) );
-}
-
-static inches_t SquareRoot( sLWord operand )
-{
-   sLWord guess, lastGuess;
-   guess = 40000;       
-   for ( ; ; ) 
-   {  
-      lastGuess = guess;
-      guess = guess - ( ( guess * guess ) - operand ) / ( 2 * guess );
-      if ( lastGuess == guess ) 
-      {
-        break;
-      }
-   }   
-   return ( inches_t ) guess;
-}
-
-
 boolean_t NodesAreVisibleToEachOther( nodeNumber_t nodeId1, nodeNumber_t nodeId2 )
 {
    segment_t segment;

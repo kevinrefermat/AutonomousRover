@@ -2,22 +2,29 @@
 #include "PositioningSystem.h"
 #include "MC9S12C128.h"
 
+#define NUMBER_OF_MEASUREMENTS 5
+static const inches_t MAX_DISTANCE_FROM_BEACON = 900;
+static const inches_t MIN_DISTANCE_FROM_BEACON = 72;
 
 static const TimeOutTime = MAX_16_BIT_VALUE;
-static const pulseCount_t TransmittingOverhead = 0;
+static const pulseCount_t TransmittingOverhead = 8848;
 static const inches_t NO_SIGNAL_DETECTED = -1;
 static const inches_t TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST = -2;
+static const inches_t UNINITIALIZED_DISTANCE = -3;
+
+static distanceMeasurements[ NUMBER_OF_MEASUREMENTS ];
 
 // Could implement check at initialization to ensure that the beacons are correctly
 // indexed
 void InitializePositioningSystem()
 {  
-   // Setup ATD for Sonar detection
+   Byte i;
+      // Setup ATD for Sonar detection
    ATDCTL2 = 0xC0; // fast flag clear
    ATDCTL3 = 0x0A;
    ATDCTL4 = 0x80; // speed/accuracy of conversion
    ATDCTL5 = 0xA0; // 10100000
-                                      
+                               
    BEACON_TRANSMITTER_ENABLE_DDR = OUTPUT;
    BEACON_TRANSMITTER_SIGNAL_0_DDR = OUTPUT;
    BEACON_TRANSMITTER_SIGNAL_1_DDR = OUTPUT;
@@ -25,13 +32,51 @@ void InitializePositioningSystem()
    BEACON_TRANSMITTER_ACKNOWLEDGE_PIN_DDR = INPUT;
    
    BEACON_TRANSMITTER_ENABLE = 0;
+   
+   for ( i = 0; i < NUMBER_OF_MEASUREMENTS; i++ )
+   {
+      distanceMeasurements[ i ] = UNINITIALIZED_DISTANCE;
+   }
 }
 
+inches_t GetAccurateDistanceToBeacon( beaconId_t beaconId )
+{
+   sByte i, k; 
+   Byte timeOutCount;
+   inches_t distance, temp;
+   static const TimeOutThreshhold = 15;
+   for ( i = 0, timeOutCount = 0; i < NUMBER_OF_MEASUREMENTS && timeOutCount < TimeOutThreshhold; timeOutCount++ )
+   {
+      distanceMeasurements[ i ] = GetDistanceToBeacon( beaconId );
+      if ( distanceMeasurements[ i ] < 0 || distanceMeasurements[ i ] < MIN_DISTANCE_FROM_BEACON || distanceMeasurements[ i ] > MAX_DISTANCE_FROM_BEACON )
+      {
+         continue;
+      }
+      i++;
+   }
 
+   // find the median by sorting
+   for ( i = 1; i < NUMBER_OF_MEASUREMENTS; i++ )
+   {
+      for ( k = i; k > 0 && distanceMeasurements[ k ] < distanceMeasurements[ k - 1]; k-- )
+      {
+         temp = distanceMeasurements[ k ];
+         distanceMeasurements[ k ] = distanceMeasurements[ k - 1 ];
+         distanceMeasurements[ k - 1 ] = temp;    
+      }
+   }
+   
+   distance = distanceMeasurements[ NUMBER_OF_MEASUREMENTS / 2 ];
+   for ( i = 0; i < NUMBER_OF_MEASUREMENTS; i++ )
+   {
+      distanceMeasurements[ i ] = UNINITIALIZED_DISTANCE;  
+   }
+   return distance;
+}
 
 // Must disable interrupts and ensure that beacon is not transmitting from previous function call
 // At thirty feet this function takes 90ms and times out around 170ms
-inches_t GetDistanceToBeacon( beaconId_t beaconId )
+static inches_t GetDistanceToBeacon( beaconId_t beaconId )
 {
    boolean_t success;
    timerCount_t startTimerCount, endTimerCount, lengthOfSoundInTimerClockCycles;
@@ -100,6 +145,12 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
    }
    lengthOfSoundInTimerClockCycles = ( endTimerCount - startTimerCount - TransmittingOverhead );
    distance = lengthOfSoundInTimerClockCycles;
+   //integer multiplication, distance = distance * 54/1000, avoiding overflow
+   distance /= 10;
+   distance *= 9;
+   distance /= 10;
+   distance *= 6;
+   distance /= 10;
 
    return distance;
 }
@@ -112,32 +163,28 @@ static boolean_t waitForAndDetectReceivedSonarPulse()
    Word timeOutCount;
    
    const Byte NumberOfNoSignalSamples = 100;
-   const Byte SignalThreshhold = 5;
+   const Byte SignalThreshhold = 15;
    const Word TimeOutThreshhold = 6000;  // 30 feet away takes 2500 iterations of the loop
    
    noSignalLevel16 = 0;
-   maxNoiseLevel = 0xFF;
-   minNoiseLevel = 0x00;
+   maxNoiseLevel = 0x00;
+   minNoiseLevel = 0xFF;
 
-   // CHECK InitializePositioningSystem() for ATD settings
    
    // get noise threshold
    for ( i = 0; i < NumberOfNoSignalSamples; i++ )
    {
-      ATDReading = ATDDR0L;
       while ( ATDSTAT1_CCF0 == 0 );
-      maxNoiseLevel = maxNoiseLevel < ATDReading ? ATDReading : maxNoiseLevel;
-      minNoiseLevel = minNoiseLevel > ATDReading ? ATDReading : minNoiseLevel;
+      maxNoiseLevel = maxNoiseLevel < ATDDR0L ? ATDDR0L : maxNoiseLevel;
+      minNoiseLevel = minNoiseLevel > ATDDR0L ? ATDDR0L : minNoiseLevel;
    }
    maxNoiseLevel += SignalThreshhold;
    minNoiseLevel -= SignalThreshhold;
-
-   //noSignalLevel16 /= NumberOfNoSignalSamples;
-   //noSignalLevel8 = noSignalLevel16;
    
-   for ( timeOutCount = 0; timeOutCount < TimeOutThreshhold; timeOutCount++; )
+   for ( timeOutCount = 0; timeOutCount < TimeOutThreshhold; timeOutCount++ )
    {
-      if ( ATDReading > maxNoiseLevel || ATDReading < minNoiseLevel )
+      //ATDReading = ATDDR0L;
+      if ( ATDDR0L > maxNoiseLevel )
       {
          return TRUE;
       }

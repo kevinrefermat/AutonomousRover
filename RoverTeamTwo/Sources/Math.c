@@ -51,3 +51,35 @@ degree_t arcTangent( sWord y, sWord x )
       else return ~low + 1;            // Quadrant IV
    }
 }
+
+inches_t Distance( coordinates_t A, coordinates_t B )
+{
+   sLWord Ax, Bx, Ay, By;
+   Ax = A.x;
+   Bx = B.x;
+   Ay = A.y;
+   By = B.y;
+   return SquareRoot( ( Ax - Bx ) * ( Ax - Bx ) + ( Ay - By ) * ( Ay - By ) );
+}
+
+inches_t SquareRoot( sLWord operand )
+{
+   sLWord guess, lastGuess;
+   guess = 40000;       
+   for ( ; ; ) 
+   {  
+      lastGuess = guess;
+      guess = guess - ( ( guess * guess ) - operand ) / ( 2 * guess );
+      if ( lastGuess == guess ) 
+      {
+        break;
+      }
+   }   
+   return ( inches_t ) guess;
+}
+
+sWord abs16( sWord operand )
+{
+   return operand < 0 ? -operand : operand;  
+}
+

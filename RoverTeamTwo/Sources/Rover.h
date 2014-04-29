@@ -102,6 +102,8 @@ typedef struct
 #define INPUT 0
 #define OUTPUT 1
 
+#define NUMBER_OF_BEACONS 5
+
 #define MAX_16_BIT_VALUE 65535
 
 #define CLOCK_SPEED_HZ 2000000

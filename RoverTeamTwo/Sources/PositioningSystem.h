@@ -5,8 +5,9 @@
 #include "Rover.h"
 
 void InitializePositioningSystem( void );
+inches_t GetAccurateDistanceToBeacon( beaconId_t );
 
-inches_t GetDistanceToBeacon( beaconId_t beaconId );
-boolean_t waitForAndDetectReceivedSonarPulse( void );
+static inches_t GetDistanceToBeacon( beaconId_t beaconId );
+static boolean_t waitForAndDetectReceivedSonarPulse( void );
 
 #endif
