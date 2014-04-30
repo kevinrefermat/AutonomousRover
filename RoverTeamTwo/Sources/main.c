@@ -23,8 +23,8 @@ void main( void )
    InitializeTimers();
    InitializePositioningSystem();
    for ( ; ; )
-   {  
-      coordinates = Triangulate( 0, 1, 2 );
+   {
+      distance[ 0 ] = GetDistanceToBeacon( 0 );  
    }
    waitForAndDetectReceivedSonarPulse();
    TurnOnErrorLight();
