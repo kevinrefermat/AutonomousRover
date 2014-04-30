@@ -15,6 +15,7 @@
 #include "I2C.h"
 
 static inches_t distance[ 5 ];
+static coordinates_t coordinates;
 
 void main( void )
 {  
@@ -23,9 +24,8 @@ void main( void )
    InitializePositioningSystem();
    for ( ; ; )
    {  
-      GetAccurateDistanceToBeacon( 2 );
+      coordinates = Triangulate( 0, 1, 2 );
    }
-   
    waitForAndDetectReceivedSonarPulse();
    TurnOnErrorLight();
    for(;;); 

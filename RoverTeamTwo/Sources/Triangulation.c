@@ -13,8 +13,8 @@ static const coordinates_t beaconCoords[ NUMBER_OF_BEACONS ] =
 {
    { 0, 720 },
    { 0, 0 },
-   { 450, 0 },
    { 450, 720 },
+   { 450, 0 },
    { 225, 360 }
 };
 
@@ -32,25 +32,29 @@ static void ResetTriangulationVariables()
 coordinates_t Triangulate( beaconId_t firstBeacon, beaconId_t secondBeacon, beaconId_t thirdBeacon )
 {
    Byte i;
-   inches_t x, y, minTotalError, totalError;
-   coordinates_t firstBeaconCoords, secondBeaconCoords, thirdBeaconCoords, tempCoords, closestCoords;
+   inches_t x, y, minTotalError, totalError, yFineUpperBound, yFineLowerBound, xFineUpperBound, xFineLowerBound;
+   coordinates_t tempCoords, coarseCoords, closestCoords;
    
    ResetTriangulationVariables();
    
-   distanceToBeacon[ firstBeacon ] = GetAccurateDistanceToBeacon( firstBeacon );
-   distanceToBeacon[ secondBeacon ] = GetAccurateDistanceToBeacon( secondBeacon );
-   distanceToBeacon[ thirdBeacon ] = GetAccurateDistanceToBeacon( thirdBeacon );
+   //distanceToBeacon[ firstBeacon ] = GetAccurateDistanceToBeacon( firstBeacon );
+   //distanceToBeacon[ secondBeacon ] = GetAccurateDistanceToBeacon( secondBeacon );
+   //distanceToBeacon[ thirdBeacon ] = GetAccurateDistanceToBeacon( thirdBeacon );
+   
+   distanceToBeacon[ firstBeacon ] = 680;
+   distanceToBeacon[ secondBeacon ] = 340;
+   distanceToBeacon[ thirdBeacon ] = 615;
    
    if ( distanceToBeacon[ firstBeacon ] < 0 || distanceToBeacon[ secondBeacon ] < 0 || distanceToBeacon[ thirdBeacon ] < 0 )
    {
-      closestCoords.x = DistanceToBeaconsFailed;
-      closestCoords.y = DistanceToBeaconsFailed;
-      return closestCoords;
+      coarseCoords.x = DistanceToBeaconsFailed;
+      coarseCoords.y = DistanceToBeaconsFailed;
+      return coarseCoords;
    }   
    
    minTotalError = MAX_16_BIT_VALUE;
-   closestCoords.x = UninitializedDistance;
-   closestCoords.y = UninitializedDistance;
+   coarseCoords.x = UninitializedDistance;
+   coarseCoords.y = UninitializedDistance;
 
    for ( y = CoarseResolution; y <= 720 - CoarseResolution; y += CoarseResolution )
    {
@@ -58,9 +62,33 @@ coordinates_t Triangulate( beaconId_t firstBeacon, beaconId_t secondBeacon, beac
       {
          tempCoords.x = x;
          tempCoords.y = y; 
-         totalError = abs16( Distance( tempCoords, firstBeaconCoords ) - distanceToBeacon[ firstBeacon ] );
-         totalError = totalError + abs16( Distance( tempCoords, secondBeaconCoords ) - distanceToBeacon[ secondBeacon ] );
-         totalError = totalError + abs16( Distance( tempCoords, thirdBeaconCoords ) - distanceToBeacon[ thirdBeacon ] );
+         totalError = abs16( Distance( tempCoords, beaconCoords[ firstBeacon ] ) - distanceToBeacon[ firstBeacon ] );
+         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ secondBeacon ] ) - distanceToBeacon[ secondBeacon ] );
+         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ thirdBeacon ] ) - distanceToBeacon[ thirdBeacon ] );
+         
+         if ( totalError < minTotalError )
+         {
+            minTotalError = totalError;
+            coarseCoords.x = x;
+            coarseCoords.y = y;
+         }
+      }
+   }
+   yFineLowerBound = coarseCoords.y - CoarseResolution;
+   yFineUpperBound = coarseCoords.y + CoarseResolution;
+   xFineLowerBound = coarseCoords.x - CoarseResolution;
+   xFineUpperBound = coarseCoords.x + CoarseResolution;
+   minTotalError = MAX_16_BIT_VALUE;
+
+   for ( y = yFineLowerBound; y <= yFineUpperBound; y++ )
+   {
+      for ( x = xFineLowerBound; x <= xFineUpperBound; x++ )
+      {
+         tempCoords.x = x;
+         tempCoords.y = y; 
+         totalError = abs16( Distance( tempCoords, beaconCoords[ firstBeacon ] ) - distanceToBeacon[ firstBeacon ] );
+         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ secondBeacon ] ) - distanceToBeacon[ secondBeacon ] );
+         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ thirdBeacon ] ) - distanceToBeacon[ thirdBeacon ] );
          
          if ( totalError < minTotalError )
          {
