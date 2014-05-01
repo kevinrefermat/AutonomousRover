@@ -52,15 +52,26 @@ degree_t arcTangent( sWord y, sWord x )
    }
 }
 
-inches_t Distance( coordinates_t A, coordinates_t B )
+static Word SquareRoot( LWord operand )
 {
-   sLWord operand1, operand2;
-   operand1 = A.x - B.x;
-   operand2 = A.y - B.y;
-   return SquareRoot( operand1 * operand1 + operand2 * operand2 );
+   Word bit, mask, root;
+   LWord acc;
+   
+   bit = 16; 
+   mask = 0x8000;
+   root = 0x0000;
+   do  
+   {   
+      acc = root | mask;
+      if (acc * acc <= operand )
+      {   
+         root |= mask;
+      }   
+      mask >>= 1;
+   } while ( --bit );
+   return root;
 }
 
-/*
 inches_t Distance( coordinates_t A, coordinates_t B )
 {
    sLWord Ax, Bx, Ay, By;
@@ -69,26 +80,27 @@ inches_t Distance( coordinates_t A, coordinates_t B )
    Ay = A.y;
    By = B.y;
    return SquareRoot( ( Ax - Bx ) * ( Ax - Bx ) + ( Ay - By ) * ( Ay - By ) );
-}*/
+}
 
+/*
 inches_t SquareRoot( sLWord operand )
 {
    sLWord guess, lastGuess;
-   guess = 40000;       
+   guess = 40000;
    for ( ; ; ) 
-   {  
+   {
       lastGuess = guess;
       guess = guess - ( ( guess * guess ) - operand ) / ( 2 * guess );
-      if ( lastGuess == guess ) 
+      if ( lastGuess == guess )
       {
         break;
       }
-   }   
+   }
    return ( inches_t ) guess;
 }
+*/
 
-sWord abs16( sWord operand )
+Word abs16( sWord operand )
 {
-   return operand < 0 ? -operand : operand;  
+   return operand < 0 ? -operand : operand;
 }
-
