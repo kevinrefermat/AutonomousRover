@@ -15,7 +15,6 @@
 #include "I2C.h"
 
 static inches_t distance0;
-static coordinates_t coordinates;
 static inches_t obstacleDistance[ 151 ];
 
 void main( void )
@@ -23,27 +22,14 @@ void main( void )
    degree_t i;
    InitializeTimers();
    
-   InitializeObstacleAvoidanceSystem();
-  
-   GetEdgesOfObstacle();
-   for(;;);
    
-   Delay( 500 );
-   for ( i = -75; i <= 75; i++ )
-   {  
-      SetPingRotationalPosition( i );
-      Delay( 100 );
-      obstacleDistance[ i + 75 ] = DetectClosestObstacle();
-   }
-   
-   for (;;);
    
    
    
    InitializePositioningSystem();
    for ( ; ; )
    {
-      distance0 = GetDistanceToBeacon( 3 ); 
+      distance0 = GetDistanceToBeacon( 2 ); 
    }
    waitForAndDetectReceivedSonarPulse();
    TurnOnErrorLight();

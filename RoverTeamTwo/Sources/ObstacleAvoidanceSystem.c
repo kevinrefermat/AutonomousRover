@@ -158,6 +158,8 @@ coordinates_t GetLeftEdgeOfObstacle()
    inches_t distance;
    static inches_t leftEdgeDistance;
    
+   coordinates_t coordinates;
+   
    static const degree_t StartSweepAngle = -75;
    static const degree_t FinishSweepAngle = 10;
    
@@ -193,7 +195,11 @@ coordinates_t GetLeftEdgeOfObstacle()
          leftEdgeDistance = distance;
          SetPingRotationalPosition( 0 );
          Delay( 300 );
-         return leftEdgeAngle;
+         /******* FIX THISSSSS *********/
+         coordinates.x = -2;
+         coordinates.y = -2;
+       
+         return coordinates;
       }
       if ( degree == FinishSweepAngle )
       {

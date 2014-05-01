@@ -159,25 +159,27 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
 // function blocks until it detect and returns TRUE if successful and FALSE if timed out
 static boolean_t waitForAndDetectReceivedSonarPulse()
 {
-   Byte i, maxNoiseLevel, minNoiseLevel;
+   Byte i, minNoiseLevel;
    Word timeOutCount;
+   volatile Byte ATDReading;
    
    static pulseCount_t time;
    
    const Byte NumberOfNoSignalSamples = 3000;  // 1500 samples takes 2.6ms
-   const Byte SignalThreshhold = 5;      // 10 = 200mV difference than noise
+   const Byte SignalThreshhold = 10;      // 10 = 200mV difference than noise
    const Word TimeOutThreshhold = 6000;  // 30 feet away takes 2500 iterations of the loop
    
-   maxNoiseLevel = 0x00;
+   minNoiseLevel = 0xFF;
    
    Delay( 25 ); // sample noise right before the first possible signal could arrive
    
    // get noise threshold
    for ( i = 0; i < NumberOfNoSignalSamples; i++ )
    {
-      maxNoiseLevel = maxNoiseLevel < ATDDR0L ? ATDDR0L : maxNoiseLevel;
+      ATDReading = ( volatile ) ATDDR0L;
+   minNoiseLevel = minNoiseLevel > ATDReading ? ATDReading : minNoiseLevel;
    }
-   maxNoiseLevel += SignalThreshhold;
+   minNoiseLevel -= SignalThreshhold;
    
    // Signal detection starts after the delay from Delay() and the noise sampling
    // so that Rover isn't looking for a signal that couldn't possible have gotten to
@@ -185,7 +187,7 @@ static boolean_t waitForAndDetectReceivedSonarPulse()
    // to transmitting sonar.
    for ( timeOutCount = 0; timeOutCount < TimeOutThreshhold; timeOutCount++ )
    {
-      if ( ATDDR0L > maxNoiseLevel )
+      if ( ATDDR0L < minNoiseLevel )
       {
          return TRUE;
       }

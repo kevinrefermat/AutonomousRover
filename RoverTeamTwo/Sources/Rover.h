@@ -39,7 +39,8 @@ typedef struct
 // TIMER 4 = Positioning system sound measurement
 // TIMER 7 = pulse accumulator to calculate rover's distance
 
-// PWM0 = Ping sensor servo signal
+// PWM0 = Ping sensor servo signal upper byte
+// PWM1 = Ping sensor servo signal lower byte
 // PWM2 = left tread motor driver enable
 // PWM3 = right tread motor drive enable
 
