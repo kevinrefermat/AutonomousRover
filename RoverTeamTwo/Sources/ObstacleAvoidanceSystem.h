@@ -16,6 +16,9 @@ void SetPingRotationalPosition( degree_t degrees );
 
 static void SetPingTimer( void );
 
+coordinates_t GetLeftEdgeOfObstacle( void );
+
+
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles( void );
 
 #endif

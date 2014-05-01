@@ -8,7 +8,7 @@ static const inches_t MIN_DISTANCE_FROM_BEACON = 72;
 
 static const TimeOutTime = MAX_16_BIT_VALUE;
 static const pulseCount_t TransmittingOverhead = 8848;
-static const inches_t NO_SIGNAL_DETECTED = -1;
+static const inches_t WAITING_FOR_SIGNAL_TIMED_OUT = -1;
 static const inches_t TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST = -2;
 static const inches_t UNINITIALIZED_DISTANCE = -3;
 
@@ -76,7 +76,7 @@ inches_t GetAccurateDistanceToBeacon( beaconId_t beaconId )
 
 // Must disable interrupts and ensure that beacon is not transmitting from previous function call
 // At thirty feet this function takes 90ms and times out around 170ms
-static inches_t GetDistanceToBeacon( beaconId_t beaconId )
+inches_t GetDistanceToBeacon( beaconId_t beaconId )
 {
    boolean_t success;
    timerCount_t startTimerCount, endTimerCount, lengthOfSoundInTimerClockCycles;
@@ -132,16 +132,17 @@ static inches_t GetDistanceToBeacon( beaconId_t beaconId )
          return TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST;
       }
    }
-   startTimerCount = TCNT;
    
    // After acknowledge disable
    BEACON_TRANSMITTER_ENABLE = 0;
-
+   
+   startTimerCount = TCNT;
    success = waitForAndDetectReceivedSonarPulse();
    endTimerCount = TCNT;
+   
    if ( success == FALSE )
    {
-      return NO_SIGNAL_DETECTED;
+      return WAITING_FOR_SIGNAL_TIMED_OUT;
    }
    lengthOfSoundInTimerClockCycles = ( endTimerCount - startTimerCount - TransmittingOverhead );
    distance = lengthOfSoundInTimerClockCycles;
@@ -158,33 +159,35 @@ static inches_t GetDistanceToBeacon( beaconId_t beaconId )
 // function blocks until it detect and returns TRUE if successful and FALSE if timed out
 static boolean_t waitForAndDetectReceivedSonarPulse()
 {
-   Word noSignalLevel16;
-   Byte i, noSignalLevel8, maxNoiseLevel, minNoiseLevel, ATDReading;
+   Byte i, minNoiseLevel;
    Word timeOutCount;
+   volatile Byte ATDReading;
    
-   const Byte NumberOfNoSignalSamples = 100;
-   const Byte SignalThreshhold = 15;
+   static pulseCount_t time;
+   
+   const Byte NumberOfNoSignalSamples = 3000;  // 1500 samples takes 2.6ms
+   const Byte SignalThreshhold = 10;      // 10 = 200mV difference than noise
    const Word TimeOutThreshhold = 6000;  // 30 feet away takes 2500 iterations of the loop
    
-   noSignalLevel16 = 0;
-   maxNoiseLevel = 0x00;
    minNoiseLevel = 0xFF;
-
+   
+   Delay( 25 ); // sample noise right before the first possible signal could arrive
    
    // get noise threshold
    for ( i = 0; i < NumberOfNoSignalSamples; i++ )
    {
-      while ( ATDSTAT1_CCF0 == 0 );
-      maxNoiseLevel = maxNoiseLevel < ATDDR0L ? ATDDR0L : maxNoiseLevel;
-      minNoiseLevel = minNoiseLevel > ATDDR0L ? ATDDR0L : minNoiseLevel;
+      ATDReading = ( volatile ) ATDDR0L;
+   minNoiseLevel = minNoiseLevel > ATDReading ? ATDReading : minNoiseLevel;
    }
-   maxNoiseLevel += SignalThreshhold;
    minNoiseLevel -= SignalThreshhold;
    
+   // Signal detection starts after the delay from Delay() and the noise sampling
+   // so that Rover isn't looking for a signal that couldn't possible have gotten to
+   // it yet. Each Beacon has approximately a 35ms turnaround time from receiving RF
+   // to transmitting sonar.
    for ( timeOutCount = 0; timeOutCount < TimeOutThreshhold; timeOutCount++ )
    {
-      //ATDReading = ATDDR0L;
-      if ( ATDDR0L > maxNoiseLevel )
+      if ( ATDDR0L < minNoiseLevel )
       {
          return TRUE;
       }
