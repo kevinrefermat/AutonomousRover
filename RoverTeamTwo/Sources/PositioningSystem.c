@@ -132,13 +132,14 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
          return TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST;
       }
    }
-   startTimerCount = TCNT;
    
    // After acknowledge disable
    BEACON_TRANSMITTER_ENABLE = 0;
-
+   
+   startTimerCount = TCNT;
    success = waitForAndDetectReceivedSonarPulse();
    endTimerCount = TCNT;
+   
    if ( success == FALSE )
    {
       return WAITING_FOR_SIGNAL_TIMED_OUT;
@@ -158,30 +159,25 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
 // function blocks until it detect and returns TRUE if successful and FALSE if timed out
 static boolean_t waitForAndDetectReceivedSonarPulse()
 {
-   Word noSignalLevel16;
-   Byte i, noSignalLevel8, maxNoiseLevel, minNoiseLevel, ATDReading;
+   Byte i, maxNoiseLevel, minNoiseLevel;
    Word timeOutCount;
    
    static pulseCount_t time;
    
-   const Byte NumberOfNoSignalSamples = 1000;  // 1000 samples takes 4.5ms
-   const Byte SignalThreshhold = 10;      // 10 = 200mV difference than noise
+   const Byte NumberOfNoSignalSamples = 3000;  // 1500 samples takes 2.6ms
+   const Byte SignalThreshhold = 5;      // 10 = 200mV difference than noise
    const Word TimeOutThreshhold = 6000;  // 30 feet away takes 2500 iterations of the loop
    
-   noSignalLevel16 = 0;
    maxNoiseLevel = 0x00;
-   minNoiseLevel = 0xFF;
-
-   Delay( 30 ); // sample noise right before the first possible signal could arrive
+   
+   Delay( 25 ); // sample noise right before the first possible signal could arrive
+   
    // get noise threshold
    for ( i = 0; i < NumberOfNoSignalSamples; i++ )
    {
-      //while ( ATDSTAT1_CCF0 == 0 );
       maxNoiseLevel = maxNoiseLevel < ATDDR0L ? ATDDR0L : maxNoiseLevel;
-      minNoiseLevel = minNoiseLevel > ATDDR0L ? ATDDR0L : minNoiseLevel;
    }
    maxNoiseLevel += SignalThreshhold;
-   minNoiseLevel -= SignalThreshhold;
    
    // Signal detection starts after the delay from Delay() and the noise sampling
    // so that Rover isn't looking for a signal that couldn't possible have gotten to
@@ -189,7 +185,6 @@ static boolean_t waitForAndDetectReceivedSonarPulse()
    // to transmitting sonar.
    for ( timeOutCount = 0; timeOutCount < TimeOutThreshhold; timeOutCount++ )
    {
-      //ATDReading = ATDDR0L;
       if ( ATDDR0L > maxNoiseLevel )
       {
          return TRUE;

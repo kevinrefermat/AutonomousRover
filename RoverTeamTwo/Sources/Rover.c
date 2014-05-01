@@ -5,7 +5,6 @@
 void Delay( milliseconds_t time )
 {  
   milliseconds_t i, j;
-  
   for ( i = 0; i < time; i++ )
   {
      // 1 millisecond loop
@@ -16,7 +15,7 @@ void Delay( milliseconds_t time )
          nop 
        }
      }
-   }  
+  }  
 }
 
 void InitializeTimers()

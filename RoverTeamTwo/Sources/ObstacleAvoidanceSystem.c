@@ -6,10 +6,8 @@
 #include "ObstacleAvoidanceSystem.h"
 #include "MotorControlSystem.h"
 
-static const Byte LookLeftPwmDuty = 18;
-static const Byte LookRightPwmDuty = 3;
-
 static const inches_t ObstacleDetectionThreshhold = 24;
+static const coordinates_t OBSTACLE_NOT_SEEN_ERROR = { -1, -1 };
 
 static timerCount_t PingPeriodTimerCounterOffset;
 static degree_t CurrentPingAngle;
@@ -34,7 +32,18 @@ void InitializeObstacleAvoidanceSystem()
    // Clear flag
    TFLG1_C1F = 1;
    
+
+   PWMPOL_PPOL1 = 1;
+   PWMCLK_PCLK1 = 0;
+   PWMPRCLK_PCKA = 0x0; //busclock/1
+   PWMCAE_CAE1 = 0;
+   PWMCTL_CON01 = 1;
+   
+   PWMPER01 = 40000;
    SetPingRotationalPosition( 0 );
+   
+  
+   PWME_PWME1 = 1;
    Delay( 300 );
 } 
 
@@ -134,23 +143,68 @@ static timerCount_t MeasureReturnPulseFromPing()
 void SetPingRotationalPosition( degree_t degrees )
 {
    Byte dutyCount;
-
-   PWMPOL_PPOL0 = 1;
-   PWMCLK_PCLK0 = 1;
-   PWMPRCLK_PCKA = 0x0;
-   PWMCAE_CAE0 = 0;
-   PWMCTL_CON01 = 0;
-  
-   //Divide unscaled bus clock by (128)*(2)
-   PWMSCLA = 0x80;
-   PWMPER0 = 167;
+   static const Word LookLeftPwmDuty = 4418;
+   static const Word LookRightPwmDuty = 828;
   
    degrees += 90;
-   dutyCount = ( ( degree_t ) ( degrees * ( LookLeftPwmDuty - LookRightPwmDuty ) / 180 ) ) + LookRightPwmDuty;
-   PWMDTY0 = dutyCount;
-  
-   PWME_PWME0 = 1;
+   PWMDTY01 = ( 180 - degrees ) * 20 + LookRightPwmDuty;
    CurrentPingAngle = degrees - 90;
+}
+
+coordinates_t GetLeftEdgeOfObstacle()
+{
+   degree_t degree;
+   static degree_t leftEdgeAngle;
+   inches_t distance;
+   static inches_t leftEdgeDistance;
+   
+   static const degree_t StartSweepAngle = -75;
+   static const degree_t FinishSweepAngle = 10;
+   
+   
+   SetPingRotationalPosition( StartSweepAngle );
+   Delay( 500 );
+   degree = StartSweepAngle;
+   
+   //Find the background
+   for ( ; ; degree++ )
+   {
+      if ( DetectClosestObstacle() > ObstacleDetectionThreshhold )
+      {
+         SetPingRotationalPosition( degree + 1 );
+         Delay( 100 );
+         break;
+      }
+      if ( degree == FinishSweepAngle )
+      {
+         SetPingRotationalPosition( 0 );
+         Delay( 300 );
+         return OBSTACLE_NOT_SEEN_ERROR;
+      }
+   }
+   
+   // Find the left edge
+   for ( ; ; degree++ )
+   {
+      distance = DetectClosestObstacle();
+      if ( distance <= ObstacleDetectionThreshhold )
+      {
+         leftEdgeAngle = degree + 25;
+         leftEdgeDistance = distance;
+         SetPingRotationalPosition( 0 );
+         Delay( 300 );
+         return leftEdgeAngle;
+      }
+      if ( degree == FinishSweepAngle )
+      {
+         SetPingRotationalPosition( 0 );
+         Delay( 300 );
+         return OBSTACLE_NOT_SEEN_ERROR;
+      }
+      SetPingRotationalPosition( degree + 1 );
+      Delay( 100 );
+   }
+   
 }
 
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
@@ -159,7 +213,7 @@ interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
    if ( CurrentPingAngle != 0 )
    {
       SetPingRotationalPosition( 0 );
-      Delay( 300000 );
+      Delay( 300 );
    }
    if ( DetectClosestObstacle() <= ObstacleDetectionThreshhold )
    {
