@@ -54,13 +54,22 @@ degree_t arcTangent( sWord y, sWord x )
 
 inches_t Distance( coordinates_t A, coordinates_t B )
 {
+   sLWord operand1, operand2;
+   operand1 = A.x - B.x;
+   operand2 = A.y - B.y;
+   return SquareRoot( operand1 * operand1 + operand2 * operand2 );
+}
+
+/*
+inches_t Distance( coordinates_t A, coordinates_t B )
+{
    sLWord Ax, Bx, Ay, By;
    Ax = A.x;
    Bx = B.x;
    Ay = A.y;
    By = B.y;
    return SquareRoot( ( Ax - Bx ) * ( Ax - Bx ) + ( Ay - By ) * ( Ay - By ) );
-}
+}*/
 
 inches_t SquareRoot( sLWord operand )
 {
