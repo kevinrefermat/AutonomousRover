@@ -165,19 +165,20 @@ static boolean_t waitForAndDetectReceivedSonarPulse()
    
    static pulseCount_t time;
    
-   const Byte NumberOfNoSignalSamples = 3000;  // 1500 samples takes 2.6ms
+   const Byte NumberOfSamplesAfterFirstDetection = 30;
+   const Byte NumberOfNoSignalSamples = 2000;  // 1500 samples takes 2.6ms
    const Byte SignalThreshhold = 10;      // 10 = 200mV difference than noise
    const Word TimeOutThreshhold = 6000;  // 30 feet away takes 2500 iterations of the loop
    
    minNoiseLevel = 0xFF;
    
-   Delay( 25 ); // sample noise right before the first possible signal could arrive
+   Delay( 30 ); // sample noise right before the first possible signal could arrive
    
    // get noise threshold
    for ( i = 0; i < NumberOfNoSignalSamples; i++ )
    {
       ATDReading = ( volatile ) ATDDR0L;
-   minNoiseLevel = minNoiseLevel > ATDReading ? ATDReading : minNoiseLevel;
+      minNoiseLevel = minNoiseLevel > ATDReading ? ATDReading : minNoiseLevel;
    }
    minNoiseLevel -= SignalThreshhold;
    
@@ -189,7 +190,13 @@ static boolean_t waitForAndDetectReceivedSonarPulse()
    {
       if ( ATDDR0L < minNoiseLevel )
       {
-         return TRUE;
+         for ( i = 0; i < NumberOfSamplesAfterFirstDetection; i++ )
+         {              
+            if ( ATDDR0L < minNoiseLevel )
+            {
+               return TRUE;
+            }
+         }
       }
    }
    return FALSE;

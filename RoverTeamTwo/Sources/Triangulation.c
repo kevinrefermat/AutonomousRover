@@ -11,10 +11,10 @@ static const inches_t DistanceToBeaconsFailed = -5;
 
 static const coordinates_t beaconCoords[ NUMBER_OF_BEACONS ] = 
 {
-   { 0, 720 },
-   { 0, 0 },
-   { 450, 720 },
+   { 94, 149 },
+   { 409, 400 },
    { 450, 0 },
+   { 346, 142 },
    { 225, 360 }
 };
 
@@ -37,13 +37,9 @@ coordinates_t Triangulate( beaconId_t firstBeacon, beaconId_t secondBeacon, beac
    
    ResetTriangulationVariables();
    
-   //distanceToBeacon[ firstBeacon ] = GetAccurateDistanceToBeacon( firstBeacon );
-   //distanceToBeacon[ secondBeacon ] = GetAccurateDistanceToBeacon( secondBeacon );
-   //distanceToBeacon[ thirdBeacon ] = GetAccurateDistanceToBeacon( thirdBeacon );
-   
-   distanceToBeacon[ firstBeacon ] = 680;
-   distanceToBeacon[ secondBeacon ] = 340;
-   distanceToBeacon[ thirdBeacon ] = 615;
+   distanceToBeacon[ firstBeacon ] = GetAccurateDistanceToBeacon( firstBeacon );
+   distanceToBeacon[ secondBeacon ] = GetAccurateDistanceToBeacon( secondBeacon );
+   distanceToBeacon[ thirdBeacon ] = GetAccurateDistanceToBeacon( thirdBeacon );
    
    if ( distanceToBeacon[ firstBeacon ] < 0 || distanceToBeacon[ secondBeacon ] < 0 || distanceToBeacon[ thirdBeacon ] < 0 )
    {

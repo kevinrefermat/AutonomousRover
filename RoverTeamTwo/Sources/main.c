@@ -14,29 +14,20 @@
 #include "Compass.h"
 #include "I2C.h"
 
-static inches_t distance0;
+static inches_t distance0, distance1, distance3;
 static coordinates_t myCoordinates;
-static inches_t obstacleDistance[ 151 ];
 
 void main( void )
 {  
    degree_t i;
    InitializeTimers();
    InitializePositioningSystem();
-   
-   TurnOnErrorLight();
-   Delay( 1000 );
-   TurnOffErrorLight();
-   myCoordinates = Triangulate( 0, 1, 2 );
-   TurnOnErrorLight();
-   for(;;);
-   
-   
-   
-   InitializePositioningSystem();
    for ( ; ; )
    {
-      distance0 = GetDistanceToBeacon( 2 ); 
+      distance0 = GetAccurateDistanceToBeacon( 0 ); 
+      distance1 = GetAccurateDistanceToBeacon( 1 ); 
+      distance3 = GetAccurateDistanceToBeacon( 3 );
+      myCoordinates = Triangulate( 0, 1, 3 ); 
    }
    waitForAndDetectReceivedSonarPulse();
    TurnOnErrorLight();

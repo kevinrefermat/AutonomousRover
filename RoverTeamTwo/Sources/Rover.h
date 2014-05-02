@@ -30,6 +30,7 @@ typedef struct
    inches_t y;
 } coordinates_t;
 
+
 /*** ROVER IO MAP ***/
 
 // TIMER 0 = Ping sensor

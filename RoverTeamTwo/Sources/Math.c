@@ -1,6 +1,16 @@
 #include "Math.h"
 #include "Rover.h"
 
+typedef union
+{
+   sLWord quadword;
+   struct
+   {        
+      Word upperWord;
+      Word lowerWord;
+   } breakdown;
+} int32_t;
+
 static const Word TangentLut[] = 
 {
    0, 1, 3, 5, 6, 8, 10, 12, 14,
@@ -74,31 +84,37 @@ static Word SquareRoot( LWord operand )
 
 inches_t Distance( coordinates_t A, coordinates_t B )
 {
-   sLWord Ax, Bx, Ay, By;
-   Ax = A.x;
-   Bx = B.x;
-   Ay = A.y;
-   By = B.y;
-   return SquareRoot( ( Ax - Bx ) * ( Ax - Bx ) + ( Ay - By ) * ( Ay - By ) );
-}
-
-/*
-inches_t SquareRoot( sLWord operand )
-{
-   sLWord guess, lastGuess;
-   guess = 40000;
-   for ( ; ; ) 
+   int32_t operand1, operand2;
+   Word upper, lower;
+   inches_t xDiff, yDiff;
+   
+   xDiff = A.x - B.x;
+   yDiff = A.y - B.y;
+   
+   _asm
    {
-      lastGuess = guess;
-      guess = guess - ( ( guess * guess ) - operand ) / ( 2 * guess );
-      if ( lastGuess == guess )
-      {
-        break;
-      }
+      LDY   xDiff
+      LDD   xDiff
+      EMULS
+      STY   upper
+      STD   lower
    }
-   return ( inches_t ) guess;
+   operand1.breakdown.upperWord = upper;
+   operand1.breakdown.lowerWord = lower;
+   
+   _asm
+   {
+      LDY   yDiff
+      LDD   yDiff
+      EMULS
+      STY   upper
+      STD   lower
+   }
+   operand2.breakdown.upperWord = upper;
+   operand2.breakdown.lowerWord = lower;
+   
+   return SquareRoot( operand1.quadword + operand2.quadword );
 }
-*/
 
 Word abs16( sWord operand )
 {
