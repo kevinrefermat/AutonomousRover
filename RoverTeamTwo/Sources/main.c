@@ -15,14 +15,21 @@
 #include "I2C.h"
 
 static inches_t distance0;
+static coordinates_t myCoordinates;
 static inches_t obstacleDistance[ 151 ];
 
 void main( void )
 {  
    degree_t i;
    InitializeTimers();
+   InitializePositioningSystem();
    
-   
+   TurnOnErrorLight();
+   Delay( 1000 );
+   TurnOffErrorLight();
+   myCoordinates = Triangulate( 0, 1, 2 );
+   TurnOnErrorLight();
+   for(;;);
    
    
    
