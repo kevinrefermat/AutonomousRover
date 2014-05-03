@@ -32,6 +32,8 @@ static const Byte RIGHT_TREAD = 1;
 #define DESIRED_ENCODER_PERIOD_IN_MICROSECONDS 10000  // 10000 is microseconds should be average speed
 static timerCount_t DesiredEncoderPeriod = DESIRED_ENCODER_PERIOD_IN_MICROSECONDS * 2 / TIMER_COUNTER_PRESCALE; 
 
+static pulseCount_t initialPACNTValue;
+
 static Byte LeftTreadPower = 0;
 static Byte RightTreadPower = 0;
 
@@ -321,7 +323,8 @@ static void ClearRoverInMotionFlag()
 static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt )
 {
    // Write the negative number of encoder pulses to PACNT and enable PAOVI to interrupt when
-	PACNT = ~numberOfPulsesTillInterrupt + 1;
+	initialPACNTValue = ~numberOfPulsesTillInterrupt + 1;
+	PACNT = initialPACNTValue;
 	
 	// Initialize pulse accumulator for encoders.
 	PACTL = 0x52;
@@ -342,6 +345,11 @@ static pulseCount_t DistanceToPulses( inches_t distance )
    feet *= PulsesPerFoot;
    inches *= PulsesPerInch;
 	return twentyFiveFeet + fiveFeet + feet + inches;
+}
+
+static inches_t PulsesToDistance( pulseCount_t pulses )
+{
+   return pulses / PulsesPerInch;   
 }
 
 static pulseCount_t DegreesToPulses( degree_t degrees) 
@@ -370,6 +378,12 @@ static boolean_t ExecuteNextTurnByTurnInstruction()
       return TRUE;
    } 
    return FALSE;
+}
+
+inches_t GetDistanceIntoCurrentRoute()
+{
+   pulseCount_t totalPulses = PACNT - initialPACNTValue;
+   return PulsesToDistance( totalPulses );     
 }
 
 interrupt VectorNumber_Vtimpaovf void MotionCompleted()

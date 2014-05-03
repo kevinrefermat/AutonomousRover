@@ -17,6 +17,8 @@ static const inches_t NO_CONNECTION = -1;
 #define ROM_NUMBER_OF_OBSTACLES 10
 #define MAX_TOTAL_NUMBER_OF_OBSTACLES ( MAX_RAM_NUMBER_OF_OBSTACLES + ROM_NUMBER_OF_OBSTACLES )
 
+#define MAX_NODE_SEQUENCE_SIZE 10
+
 static const nodeNumber_t MaxRamNumberOfNodes = MAX_RAM_NUMBER_OF_NODES;
 static const nodeNumber_t RomNumberOfNodes = ROM_NUMBER_OF_NODES;
 static const nodeNumber_t MaxTotalNumberOfNodes = MAX_TOTAL_NUMBER_OF_NODES;
@@ -32,7 +34,16 @@ typedef struct
    turnByTurnElement_t queue[ MAX_TOTAL_NUMBER_OF_NODES * 2 ]; 
 } turnByTurnQueue_t;
 
+
+typedef struct
+{
+   nodeNumber_t nodeSequence[ MAX_NODE_SEQUENCE_SIZE ];
+   Byte index;
+   Byte size;
+} nodeSequence_t;
+
 static turnByTurnQueue_t RamTurnByTurnQueue;
+static nodeSequence_t RamNodeSequence;
 
 // 1 for rover's current position
 static nodeNumber_t RamNumberOfNodes = 1;
@@ -45,9 +56,6 @@ static obstacleNumber_t NumberOfObstacles = ROM_NUMBER_OF_OBSTACLES;
 static coordinates_t RamNodeCoordinateList[ MAX_RAM_NUMBER_OF_NODES ]; 
 static inches_t RamAdjacencyMatrixData[ MAX_TOTAL_NUMBER_OF_NODES * ( MAX_TOTAL_NUMBER_OF_NODES - 1 ) / 2 ];
 static tetragon_t RamObstacleList[ MAX_RAM_NUMBER_OF_OBSTACLES ];
-
-static nodeNumber_t RamNodeSequence[ MAX_TOTAL_NUMBER_OF_NODES ];
-static nodeNumber_t RamNodeSequenceSize = 0;
 
 static const coordinates_t RomTargetCoordinateList[] =
 {
@@ -96,7 +104,7 @@ void InitializeNavigationSystem()
    UpdateAllNodeConnections();
 }
 
-void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
+boolean_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
 { 
    nodeNumber_t i, j, neighborNodeId, currentNodeId;
    inches_t shortestDistanceFromTarget;
@@ -140,19 +148,21 @@ void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
    
    if ( distanceFromTarget[ sourceNodeId ] >= 0x7FFF )
    {
-      RamNodeSequence[ 0 ] = -1;
-      return;
+      RamNodeSequence.nodeSequence[ 0 ] = -1;
+      RamNodeSequence.size = -1;
+      RamNodeSequence.index = -1;
+      return FALSE;
    }
    
-   RamNodeSequenceSize = 0;
+   RamNodeSequence.size = 0;
    
    while ( currentNodeId != targetNodeId )
    {
       currentNodeId = previousNode[ currentNodeId ];
-      RamNodeSequence[ RamNodeSequenceSize ] = currentNodeId;
-      RamNodeSequenceSize = RamNodeSequenceSize + 1;
+      RamNodeSequence.nodeSequence[ RamNodeSequence.size ] = currentNodeId;
+      RamNodeSequence.size++;
    }
-   UpdateTurnByTurnQueueFromNodeSequence();
+   return TRUE;
 }
 
 void AddObstacle( inches_t left, inches_t right, inches_t top, inches_t bottom )
@@ -348,18 +358,21 @@ static inches_t GetAdjacencyMatrixValue( nodeNumber_t row, nodeNumber_t column )
    return RamAdjacencyMatrixData[ ( ( row - 1 ) * row ) / 2 + column ];
 }
 
+
+/********************************************************************************/
+
 void UpdateTurnByTurnQueueFromNodeSequence()
 {
    nodeNumber_t i;
    coordinates_t* currentNode,* nextNode;
    static degree_t currentAngle = 90;
    RamTurnByTurnQueue.index = 0;
-   RamTurnByTurnQueue.size = ( RamNodeSequenceSize - 1 ) * 2;
+   RamTurnByTurnQueue.size = ( RamNodeSequence.size - 1 ) * 2;
    
-   for ( i = 0; i < RamNodeSequenceSize - 1; i++ )
+   for ( i = 0; i < RamNodeSequence.size - 1; i++ )
    {
-      currentNode = GetNodeCoordinates( RamNodeSequence[ i ] );
-      nextNode = GetNodeCoordinates( RamNodeSequence[ i + 1 ] );
+      currentNode = GetNodeCoordinates( RamNodeSequence.nodeSequence[ i ] );
+      nextNode = GetNodeCoordinates( RamNodeSequence.nodeSequence[ i + 1 ] );
       currentAngle = currentAngle - arcTangent( nextNode->y - currentNode->y, nextNode->x - currentNode->x );
       if ( currentAngle < -180 ) currentAngle += 360;
       else if ( currentAngle > 180 ) currentAngle -= 360;
@@ -367,7 +380,7 @@ void UpdateTurnByTurnQueueFromNodeSequence()
       RamTurnByTurnQueue.queue[ 2 * i ].value = currentAngle; 
       
       RamTurnByTurnQueue.queue[ 2 * i + 1 ].typeOfMotion = FORWARD_MOTION;
-      RamTurnByTurnQueue.queue[ 2 * i + 1 ].value = distanceFromTarget[ RamNodeSequence[ i ] ] - distanceFromTarget[ RamNodeSequence[ i + 1 ] ];
+      RamTurnByTurnQueue.queue[ 2 * i + 1 ].value = distanceFromTarget[ RamNodeSequence.nodeSequence[ i ] ] - distanceFromTarget[ RamNodeSequence.nodeSequence[ i + 1 ] ];
    }
 }
 
@@ -387,7 +400,7 @@ coordinates_t* GetNodeCoordinates( nodeNumber_t nodeId )
    }
 }
 
-turnByTurnElement_t* GetNextTurnByTurnElement()
+turnByTurnElement_t * GetNextTurnByTurnElement()
 {
    return &RamTurnByTurnQueue.queue[ RamTurnByTurnQueue.index++ ];
 }

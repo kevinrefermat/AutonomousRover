@@ -1,21 +1,31 @@
 #include "Rover.h"
 #include "PositioningSystem.h"
+#include "Compass.h"
+#include "Triangulation.h"
 #include "MC9S12C128.h"
+
+/*** CONSTANTS ***/
 
 #define NUMBER_OF_MEASUREMENTS 5
 static const inches_t MAX_DISTANCE_FROM_BEACON = 900;
-static const inches_t MIN_DISTANCE_FROM_BEACON = 72;
+static const inches_t MIN_DISTANCE_FROM_BEACON = CEILING_HEIGHT - 6;
 
-static const TimeOutTime = MAX_16_BIT_VALUE;
+static const TimeOutTime = MAX_UNSIGNED_16_BIT_VALUE;
 static const pulseCount_t TransmittingOverhead = 8800;
 static const inches_t WAITING_FOR_SIGNAL_TIMED_OUT = -1;
 static const inches_t TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST = -2;
 static const inches_t UNINITIALIZED_DISTANCE = -3;
+static const inches_t DISTANCE_OUT_OF_BOUNDS = -4;
+static const inches_t TriangulationErrorThreshhold = 50;
 
-static distanceMeasurements[ NUMBER_OF_MEASUREMENTS ];
 
-// Could implement check at initialization to ensure that the beacons are correctly
-// indexed
+/*** STATIC VARIABLES ***/
+
+static inches_t distanceMeasurements[ NUMBER_OF_MEASUREMENTS ];
+static inches_t distanceToBeacon[ NUMBER_OF_BEACONS ];
+static coordinates_t roversPosition;
+static degree_t roversBearing;
+
 void InitializePositioningSystem()
 {  
    Byte i;
@@ -33,32 +43,40 @@ void InitializePositioningSystem()
    
    BEACON_TRANSMITTER_ENABLE = 0;
    
-   for ( i = 0; i < NUMBER_OF_MEASUREMENTS; i++ )
-   {
-      distanceMeasurements[ i ] = UNINITIALIZED_DISTANCE;
-   }
 }
 
-inches_t GetAccurateDistanceToBeacon( beaconId_t beaconId )
+inches_t GetAccurateLineOfSightDistanceToBeacon( beaconId_t beaconId )
 {
-   sByte i, k; 
+   sByte i, j, k; 
    Byte timeOutCount;
    inches_t distance, temp;
    static const TimeOutThreshhold = 15;
+   
+   // reset distances
+   
+   for ( i = 0; i < NUMBER_OF_MEASUREMENTS; i++ )
+   {
+      distanceMeasurements[ i ] = UNINITIALIZED_DISTANCE;  
+   }
    for ( i = 0, timeOutCount = 0; i < NUMBER_OF_MEASUREMENTS && timeOutCount < TimeOutThreshhold; timeOutCount++ )
    {
-      distanceMeasurements[ i ] = GetLineOfSightDistanceToBeacon( beaconId );
-      if ( distanceMeasurements[ i ] < 0 || distanceMeasurements[ i ] < MIN_DISTANCE_FROM_BEACON || distanceMeasurements[ i ] > MAX_DISTANCE_FROM_BEACON )
+      //distanceMeasurements[ i ] = GetLineOfSightDistanceToBeacon( beaconId );
+      distance = GetLineOfSightDistanceToBeacon( beaconId );
+      if ( distance < 0 || distance < MIN_DISTANCE_FROM_BEACON || distance > MAX_DISTANCE_FROM_BEACON )
       {
          continue;
       }
-      i++;
+      else
+      {  
+         distanceMeasurements[ i ] = distance;          
+         i++;
+      }
    }
 
    // find the median by sorting
-   for ( i = 1; i < NUMBER_OF_MEASUREMENTS; i++ )
+   for ( j = 1; j < i; j++ )
    {
-      for ( k = i; k > 0 && distanceMeasurements[ k ] < distanceMeasurements[ k - 1]; k-- )
+      for ( k = j; k > 0 && distanceMeasurements[ k ] < distanceMeasurements[ k - 1]; k-- )
       {
          temp = distanceMeasurements[ k ];
          distanceMeasurements[ k ] = distanceMeasurements[ k - 1 ];
@@ -67,10 +85,7 @@ inches_t GetAccurateDistanceToBeacon( beaconId_t beaconId )
    }
    
    distance = distanceMeasurements[ NUMBER_OF_MEASUREMENTS / 2 ];
-   for ( i = 0; i < NUMBER_OF_MEASUREMENTS; i++ )
-   {
-      distanceMeasurements[ i ] = UNINITIALIZED_DISTANCE;  
-   }
+   
    return distance;
 }
 
@@ -133,7 +148,7 @@ inches_t GetLineOfSightDistanceToBeacon( beaconId_t beaconId )
       }
    }
    
-   // After acknowledge disable
+   // After acknowledge disable                                                                                                              
    BEACON_TRANSMITTER_ENABLE = 0;
    
    startTimerCount = TCNT;
@@ -144,7 +159,8 @@ inches_t GetLineOfSightDistanceToBeacon( beaconId_t beaconId )
    {
       return WAITING_FOR_SIGNAL_TIMED_OUT;
    }
-   lengthOfSoundInTimerClockCycles = ( endTimerCount - startTimerCount - TransmittingOverhead );
+   lengthOfSoundInTimerClockCycles = endTimerCount - startTimerCount - TransmittingOverhead;
+   
    distance = lengthOfSoundInTimerClockCycles;
    //integer multiplication, distance = distance * 54/1000, avoiding overflow
    distance /= 10;
@@ -152,7 +168,11 @@ inches_t GetLineOfSightDistanceToBeacon( beaconId_t beaconId )
    distance /= 10;
    distance *= 6;
    distance /= 10;
-
+   
+   if ( distance < MIN_DISTANCE_FROM_BEACON || distance > MAX_DISTANCE_FROM_BEACON )
+   {
+      return DISTANCE_OUT_OF_BOUNDS;
+   }
    return distance;
 }
 
@@ -204,3 +224,53 @@ static boolean_t waitForAndDetectReceivedSonarPulse()
    // the noise and of some significant duration
 }
 
+void SetDistanceToBeacon( beaconId_t beaconId, inches_t distance )
+{
+   distanceToBeacon[ beaconId ] = distance;   
+}
+
+inches_t GetDistanceToBeacon( beaconId_t beaconId )
+{
+   return distanceToBeacon[ beaconId ];  
+}
+
+void DetermineRoversPosition( coordinates_t approximateCoordinates )
+{        
+   inches_t error;
+   beaconId_t firstBeacon, secondBeacon, thirdBeacon;
+   coordinates_t triangulationCoordinates;
+   
+   /*** TEST ***/
+   firstBeacon = 0;
+   secondBeacon = 1;
+   thirdBeacon = 3;
+   /*** END TEST ***/
+   
+   distanceToBeacon[ firstBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( firstBeacon ) );
+   distanceToBeacon[ secondBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( secondBeacon ) );
+   distanceToBeacon[ thirdBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( thirdBeacon ) );
+   triangulationCoordinates = Triangulate( firstBeacon, secondBeacon, thirdBeacon );
+   error = GetTriangulationError();
+   
+   if ( error > TriangulationErrorThreshhold )
+   {
+      /* guess using PACNT to determine rough position if
+       * not at a node. If near a node then use the LUT
+       */
+      roversPosition = approximateCoordinates;
+   }
+   else
+   {
+      roversPosition = triangulationCoordinates;
+   }
+}
+
+degree_t GetRoversBearing()
+{
+   return roversBearing;
+}
+
+coordinates_t GetRoversCoordinates()
+{
+   return roversPosition;
+}

@@ -5,8 +5,6 @@
 #include "MC9S12C128.h"                             
 
 coordinates_t Triangulate( beaconId_t firstBeacon, beaconId_t secondBeacon, beaconId_t thirdBeacon );
-
-
-static void ResetTriangulationSystem( void );
+inches_t GetTriangulationError( void );
 
 #endif

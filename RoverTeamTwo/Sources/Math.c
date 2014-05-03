@@ -86,8 +86,7 @@ inches_t GetFloorDistance( inches_t hypotenuse )
 {
    int32_t hypotenuseSquared;
    Word upper, lower;
-   static const CeilingHeight = 72; //72
-   static const CeilingHeightSquared = 72 * 72;
+   static const CeilingHeightSquared = CEILING_HEIGHT * CEILING_HEIGHT;
    
    _asm
    {

@@ -41,6 +41,7 @@ static void SetTreadStabilizationTimer( void );
 
 static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt );
 static pulseCount_t DistanceToPulses( inches_t distance );
+static inches_t PulsesToDistance( pulseCount_t pulses );
 static pulseCount_t DegreesToPulses( degree_t degrees );
 
 static boolean_t ExecuteNextTurnByTurnInstruction( void );

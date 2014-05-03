@@ -25,11 +25,13 @@ void main( void )
    InitializePositioningSystem();
    InitializeObstacleAvoidanceSystem();
    InitializeNavigationSystem();
-   Dijkstra( 0, 7 );
+   
+
    
    for(;;)
-      distance0 = GetLineOfSightDistanceToBeacon( 4 );
-   
+   {        
+      DetermineRoversPosition();
+   }
    for( ;; )
       myCoordinates = Triangulate( 0, 1, 2 );
 

@@ -4,10 +4,10 @@
 #include "Math.h"
 #include "MC9S12C128.h"
 
-static const inches_t CoarseResolution = 18;
+/*** CONSTANTS ***/
 
+static const inches_t CoarseResolution = 18;
 static const inches_t UninitializedDistance = -4;
-static const inches_t DistanceToBeaconsFailed = -5;
 
 static const coordinates_t beaconCoords[ NUMBER_OF_BEACONS ] = 
 {
@@ -18,37 +18,23 @@ static const coordinates_t beaconCoords[ NUMBER_OF_BEACONS ] =
    { 225, 360 }
 };
 
-static inches_t distanceToBeacon[ NUMBER_OF_BEACONS ];
+/*** STATIC VARIABLES ***/
 
-static void ResetTriangulationVariables()
-{
-   Byte i;
-   for ( i = 0; i < NUMBER_OF_BEACONS; i++ )
-   {
-      distanceToBeacon[ i ] = UninitializedDistance;
-   }
-}
+static inches_t triangulationError = MAX_SIGNED_16_BIT_VALUE;
+
+/*** FUNCTIONS ***/
 
 coordinates_t Triangulate( beaconId_t firstBeacon, beaconId_t secondBeacon, beaconId_t thirdBeacon )
 {
    Byte i;
-   inches_t x, y, minTotalError, totalError, yFineUpperBound, yFineLowerBound, xFineUpperBound, xFineLowerBound;
+   inches_t x, y, totalError, yFineUpperBound, yFineLowerBound, xFineUpperBound, xFineLowerBound, firstDistance, secondDistance, thirdDistance;
    coordinates_t tempCoords, coarseCoords, closestCoords;
    
-   ResetTriangulationVariables();
+   firstDistance = GetDistanceToBeacon( firstBeacon );
+   secondDistance = GetDistanceToBeacon( secondBeacon );
+   thirdDistance = GetDistanceToBeacon( thirdBeacon );
    
-   distanceToBeacon[ firstBeacon ] = GetFloorDistance( GetAccurateDistanceToBeacon( firstBeacon ) );
-   distanceToBeacon[ secondBeacon ] = GetFloorDistance( GetAccurateDistanceToBeacon( secondBeacon ) );
-   distanceToBeacon[ thirdBeacon ] = GetFloorDistance( GetAccurateDistanceToBeacon( thirdBeacon ) );
-   
-   if ( distanceToBeacon[ firstBeacon ] < 0 || distanceToBeacon[ secondBeacon ] < 0 || distanceToBeacon[ thirdBeacon ] < 0 )
-   {
-      coarseCoords.x = DistanceToBeaconsFailed;
-      coarseCoords.y = DistanceToBeaconsFailed;
-      return coarseCoords;
-   }   
-   
-   minTotalError = MAX_16_BIT_VALUE;
+   triangulationError = MAX_SIGNED_16_BIT_VALUE;
    coarseCoords.x = UninitializedDistance;
    coarseCoords.y = UninitializedDistance;
 
@@ -58,13 +44,13 @@ coordinates_t Triangulate( beaconId_t firstBeacon, beaconId_t secondBeacon, beac
       {
          tempCoords.x = x;
          tempCoords.y = y; 
-         totalError = abs16( Distance( tempCoords, beaconCoords[ firstBeacon ] ) - distanceToBeacon[ firstBeacon ] );
-         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ secondBeacon ] ) - distanceToBeacon[ secondBeacon ] );
-         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ thirdBeacon ] ) - distanceToBeacon[ thirdBeacon ] );
+         totalError = abs16( Distance( tempCoords, beaconCoords[ firstBeacon ] ) - firstDistance );
+         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ secondBeacon ] ) - secondDistance );
+         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ thirdBeacon ] ) - thirdDistance );
          
-         if ( totalError < minTotalError )
+         if ( totalError < triangulationError )
          {
-            minTotalError = totalError;
+            triangulationError = totalError;
             coarseCoords.x = x;
             coarseCoords.y = y;
          }
@@ -74,7 +60,7 @@ coordinates_t Triangulate( beaconId_t firstBeacon, beaconId_t secondBeacon, beac
    yFineUpperBound = coarseCoords.y + CoarseResolution;
    xFineLowerBound = coarseCoords.x - CoarseResolution;
    xFineUpperBound = coarseCoords.x + CoarseResolution;
-   minTotalError = MAX_16_BIT_VALUE;
+   triangulationError = MAX_SIGNED_16_BIT_VALUE;
 
    for ( y = yFineLowerBound; y <= yFineUpperBound; y++ )
    {
@@ -82,17 +68,22 @@ coordinates_t Triangulate( beaconId_t firstBeacon, beaconId_t secondBeacon, beac
       {
          tempCoords.x = x;
          tempCoords.y = y; 
-         totalError = abs16( Distance( tempCoords, beaconCoords[ firstBeacon ] ) - distanceToBeacon[ firstBeacon ] );
-         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ secondBeacon ] ) - distanceToBeacon[ secondBeacon ] );
-         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ thirdBeacon ] ) - distanceToBeacon[ thirdBeacon ] );
+         totalError = abs16( Distance( tempCoords, beaconCoords[ firstBeacon ] ) - firstDistance );
+         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ secondBeacon ] ) - secondDistance );
+         totalError = totalError + abs16( Distance( tempCoords,  beaconCoords[ thirdBeacon ] ) - thirdDistance );
          
-         if ( totalError < minTotalError )
+         if ( totalError < triangulationError )
          {
-            minTotalError = totalError;
+            triangulationError = totalError;
             closestCoords.x = x;
             closestCoords.y = y;
          }
       }
    }
    return closestCoords;
+}
+
+inches_t GetTriangulationError()
+{
+   return triangulationError;
 }
