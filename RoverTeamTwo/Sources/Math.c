@@ -82,6 +82,27 @@ static Word SquareRoot( LWord operand )
    return root;
 }
 
+inches_t GetFloorDistance( inches_t hypotenuse )
+{
+   int32_t hypotenuseSquared;
+   Word upper, lower;
+   static const CeilingHeight = 72; //72
+   static const CeilingHeightSquared = 72 * 72;
+   
+   _asm
+   {
+      LDY   hypotenuse 
+      LDD   hypotenuse
+      EMULS
+      STY   upper
+      STD   lower
+   }
+   hypotenuseSquared.breakdown.upperWord = upper;
+   hypotenuseSquared.breakdown.lowerWord = lower;
+   
+   return SquareRoot( hypotenuseSquared.quadword - CeilingHeightSquared );
+}
+
 inches_t Distance( coordinates_t A, coordinates_t B )
 {
    int32_t operand1, operand2;

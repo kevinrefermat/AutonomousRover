@@ -10,7 +10,7 @@
 static const inches_t NO_CONNECTION = -1;
 
 #define MAX_RAM_NUMBER_OF_NODES 16
-#define ROM_NUMBER_OF_NODES 21
+#define ROM_NUMBER_OF_NODES 10
 #define MAX_TOTAL_NUMBER_OF_NODES ( MAX_RAM_NUMBER_OF_NODES + ROM_NUMBER_OF_NODES )
 
 #define MAX_RAM_NUMBER_OF_OBSTACLES 7
@@ -31,6 +31,7 @@ typedef struct
    sWord index;
    turnByTurnElement_t queue[ MAX_TOTAL_NUMBER_OF_NODES * 2 ]; 
 } turnByTurnQueue_t;
+
 static turnByTurnQueue_t RamTurnByTurnQueue;
 
 // 1 for rover's current position
@@ -48,29 +49,28 @@ static tetragon_t RamObstacleList[ MAX_RAM_NUMBER_OF_OBSTACLES ];
 static nodeNumber_t RamNodeSequence[ MAX_TOTAL_NUMBER_OF_NODES ];
 static nodeNumber_t RamNodeSequenceSize = 0;
 
+static const coordinates_t RomTargetCoordinateList[] =
+{
+   { 48, 360 },
+   { 120, 480 },
+   { 216, 324 },
+   { 384, 120 },
+   { 396, 396 },
+   { 384, 540 }
+};
+
 static const coordinates_t RomNodeCoordinateList[] = 
 {
-   { 30, 670 },
-   { 234, 528 },
-   { 345, 528 },
-   { 72, 456 },
-   { 174, 456 },
-   { 234, 429 },
-   { 345, 429 },
-   { 264, 417 },
-   { 363, 417 },
-   { 72, 228 },
-   { 174, 228 },
-   { 264, 234 },
-   { 363, 234 },
-   { 162, 162 },
-   { 345, 162 },
-   { 162, 66 },
-   { 345, 66 },
    { 36, 36 },
-   { 408, 558 },
-   { 54, 510 },
-   { 234, 510 }
+   { 165, 199 },
+   { 381, 199 },
+   { 33, 211 },
+   { 33, 495 },
+   { 177, 489 },
+   { 249, 199 },
+   { 393, 427 },
+   { 225, 415 },
+   { 33, 679 }
 };
 
 static const tetragon_t RomObstacleList[] =
@@ -78,10 +78,10 @@ static const tetragon_t RomObstacleList[] =
    { 96, 450, 36, BOTTOM_OF_ROOM },          // x axis shit collecting wall
    { 420, 450, 336, BOTTOM_OF_ROOM },        // right side low cabinets
    { 420, 450, 534, 444 },                   // right side high cabinets
-   { 174, 330, 156, 78 },                    // right low desk
+   { 174, 330, 156, BOTTOM_OF_ROOM },        // right low desk  EXTENDED to block treachorous south wall corridor
    { 84, 156, 438, 246 },                    // left center desk
    { 276, 348, 408, 246 },                   // right center desk
-   { 246, 330, 516, 444 },                   // right high desk
+   { 246, 330, 570, 444 },                   // right high desk   EXTENDED to block the space between this and RF room
    { 66, 222, TOP_OF_ROOM, 522 },            // desk area
    { 222, 390, TOP_OF_ROOM, 570 },           // RF room
    { 390, RIGHT_OF_ROOM, TOP_OF_ROOM, 612 }  // high right corner
@@ -138,15 +138,14 @@ void Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
       }
    }
    
-   RamNodeSequenceSize = 1; 
-   
    if ( distanceFromTarget[ sourceNodeId ] >= 0x7FFF )
    {
       RamNodeSequence[ 0 ] = -1;
       return;
    }
    
-   RamNodeSequence[ 0 ] = currentNodeId;
+   RamNodeSequenceSize = 0;
+   
    while ( currentNodeId != targetNodeId )
    {
       currentNodeId = previousNode[ currentNodeId ];

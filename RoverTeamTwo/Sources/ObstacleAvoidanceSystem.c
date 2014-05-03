@@ -5,9 +5,14 @@
 #include "Rover.h"
 #include "ObstacleAvoidanceSystem.h"
 #include "MotorControlSystem.h"
+#include "NavigationSystem.h"
 
 static const inches_t ObstacleDetectionThreshhold = 24;
 static const coordinates_t OBSTACLE_NOT_SEEN_ERROR = { -1, -1 };
+static const inches_t PING_TIMED_OUT_ERROR = -2;
+
+static const milliseconds_t DelayAfterMovingPingALot = 400;
+static const milliseconds_t DelayBetweenOneDegreeChangePingPosition = 2;
 
 static timerCount_t PingPeriodTimerCounterOffset;
 static degree_t CurrentPingAngle;
@@ -24,10 +29,10 @@ void InitializeObstacleAvoidanceSystem()
    TIOS_IOS0 = 0;
       
    // internal pull device enabled
-   PERT_PERT0 = 1;
+   //PERT_PERT0 = 0;
 
    // pull device is a pull down device
-   PPST_PPST0 = 1;
+   //PPST_PPST0 = 1;
    
    // Clear flag
    TFLG1_C1F = 1;
@@ -44,7 +49,7 @@ void InitializeObstacleAvoidanceSystem()
    
   
    PWME_PWME1 = 1;
-   Delay( 300 );
+   Delay( DelayAfterMovingPingALot );
 } 
 
 void EnablePeriodicObstacleDetection( milliseconds_t period )
@@ -92,6 +97,7 @@ inches_t DetectClosestObstacle()
    
    OutputPulseToPing();
    lengthOfEchoInTimerClockCycles = MeasureReturnPulseFromPing();
+   if ( lengthOfEchoInTimerClockCycles == PING_TIMED_OUT_ERROR ) return PING_TIMED_OUT_ERROR;
    
    EnableInterrupts;
    
@@ -120,6 +126,8 @@ static void OutputPulseToPing()
 static timerCount_t MeasureReturnPulseFromPing()
 {
    timerCount_t risingEdge;
+   Word timeOutCount;
+   static const Word TimeOutThreshhold = 10000;
    
    OBSTACLE_DETECTION_DDR = 0;
    
@@ -127,17 +135,18 @@ static timerCount_t MeasureReturnPulseFromPing()
    TCTL4_EDG0x = 0x01;
    
    TFLG1_C0F = 1;
-   while ( !( TFLG1_C0F ) ); 
+   for ( timeOutCount = 0; !( TFLG1_C0F ) && timeOutCount < TimeOutThreshhold; timeOutCount++ ); 
    TFLG1_C0F = 1;
    
    risingEdge = TC0;
    
    TCTL4_EDG0x = 0x02;
-  
-   while ( !( TFLG1_C0F ) );
+   
+   for ( ; !( TFLG1_C0F ) && timeOutCount < TimeOutThreshhold; timeOutCount++ ); 
    TFLG1_C0F = 1;
-
-   return TC0 - risingEdge;
+   
+   if ( timeOutCount == TimeOutThreshhold ) return ( pulseCount_t ) PING_TIMED_OUT_ERROR;
+   else return TC0 - risingEdge;
 }
 
 void SetPingRotationalPosition( degree_t degrees )
@@ -163,52 +172,55 @@ coordinates_t GetLeftEdgeOfObstacle()
    static const degree_t StartSweepAngle = -75;
    static const degree_t FinishSweepAngle = 10;
    
-   
    SetPingRotationalPosition( StartSweepAngle );
-   Delay( 500 );
+   Delay( DelayAfterMovingPingALot );
    degree = StartSweepAngle;
    
    //Find the background
    for ( ; ; degree++ )
    {
-      if ( DetectClosestObstacle() > ObstacleDetectionThreshhold )
-      {
-         SetPingRotationalPosition( degree + 1 );
-         Delay( 100 );
-         break;
-      }
-      if ( degree == FinishSweepAngle )
+      if ( degree > FinishSweepAngle )
       {
          SetPingRotationalPosition( 0 );
-         Delay( 300 );
+         Delay( DelayAfterMovingPingALot );
          return OBSTACLE_NOT_SEEN_ERROR;
-      }
+      } 
+      
+      SetPingRotationalPosition( degree );
+      Delay( DelayBetweenOneDegreeChangePingPosition );
+      
+      if ( DetectClosestObstacle() > ObstacleDetectionThreshhold ) break;      
    }
    
    // Find the left edge
    for ( ; ; degree++ )
    {
+      if ( degree > FinishSweepAngle )
+      {
+         SetPingRotationalPosition( 0 );
+         Delay( DelayAfterMovingPingALot );
+         return OBSTACLE_NOT_SEEN_ERROR;
+      }
+      
+      SetPingRotationalPosition( degree );
+      Delay( DelayBetweenOneDegreeChangePingPosition );
+      
       distance = DetectClosestObstacle();
+      if ( distance == PING_TIMED_OUT_ERROR ) continue;
       if ( distance <= ObstacleDetectionThreshhold )
       {
          leftEdgeAngle = degree + 25;
          leftEdgeDistance = distance;
          SetPingRotationalPosition( 0 );
-         Delay( 300 );
+         Delay( DelayAfterMovingPingALot );
+         
          /******* FIX THISSSSS *********/
+         
          coordinates.x = -2;
          coordinates.y = -2;
        
          return coordinates;
       }
-      if ( degree == FinishSweepAngle )
-      {
-         SetPingRotationalPosition( 0 );
-         Delay( 300 );
-         return OBSTACLE_NOT_SEEN_ERROR;
-      }
-      SetPingRotationalPosition( degree + 1 );
-      Delay( 100 );
    }
    
 }
@@ -219,7 +231,7 @@ interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
    if ( CurrentPingAngle != 0 )
    {
       SetPingRotationalPosition( 0 );
-      Delay( 300 );
+      Delay( DelayAfterMovingPingALot );
    }
    if ( DetectClosestObstacle() <= ObstacleDetectionThreshhold )
    {

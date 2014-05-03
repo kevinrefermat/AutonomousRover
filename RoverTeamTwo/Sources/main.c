@@ -3,6 +3,7 @@
 #include <libdefs.h>
 
 #include "Rover.h"
+#include "main.h"
 #include "MotorControlSystem.h"
 #include "NavigationSystem.h"
 #include "ObstacleAvoidanceSystem.h"
@@ -22,12 +23,21 @@ void main( void )
    degree_t i;
    InitializeTimers();
    InitializePositioningSystem();
+   InitializeObstacleAvoidanceSystem();
+   InitializeNavigationSystem();
+   Dijkstra( 0, 7 );
+   
+   for(;;)
+      distance0 = GetLineOfSightDistanceToBeacon( 4 );
+   
+   for( ;; )
+      myCoordinates = Triangulate( 0, 1, 2 );
+
+   myCoordinates = GetLeftEdgeOfObstacle();
+   
    for ( ; ; )
    {
-      distance0 = GetAccurateDistanceToBeacon( 0 ); 
-      distance1 = GetAccurateDistanceToBeacon( 1 ); 
-      distance3 = GetAccurateDistanceToBeacon( 3 );
-      myCoordinates = Triangulate( 0, 1, 3 ); 
+      distance0 = GetAccurateDistanceToBeacon( 0 );
    }
    waitForAndDetectReceivedSonarPulse();
    TurnOnErrorLight();
@@ -40,3 +50,11 @@ void main( void )
    MoveForward( 10000 );
    for (;;);
 }
+ /*
+nextStep_t PursueTarget( coordinates_t target )
+{
+   nodeNumber_t currentNode;
+   
+   GetCurrentLocation();
+   Dijkstra( currentNode,   
+}  */

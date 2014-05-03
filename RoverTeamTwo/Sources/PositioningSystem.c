@@ -7,7 +7,7 @@ static const inches_t MAX_DISTANCE_FROM_BEACON = 900;
 static const inches_t MIN_DISTANCE_FROM_BEACON = 72;
 
 static const TimeOutTime = MAX_16_BIT_VALUE;
-static const pulseCount_t TransmittingOverhead = 8848;
+static const pulseCount_t TransmittingOverhead = 8800;
 static const inches_t WAITING_FOR_SIGNAL_TIMED_OUT = -1;
 static const inches_t TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST = -2;
 static const inches_t UNINITIALIZED_DISTANCE = -3;
@@ -47,7 +47,7 @@ inches_t GetAccurateDistanceToBeacon( beaconId_t beaconId )
    static const TimeOutThreshhold = 15;
    for ( i = 0, timeOutCount = 0; i < NUMBER_OF_MEASUREMENTS && timeOutCount < TimeOutThreshhold; timeOutCount++ )
    {
-      distanceMeasurements[ i ] = GetDistanceToBeacon( beaconId );
+      distanceMeasurements[ i ] = GetLineOfSightDistanceToBeacon( beaconId );
       if ( distanceMeasurements[ i ] < 0 || distanceMeasurements[ i ] < MIN_DISTANCE_FROM_BEACON || distanceMeasurements[ i ] > MAX_DISTANCE_FROM_BEACON )
       {
          continue;
@@ -76,7 +76,7 @@ inches_t GetAccurateDistanceToBeacon( beaconId_t beaconId )
 
 // Must disable interrupts and ensure that beacon is not transmitting from previous function call
 // At thirty feet this function takes 90ms and times out around 170ms
-inches_t GetDistanceToBeacon( beaconId_t beaconId )
+inches_t GetLineOfSightDistanceToBeacon( beaconId_t beaconId )
 {
    boolean_t success;
    timerCount_t startTimerCount, endTimerCount, lengthOfSoundInTimerClockCycles;

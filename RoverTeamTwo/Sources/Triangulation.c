@@ -37,9 +37,9 @@ coordinates_t Triangulate( beaconId_t firstBeacon, beaconId_t secondBeacon, beac
    
    ResetTriangulationVariables();
    
-   distanceToBeacon[ firstBeacon ] = GetAccurateDistanceToBeacon( firstBeacon );
-   distanceToBeacon[ secondBeacon ] = GetAccurateDistanceToBeacon( secondBeacon );
-   distanceToBeacon[ thirdBeacon ] = GetAccurateDistanceToBeacon( thirdBeacon );
+   distanceToBeacon[ firstBeacon ] = GetFloorDistance( GetAccurateDistanceToBeacon( firstBeacon ) );
+   distanceToBeacon[ secondBeacon ] = GetFloorDistance( GetAccurateDistanceToBeacon( secondBeacon ) );
+   distanceToBeacon[ thirdBeacon ] = GetFloorDistance( GetAccurateDistanceToBeacon( thirdBeacon ) );
    
    if ( distanceToBeacon[ firstBeacon ] < 0 || distanceToBeacon[ secondBeacon ] < 0 || distanceToBeacon[ thirdBeacon ] < 0 )
    {
