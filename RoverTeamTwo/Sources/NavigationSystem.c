@@ -4,17 +4,17 @@
 #include "Compass.h"
 #include "Math.h"
 
+
+/*** CONSTANTS ***/
+
 #define BOTTOM_OF_ROOM 0
 #define TOP_OF_ROOM 696
 #define LEFT_OF_ROOM 0
 #define RIGHT_OF_ROOM 450
 
-
-/*** CONSTANTS ***/
-
 static const inches_t NO_CONNECTION = -1;
 
-#define MAX_RAM_NUMBER_OF_NODES 16
+#define MAX_RAM_NUMBER_OF_NODES 37
 #define ROM_NUMBER_OF_NODES 10
 #define MAX_TOTAL_NUMBER_OF_NODES ( MAX_RAM_NUMBER_OF_NODES + ROM_NUMBER_OF_NODES )
 
@@ -32,7 +32,14 @@ static const obstacleNumber_t MaxRamNumberOfObstacles = MAX_RAM_NUMBER_OF_OBSTAC
 static const obstacleNumber_t RomNumberOfObstacles = ROM_NUMBER_OF_OBSTACLES;
 static const obstacleNumber_t MaxTotalNumberOfObstacles = MAX_TOTAL_NUMBER_OF_OBSTACLES;
 
-static const nodeNumber_t RoversCurrentPositionIndex = 0;
+static const nodeNumber_t ROVERS_NODE_ID = ROM_NUMBER_OF_NODES;
+
+static const inches_t TARGET_UNREACHABLE_ERROR = -1;
+
+#define NUMBER_OF_TARGETS 3
+static const nodeNumber_t NumberOfTargets = NUMBER_OF_TARGETS;
+
+#define TARGET_TO_NODE_DISTANCE 16 //14 inches from the edge of target plus 2 inches to the center of the post
 
 /*** TYPEDEFS ***/
                    
@@ -73,20 +80,21 @@ static boolean_t beenVisited[ MAX_TOTAL_NUMBER_OF_NODES ];
 static nodeNumber_t previousNode[ MAX_TOTAL_NUMBER_OF_NODES ];
 static inches_t distanceFromTarget[ MAX_TOTAL_NUMBER_OF_NODES ];
 
-static coordinates_t RoversPosition;
 static degree_t RoversBearing;
+
+static runtimeTarget_t runtimeTarget[ NUMBER_OF_TARGETS ];
 
 
 /*** LOOKUP TABLES ***/
 
-static const coordinates_t RomTargetCoordinateList[] =
+static const target_t TargetLookupTable[] =
 {
-   { 48, 360 },
-   { 120, 480 },
-   { 216, 324 },
-   { 384, 120 },
-   { 396, 396 },
-   { 384, 540 }
+   { { 48, 360 }, { { 48 - TARGET_TO_NODE_DISTANCE, 360 }, { 48, 360 + TARGET_TO_NODE_DISTANCE }, { 48, 360 - TARGET_TO_NODE_DISTANCE }, { -1, -1 } }, 3 },
+   { { 120, 480 }, { { 120 - TARGET_TO_NODE_DISTANCE, 480 }, { 120 + TARGET_TO_NODE_DISTANCE, 480 }, { 120, 480 + TARGET_TO_NODE_DISTANCE }, { -1, -1 } }, 3 },
+   { { 216, 324 }, { { 216 - TARGET_TO_NODE_DISTANCE, 324 }, { 216 + TARGET_TO_NODE_DISTANCE, 324 }, { 216, 324 - TARGET_TO_NODE_DISTANCE }, { 216, 324 + TARGET_TO_NODE_DISTANCE } }, 4 },
+   { { 384, 120 }, { { 384 + TARGET_TO_NODE_DISTANCE, 120 }, { 384, 120 + TARGET_TO_NODE_DISTANCE }, { -1, -1 }, { -1, -1 } }, 2 },
+   { { 396, 396 }, { { 396 - TARGET_TO_NODE_DISTANCE, 396 }, { 396 + TARGET_TO_NODE_DISTANCE, 396 }, { 396, 396 + TARGET_TO_NODE_DISTANCE } }, 3 },
+   { { 384, 540 }, { { 384 + TARGET_TO_NODE_DISTANCE, 540 }, { 384 - TARGET_TO_NODE_DISTANCE }, { 384, 540 - TARGET_TO_NODE_DISTANCE }, { -1, -1 } }, 3 }
 };
 
 static const coordinates_t RomNodeCoordinateList[] = 
@@ -117,14 +125,27 @@ static const tetragon_t RomObstacleList[] =
    { 390, RIGHT_OF_ROOM, TOP_OF_ROOM, 612 }  // high right corner
 };
 
-void InitializeNavigationSystem()
+void InitializeNavigationSystem( nodeNumber_t *targets )
 {
-   UpdateAllNodeConnections();
+   Byte i, j;
+   coordinates_t tempCoords;
+   for ( i = 0; i < NumberOfTargets; i++ )
+   {
+      runtimeTarget[ i ].startingAccessPointNodeNumber = RomNumberOfNodes + RamNumberOfNodes;
+      runtimeTarget[ i ].numberOfAccessPoints = TargetLookupTable[ targets[ i ] ].numberOfAccessPoints;
+      for ( j = 0; j < TargetLookupTable[ targets[ i ] ].numberOfAccessPoints; j++ )
+      {
+         tempCoords = TargetLookupTable[ targets[ i ] ]. accessPoint[ j ];
+         AddNode( tempCoords.x, tempCoords.y );
+      }
+   }
+   
    SetRoversPosition( 36, 36 );
    SetRoversBearing( 0 );
+   UpdateAllNodeConnections();
 }
 
-boolean_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
+inches_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
 { 
    nodeNumber_t i, j, neighborNodeId, currentNodeId;
    inches_t shortestDistanceFromTarget;
@@ -132,7 +153,7 @@ boolean_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
    for ( i = 0; i < NumberOfNodes; i++ )
    {
       beenVisited[ i ] = FALSE;
-      distanceFromTarget[ i ] = 0x7FFF;
+      distanceFromTarget[ i ] = MAX_SIGNED_16_BIT_VALUE;
    }
    
    distanceFromTarget[ targetNodeId ] = 0;
@@ -140,7 +161,7 @@ boolean_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
    
    for ( i = 0; i < NumberOfNodes; i++ )
    {
-      shortestDistanceFromTarget = 0x7FFF;
+      shortestDistanceFromTarget = MAX_SIGNED_16_BIT_VALUE;
       for ( neighborNodeId = 0; neighborNodeId < NumberOfNodes; neighborNodeId++ )
       {
         
@@ -166,23 +187,21 @@ boolean_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
       }
    }
    
-   if ( distanceFromTarget[ sourceNodeId ] >= 0x7FFF )
+   if ( distanceFromTarget[ sourceNodeId ] >= MAX_SIGNED_16_BIT_VALUE )
    {
       RamNodeSequence.nodeSequence[ 0 ] = -1;
       RamNodeSequence.size = -1;
       RamNodeSequence.index = -1;
-      return FALSE;
+      return TARGET_UNREACHABLE_ERROR;
    }
-   
    RamNodeSequence.size = 0;
-   
    while ( currentNodeId != targetNodeId )
    {
       currentNodeId = previousNode[ currentNodeId ];
       RamNodeSequence.nodeSequence[ RamNodeSequence.size ] = currentNodeId;
       RamNodeSequence.size++;
    }
-   return TRUE;
+   return distanceFromTarget[ sourceNodeId ];
 }
 
 void AddObstacle( inches_t left, inches_t right, inches_t top, inches_t bottom )
@@ -212,16 +231,18 @@ void AddNode( inches_t x, inches_t y )
 void SetRoversPosition( inches_t x, inches_t y )
 {
    // DEAL WITH ROVER IDENTIFICATION BETWEEN ROM AND RAM LISTS
-   // for approximate location
-   RoversPosition.x = x;
-   RoversPosition.y = y;
-      
-   // for Dijkstra
-   RamNodeCoordinateList[ RoversCurrentPositionIndex ].x = RoversPosition.x;
-   RamNodeCoordinateList[ RoversCurrentPositionIndex ].y = RoversPosition.y;
+  
+   RamNodeCoordinateList[ 0 ].x = x;
+   RamNodeCoordinateList[ 0 ].y = y;
 
    // RomNumberOfNodes == roverId
    UpdateSingleNodeConnections( RomNumberOfNodes );
+}
+
+coordinates_t GetRoversPosition()
+{
+   coordinates_t roversCoordinates = *GetNodeCoordinates( ROVERS_NODE_ID );
+   return roversCoordinates;
 }
 
 void SetRoversBearing( degree_t degree )
@@ -229,14 +250,14 @@ void SetRoversBearing( degree_t degree )
    RoversBearing = degree;
 }
 
-coordinates_t GetRoversPosition()
-{
-   return RoversPosition;
-}
-
 degree_t GetRoversBearing()
 {
    return RoversBearing;
+}
+
+nodeNumber_t GetRoversNodeId()
+{
+   return ROVERS_NODE_ID;
 }
 
 void UpdateSingleNodeConnections( nodeNumber_t node )
@@ -480,5 +501,29 @@ state_t NavigateToTarget( Word targetNode )
       
       DetermineRoversPosition( approximateCoordinates );
    }
+   // FINAL ROTATE COMMAND
+}
 
+nodeNumber_t GetClosestNodeForTarget( nodeNumber_t sourceNodeId, nodeNumber_t runtimeTargetIndex )
+{
+   nodeNumber_t i;
+   inches_t closestDistance, tempDistance;
+   nodeNumber_t closestNodeId;
+   runtimeTarget_t target;
+   
+   target = runtimeTarget[ runtimeTargetIndex ];
+   
+   closestDistance = MAX_SIGNED_16_BIT_VALUE;
+   closestNodeId = target.startingAccessPointNodeNumber; 
+   
+   for ( i = target.startingAccessPointNodeNumber; i < target.numberOfAccessPoints + target.startingAccessPointNodeNumber; i++ )
+   {
+      tempDistance = Dijkstra( sourceNodeId, i );
+      if ( tempDistance < closestDistance )
+      {
+         closestDistance = tempDistance;
+         closestNodeId = i;
+      }
+   }
+   return closestNodeId;
 }

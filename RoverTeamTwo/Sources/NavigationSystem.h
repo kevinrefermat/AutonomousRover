@@ -25,10 +25,22 @@ typedef struct
    sWord value;
 } turnByTurnElement_t;
 
+typedef struct
+{
+   coordinates_t coordinates;
+   coordinates_t accessPoint[ 4 ];
+   nodeNumber_t numberOfAccessPoints;
+} target_t;
+
+typedef struct
+{
+   nodeNumber_t startingAccessPointNodeNumber;
+   nodeNumber_t numberOfAccessPoints;   
+} runtimeTarget_t;
 
 /*** FUNCTIONS ***/
 
-void InitializeNavigationSystem( void );
+void InitializeNavigationSystem( nodeNumber_t * pTargetNodes );
 
 void AddNode( inches_t x, inches_t y );
 void AddObstacle( inches_t left, inches_t right, inches_t top, inches_t bottom );
@@ -36,8 +48,9 @@ void SetRoversPosition( inches_t x, inches_t y );
 void SetRoversBearing( degree_t degrees );
 coordinates_t GetRoversPosition( void );
 degree_t GetRoversBearing( void );
+nodeNumber_t GetRoversNodeId( void );
 
-boolean_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId );
+inches_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId );
 
 void UpdateSingleNodeConnections( nodeNumber_t node );
 void UpdateAllNodeConnections( void );
@@ -57,5 +70,8 @@ coordinates_t* GetNodeCoordinates( nodeNumber_t nodeId );
 
 turnByTurnElement_t* GetNextTurnByTurnElement( void );
 boolean_t HasNextTurnByTurnElement( void );
+
+
+
 
 #endif

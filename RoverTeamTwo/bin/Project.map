@@ -30,8 +30,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x500     783
-  _Copy    *toCopyDownBeg 0xC628
+  _Range   pZeroOut       0x500     2592
+  _Copy    *toCopyDownBeg 0xC957
 } _startupData;
 
 *********************************************************************************************
@@ -40,11 +40,11 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata                          120     R     0xC03B     0xC0B2   ROM_C000
-.text                           1350     R     0xC0B3     0xC5F8   ROM_C000
-.copy                              7     R     0xC628     0xC62E   ROM_C000
+.rodata                          246     R     0xC03B     0xC130   ROM_C000
+.text                           2039     R     0xC131     0xC927   ROM_C000
+.copy                             10     R     0xC957     0xC960   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
-.data                              1   R/W      0x500      0x500   RAM
+.data                              5   R/W      0x500      0x504   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -268,13 +268,13 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_17e                   2   N/I      0x17E      0x17F   .absSeg220
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg222
-.bss                             782   R/W      0x501      0x80E   RAM
-RUNTIME                           47     R     0xC5F9     0xC627   ROM_C000
+.bss                            2587   R/W      0x505      0xF1F   RAM
+RUNTIME                           47     R     0xC928     0xC956   ROM_C000
 .vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):         635 (dec:     1589)
-READ_WRITE (R/W):      40F (dec:     1039)
+READ_ONLY (R):         967 (dec:     2407)
+READ_WRITE (R/W):      B20 (dec:     2848)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -521,74 +521,90 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           500       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LCMP_P                                   C5F9      15      21       1   RUNTIME     
-     _CASE_SEARCH_8_BYTE                       C60E      1A      26       1   RUNTIME     
+     _LCMP_P                                   C928      15      21       1   RUNTIME     
+     _CASE_SEARCH_8_BYTE                       C93D      1A      26       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
-     Delay                                     C0B3      20      32       3   .text       
-     InitializeTimers                          C0D3      37      55       1   .text       
-     TurnOnErrorLight                          C10A       7       7       1   .text       
+     Delay                                     C131      20      32       3   .text       
+     InitializeTimers                          C151      37      55       1   .text       
+     TurnOnErrorLight                          C188       7       7       1   .text       
 - VARIABLES:
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     StopMotion                                C111      1D      29       2   .text       
-     ClearRoverInMotionFlag                    C12E       4       4       1   .text       
-     MotionCompleted                           C132       4       4       1   .text       
-     BrakeTreads                               C136       D      13       1   .text       
-     DisableTreads                             C143       7       7       1   .text       
-     EnableTreads                              C14A       7       7       1   .text       
+     StopMotion                                C18F      1D      29       2   .text       
+     ClearRoverInMotionFlag                    C1AC       4       4       1   .text       
+     MotionCompleted                           C1B0       4       4       1   .text       
+     BrakeTreads                               C1B4       D      13       1   .text       
+     DisableTreads                             C1C1       7       7       1   .text       
+     EnableTreads                              C1C8       7       7       1   .text       
 - VARIABLES:
-     RoverInMotionFlag                          501       1       1       1   .bss        
+     RoverInMotionFlag                          505       1       1       1   .bss        
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
 - PROCEDURES:
-     InitializeObstacleAvoidanceSystem         C151      2B      43       1   .text       
-     SetPingTimer                              C17C       8       8       1   .text       
-     DetectClosestObstacle                     C184      1D      29       1   .text       
-     OutputPulseToPing                         C1A1      17      23       1   .text       
-     MeasureReturnPulseFromPing                C1B8      5C      92       1   .text       
-     SetPingRotationalPosition                 C214      1E      30       2   .text       
-     PeriodicCheckForObstacles                 C232      22      34       1   .text       
+     InitializeObstacleAvoidanceSystem         C1CF      2B      43       1   .text       
+     SetPingTimer                              C1FA       8       8       1   .text       
+     DetectClosestObstacle                     C202      1D      29       1   .text       
+     OutputPulseToPing                         C21F      17      23       1   .text       
+     MeasureReturnPulseFromPing                C236      5C      92       1   .text       
+     SetPingRotationalPosition                 C292      1E      30       2   .text       
+     PeriodicCheckForObstacles                 C2B0      22      34       1   .text       
 - VARIABLES:
-     PingPeriodTimerCounterOffset               502       2       2       1   .bss        
-     CurrentPingAngle                           504       2       2       2   .bss        
+     PingPeriodTimerCounterOffset               506       2       2       1   .bss        
+     CurrentPingAngle                           508       2       2       2   .bss        
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C254       E      14       1   .text       
+     main                                      C2D2      4A      74       1   .text       
 - VARIABLES:
+     targetNodes                                500       3       3       1   .data       
+     distance0                                  50A       2       2       1   .bss        
+     myCoordinates                              50C       4       4       2   .bss        
+     closestNode                                510       1       1       1   .bss        
 MODULE:                 -- NavigationSystem.c.o --
 - PROCEDURES:
-     InitializeNavigationSystem                C262      10      16       1   .text       
-     SetRoversPosition                         C272      1E      30       1   .text       
-     SetRoversBearing                          C290       4       4       1   .text       
-     UpdateSingleNodeConnections               C294      80     128       1   .text       
-     UpdateAllNodeConnections                  C314      8A     138       1   .text       
-     NodesAreVisibleToEachOther                C39E      58      88       2   .text       
-     IntersectWithObstacle                     C3F6      46      70       1   .text       
-     IntersectWithShape                        C43C      44      68       1   .text       
-     IntersectWithSegment                      C480      42      66       1   .text       
-     IsAbove                                   C4C2      58      88       4   .text       
-     SetAdjacencyMatrixValue                   C51A      39      57       2   .text       
+     InitializeNavigationSystem                C31C      8E     142       1   .text       
+     Dijkstra                                  C3AA     12B     299       7   .text       
+     AddNode                                   C4D5      25      37       1   .text       
+     SetRoversPosition                         C4FA      12      18       2   .text       
+     SetRoversBearing                          C50C       4       4       1   .text       
+     GetRoversNodeId                           C510       3       3       1   .text       
+     UpdateSingleNodeConnections               C513      80     128       2   .text       
+     UpdateAllNodeConnections                  C593      8A     138       1   .text       
+     NodesAreVisibleToEachOther                C61D      58      88       2   .text       
+     IntersectWithObstacle                     C675      46      70       1   .text       
+     IntersectWithShape                        C6BB      44      68       1   .text       
+     IntersectWithSegment                      C6FF      42      66       1   .text       
+     IsAbove                                   C741      58      88       4   .text       
+     SetAdjacencyMatrixValue                   C799      39      57       2   .text       
+     GetAdjacencyMatrixValue                   C7D2      3C      60       2   .text       
+     GetNodeCoordinates                        C80E      29      41       1   .text       
+     GetClosestNodeForTarget                   C837      4B      75       1   .text       
 - VARIABLES:
-     RomNodeCoordinateList                     C03B      28      40       6   .rodata     
-     RomObstacleList                           C063      50      80       1   .rodata     
-     NumberOfNodes                              500       1       1       3   .data       
-     RamNumberOfObstacles                       506       1       1       1   .bss        
-     RamNodeCoordinateList                      507      40      64       7   .bss        
-     RamAdjacencyMatrixData                     547     28A     650       1   .bss        
-     RamObstacleList                            7D1      38      56       1   .bss        
-     RoversPosition                             809       4       4       4   .bss        
-     RoversBearing                              80D       2       2       1   .bss        
+     TargetLookupTable                         C03B      7E     126       4   .rodata     
+     RomNodeCoordinateList                     C0B9      28      40       7   .rodata     
+     RomObstacleList                           C0E1      50      80       1   .rodata     
+     RamNumberOfNodes                           503       1       1       4   .data       
+     NumberOfNodes                              504       1       1       9   .data       
+     RamNumberOfObstacles                       511       1       1       1   .bss        
+     RamNodeSequence                            512       C      12       5   .bss        
+     RamNodeCoordinateList                      51E      94     148      10   .bss        
+     RamAdjacencyMatrixData                     5B2     872    2162       2   .bss        
+     RamObstacleList                            E24      38      56       1   .bss        
+     beenVisited                                E5C      2F      47       4   .bss        
+     previousNode                               E8B      2F      47       2   .bss        
+     distanceFromTarget                         EBA      5E      94      10   .bss        
+     RoversBearing                              F18       2       2       1   .bss        
+     runtimeTarget                              F1A       6       6       3   .bss        
 MODULE:                 -- Math.c.o --
 - PROCEDURES:
-     SquareRoot                                C553      3A      58       1   .text       
-     Distance                                  C58D      4B      75       2   .text       
+     SquareRoot                                C882      3A      58       1   .text       
+     Distance                                  C8BC      4B      75       2   .text       
 - VARIABLES:
 MODULE:                 -- PositioningSystem.c.o --
 - PROCEDURES:
-     InitializePositioningSystem               C5D8      21      33       1   .text       
+     InitializePositioningSystem               C907      21      33       1   .text       
 - VARIABLES:
 
 *********************************************************************************************
@@ -601,11 +617,11 @@ MODULE STATISTIC
   Rover.c.o                                    0     94      0
   MotorControlSystem.c.o                       1     64      2
   ObstacleAvoidanceSystem.c.o                  4    259      2
-  main.c.o                                     0     14      0
-  NavigationSystem.c.o                       778    753    120
+  main.c.o                                    10     74      0
+  NavigationSystem.c.o                      2577   1382    246
   Math.c.o                                     0    133      0
   PositioningSystem.c.o                        0     33      0
-  other                                      256     12      7
+  other                                      256     12     10
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
@@ -615,21 +631,24 @@ SECTION: ".text"
   MotionCompleted BrakeTreads DisableTreads EnableTreads 
   InitializeObstacleAvoidanceSystem SetPingTimer DetectClosestObstacle 
   OutputPulseToPing MeasureReturnPulseFromPing SetPingRotationalPosition 
-  PeriodicCheckForObstacles main InitializeNavigationSystem SetRoversPosition 
-  SetRoversBearing UpdateSingleNodeConnections UpdateAllNodeConnections 
+  PeriodicCheckForObstacles main InitializeNavigationSystem Dijkstra AddNode 
+  SetRoversPosition SetRoversBearing GetRoversNodeId 
+  UpdateSingleNodeConnections UpdateAllNodeConnections 
   NodesAreVisibleToEachOther IntersectWithObstacle IntersectWithShape 
-  IntersectWithSegment IsAbove SetAdjacencyMatrixValue SquareRoot Distance 
+  IntersectWithSegment IsAbove SetAdjacencyMatrixValue GetAdjacencyMatrixValue 
+  GetNodeCoordinates GetClosestNodeForTarget SquareRoot Distance 
   InitializePositioningSystem 
 SECTION: ".data"
-  NumberOfNodes 
+  targetNodes RamNumberOfNodes NumberOfNodes 
 SECTION: ".bss"
-  RoverInMotionFlag PingPeriodTimerCounterOffset CurrentPingAngle 
-  RamNumberOfObstacles RamNodeCoordinateList RamAdjacencyMatrixData 
-  RamObstacleList RoversPosition RoversBearing 
+  RoverInMotionFlag PingPeriodTimerCounterOffset CurrentPingAngle distance0 
+  myCoordinates closestNode RamNumberOfObstacles RamNodeSequence 
+  RamNodeCoordinateList RamAdjacencyMatrixData RamObstacleList beenVisited 
+  previousNode distanceFromTarget RoversBearing runtimeTarget 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata"
-  RomNodeCoordinateList RomObstacleList 
+  TargetLookupTable RomNodeCoordinateList RomObstacleList 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1304,53 +1323,69 @@ OBJECT LIST SORTED BY ADDRESS
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     NumberOfNodes                              500       1       1       3   .data       
-     RoverInMotionFlag                          501       1       1       1   .bss        
-     PingPeriodTimerCounterOffset               502       2       2       1   .bss        
-     CurrentPingAngle                           504       2       2       2   .bss        
-     RamNumberOfObstacles                       506       1       1       1   .bss        
-     RamNodeCoordinateList                      507      40      64       7   .bss        
-     RamAdjacencyMatrixData                     547     28A     650       1   .bss        
-     RamObstacleList                            7D1      38      56       1   .bss        
-     RoversPosition                             809       4       4       4   .bss        
-     RoversBearing                              80D       2       2       1   .bss        
+     targetNodes                                500       3       3       1   .data       
+     RamNumberOfNodes                           503       1       1       4   .data       
+     NumberOfNodes                              504       1       1       9   .data       
+     RoverInMotionFlag                          505       1       1       1   .bss        
+     PingPeriodTimerCounterOffset               506       2       2       1   .bss        
+     CurrentPingAngle                           508       2       2       2   .bss        
+     distance0                                  50A       2       2       1   .bss        
+     myCoordinates                              50C       4       4       2   .bss        
+     closestNode                                510       1       1       1   .bss        
+     RamNumberOfObstacles                       511       1       1       1   .bss        
+     RamNodeSequence                            512       C      12       5   .bss        
+     RamNodeCoordinateList                      51E      94     148      10   .bss        
+     RamAdjacencyMatrixData                     5B2     872    2162       2   .bss        
+     RamObstacleList                            E24      38      56       1   .bss        
+     beenVisited                                E5C      2F      47       4   .bss        
+     previousNode                               E8B      2F      47       2   .bss        
+     distanceFromTarget                         EBA      5E      94      10   .bss        
+     RoversBearing                              F18       2       2       1   .bss        
+     runtimeTarget                              F1A       6       6       3   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     RomNodeCoordinateList                     C03B      28      40       6   .rodata     
-     RomObstacleList                           C063      50      80       1   .rodata     
-     Delay                                     C0B3      20      32       3   .text       
-     InitializeTimers                          C0D3      37      55       1   .text       
-     TurnOnErrorLight                          C10A       7       7       1   .text       
-     StopMotion                                C111      1D      29       2   .text       
-     ClearRoverInMotionFlag                    C12E       4       4       1   .text       
-     MotionCompleted                           C132       4       4       1   .text       
-     BrakeTreads                               C136       D      13       1   .text       
-     DisableTreads                             C143       7       7       1   .text       
-     EnableTreads                              C14A       7       7       1   .text       
-     InitializeObstacleAvoidanceSystem         C151      2B      43       1   .text       
-     SetPingTimer                              C17C       8       8       1   .text       
-     DetectClosestObstacle                     C184      1D      29       1   .text       
-     OutputPulseToPing                         C1A1      17      23       1   .text       
-     MeasureReturnPulseFromPing                C1B8      5C      92       1   .text       
-     SetPingRotationalPosition                 C214      1E      30       2   .text       
-     PeriodicCheckForObstacles                 C232      22      34       1   .text       
-     main                                      C254       E      14       1   .text       
-     InitializeNavigationSystem                C262      10      16       1   .text       
-     SetRoversPosition                         C272      1E      30       1   .text       
-     SetRoversBearing                          C290       4       4       1   .text       
-     UpdateSingleNodeConnections               C294      80     128       1   .text       
-     UpdateAllNodeConnections                  C314      8A     138       1   .text       
-     NodesAreVisibleToEachOther                C39E      58      88       2   .text       
-     IntersectWithObstacle                     C3F6      46      70       1   .text       
-     IntersectWithShape                        C43C      44      68       1   .text       
-     IntersectWithSegment                      C480      42      66       1   .text       
-     IsAbove                                   C4C2      58      88       4   .text       
-     SetAdjacencyMatrixValue                   C51A      39      57       2   .text       
-     SquareRoot                                C553      3A      58       1   .text       
-     Distance                                  C58D      4B      75       2   .text       
-     InitializePositioningSystem               C5D8      21      33       1   .text       
-     _LCMP_P                                   C5F9      15      21       1   RUNTIME     
-     _CASE_SEARCH_8_BYTE                       C60E      1A      26       1   RUNTIME     
+     TargetLookupTable                         C03B      7E     126       4   .rodata     
+     RomNodeCoordinateList                     C0B9      28      40       7   .rodata     
+     RomObstacleList                           C0E1      50      80       1   .rodata     
+     Delay                                     C131      20      32       3   .text       
+     InitializeTimers                          C151      37      55       1   .text       
+     TurnOnErrorLight                          C188       7       7       1   .text       
+     StopMotion                                C18F      1D      29       2   .text       
+     ClearRoverInMotionFlag                    C1AC       4       4       1   .text       
+     MotionCompleted                           C1B0       4       4       1   .text       
+     BrakeTreads                               C1B4       D      13       1   .text       
+     DisableTreads                             C1C1       7       7       1   .text       
+     EnableTreads                              C1C8       7       7       1   .text       
+     InitializeObstacleAvoidanceSystem         C1CF      2B      43       1   .text       
+     SetPingTimer                              C1FA       8       8       1   .text       
+     DetectClosestObstacle                     C202      1D      29       1   .text       
+     OutputPulseToPing                         C21F      17      23       1   .text       
+     MeasureReturnPulseFromPing                C236      5C      92       1   .text       
+     SetPingRotationalPosition                 C292      1E      30       2   .text       
+     PeriodicCheckForObstacles                 C2B0      22      34       1   .text       
+     main                                      C2D2      4A      74       1   .text       
+     InitializeNavigationSystem                C31C      8E     142       1   .text       
+     Dijkstra                                  C3AA     12B     299       7   .text       
+     AddNode                                   C4D5      25      37       1   .text       
+     SetRoversPosition                         C4FA      12      18       2   .text       
+     SetRoversBearing                          C50C       4       4       1   .text       
+     GetRoversNodeId                           C510       3       3       1   .text       
+     UpdateSingleNodeConnections               C513      80     128       2   .text       
+     UpdateAllNodeConnections                  C593      8A     138       1   .text       
+     NodesAreVisibleToEachOther                C61D      58      88       2   .text       
+     IntersectWithObstacle                     C675      46      70       1   .text       
+     IntersectWithShape                        C6BB      44      68       1   .text       
+     IntersectWithSegment                      C6FF      42      66       1   .text       
+     IsAbove                                   C741      58      88       4   .text       
+     SetAdjacencyMatrixValue                   C799      39      57       2   .text       
+     GetAdjacencyMatrixValue                   C7D2      3C      60       2   .text       
+     GetNodeCoordinates                        C80E      29      41       1   .text       
+     GetClosestNodeForTarget                   C837      4B      75       1   .text       
+     SquareRoot                                C882      3A      58       1   .text       
+     Distance                                  C8BC      4B      75       2   .text       
+     InitializePositioningSystem               C907      21      33       1   .text       
+     _LCMP_P                                   C928      15      21       1   RUNTIME     
+     _CASE_SEARCH_8_BYTE                       C93D      1A      26       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
@@ -1378,10 +1413,9 @@ ObstacleAvoidanceSystem.c.o:
   EnablePeriodicObstacleDetection DisablePeriodicObstacleDetection 
   GetLeftEdgeOfObstacle 
 NavigationSystem.c.o:
-  Dijkstra AddObstacle AddNode GetRoversPosition GetRoversBearing 
-  GetAdjacencyMatrixValue UpdateTurnByTurnQueueFromNodeSequence 
-  GetNodeCoordinates GetNextTurnByTurnElement HasNextTurnByTurnElement 
-  NavigateToTarget 
+  AddObstacle GetRoversPosition GetRoversBearing 
+  UpdateTurnByTurnQueueFromNodeSequence GetNextTurnByTurnElement 
+  HasNextTurnByTurnElement NavigateToTarget 
 Math.c.o:
   arcTangent GetFloorDistance abs16 
 PositioningSystem.c.o:
@@ -1404,14 +1438,12 @@ ObstacleAvoidanceSystem.c.o:
   TimeOutThreshhold.1 LookLeftPwmDuty.2 LookRightPwmDuty.3 StartSweepAngle.6 
   FinishSweepAngle.7 leftEdgeAngle.4 leftEdgeDistance.5 
 main.c.o:
-  distance0 distance1 distance3 myCoordinates beaconGroup 
+  distance1 distance3 beaconGroup 
 NavigationSystem.c.o:
   NO_CONNECTION MaxRamNumberOfNodes RomNumberOfNodes MaxTotalNumberOfNodes 
   MaxRamNumberOfObstacles RomNumberOfObstacles MaxTotalNumberOfObstacles 
-  RoversCurrentPositionIndex RomTargetCoordinateList FORWARD_MOTION 
-  ROTATE_MOTION RamNumberOfNodes NumberOfObstacles currentAngle.1 
-  RamTurnByTurnQueue RamNodeSequence beenVisited previousNode 
-  distanceFromTarget 
+  ROVERS_NODE_ID TARGET_UNREACHABLE_ERROR NumberOfTargets FORWARD_MOTION 
+  ROTATE_MOTION NumberOfObstacles currentAngle.1 RamTurnByTurnQueue 
 Math.c.o:
   TangentLut CeilingHeightSquared.1 
 PositioningSystem.c.o:
@@ -1425,13 +1457,19 @@ PositioningSystem.c.o:
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC628 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xC957 ---- SIZE       4 ---
 Filling bytes inserted
- 00010500
-------- ROM-ADDRESS: 0xC62C ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
+ 00040501
+------- ROM-ADDRESS: 0xC95B ---- RAM-ADDRESS: 0x501 ---- SIZE       2 ---
+Name of initialized Object : targetNodes:1
+ 0102
+------- ROM-ADDRESS: 0xC95D ---- RAM-ADDRESS: 0x503 ---- SIZE       1 ---
+Name of initialized Object : RamNumberOfNodes
+ 01
+------- ROM-ADDRESS: 0xC95E ---- RAM-ADDRESS: 0x504 ---- SIZE       1 ---
 Name of initialized Object : NumberOfNodes
  0B
-------- ROM-ADDRESS: 0xC62D ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC95F ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1461,10 +1499,18 @@ SetPingRotationalPosition USES _PWMDTY01 CurrentPingAngle
 PeriodicCheckForObstacles USES SetPingTimer CurrentPingAngle 
                                 SetPingRotationalPosition Delay DetectClosestObstacle StopMotion _TFLG1 
 main                      USES InitializeTimers InitializePositioningSystem 
-                                InitializeObstacleAvoidanceSystem InitializeNavigationSystem 
-InitializeNavigationSystem USES UpdateAllNodeConnections SetRoversPosition 
-                                SetRoversBearing 
-SetRoversPosition         USES RoversPosition RamNodeCoordinateList 
+                                InitializeObstacleAvoidanceSystem targetNodes InitializeNavigationSystem 
+                                SetRoversPosition GetRoversNodeId Dijkstra distance0 
+                                GetClosestNodeForTarget closestNode GetNodeCoordinates myCoordinates 
+InitializeNavigationSystem USES RamNumberOfNodes runtimeTarget 
+                                TargetLookupTable AddNode SetRoversPosition SetRoversBearing 
+                                UpdateAllNodeConnections 
+Dijkstra                  USES beenVisited distanceFromTarget NumberOfNodes 
+                                Dijkstra GetAdjacencyMatrixValue previousNode 
+                                RamNodeSequence 
+AddNode                   USES RamNumberOfNodes RamNodeCoordinateList 
+                                NumberOfNodes UpdateSingleNodeConnections 
+SetRoversPosition         USES RamNodeCoordinateList 
                                 UpdateSingleNodeConnections 
 SetRoversBearing          USES RoversBearing 
 UpdateSingleNodeConnections USES NodesAreVisibleToEachOther Distance 
@@ -1480,6 +1526,10 @@ IntersectWithObstacle     USES RomObstacleList RamObstacleList
 IntersectWithShape        USES IntersectWithSegment 
 IntersectWithSegment      USES IsAbove 
 SetAdjacencyMatrixValue   USES RamAdjacencyMatrixData 
+GetAdjacencyMatrixValue   USES RamAdjacencyMatrixData 
+GetNodeCoordinates        USES RomNodeCoordinateList RamNumberOfNodes 
+                                RamNodeCoordinateList 
+GetClosestNodeForTarget   USES runtimeTarget Dijkstra 
 SquareRoot                USES _LCMP_P 
 Distance                  USES SquareRoot 
 InitializePositioningSystem USES _ATDCTL23 _ATDCTL45 _DDRAB _PORTAB 
@@ -1508,39 +1558,57 @@ DEPENDENCY TREE
  |  |  +- Delay               
  |  |       
  |  +- InitializeNavigationSystem
- |     | 
- |     +- UpdateAllNodeConnections
- |     |  | 
- |     |  +- NodesAreVisibleToEachOther
- |     |  |  | 
- |     |  |  +- IntersectWithObstacle
- |     |  |     | 
- |     |  |     +- IntersectWithShape  
- |     |  |        | 
- |     |  |        +- IntersectWithSegment
- |     |  |           | 
- |     |  |           +- IsAbove             
- |     |  |                
- |     |  +- Distance            
- |     |  |  | 
- |     |  |  +- SquareRoot          
- |     |  |     | 
- |     |  |     +- _LCMP_P             
- |     |  |          
- |     |  +- SetAdjacencyMatrixValue
- |     |       
- |     +- SetRoversPosition   
- |     |  | 
- |     |  +- UpdateSingleNodeConnections
- |     |     | 
- |     |     +- NodesAreVisibleToEachOther (see above)
- |     |     |  
- |     |     +- Distance             (see above)
- |     |     |  
- |     |     +- SetAdjacencyMatrixValue (see above)
- |     |        
- |     +- SetRoversBearing    
- |          
+ |  |  | 
+ |  |  +- AddNode             
+ |  |  |  | 
+ |  |  |  +- UpdateSingleNodeConnections
+ |  |  |     | 
+ |  |  |     +- NodesAreVisibleToEachOther
+ |  |  |     |  | 
+ |  |  |     |  +- IntersectWithObstacle
+ |  |  |     |     | 
+ |  |  |     |     +- IntersectWithShape  
+ |  |  |     |        | 
+ |  |  |     |        +- IntersectWithSegment
+ |  |  |     |           | 
+ |  |  |     |           +- IsAbove             
+ |  |  |     |                
+ |  |  |     +- Distance            
+ |  |  |     |  | 
+ |  |  |     |  +- SquareRoot          
+ |  |  |     |     | 
+ |  |  |     |     +- _LCMP_P             
+ |  |  |     |          
+ |  |  |     +- SetAdjacencyMatrixValue
+ |  |  |          
+ |  |  +- SetRoversPosition   
+ |  |  |  | 
+ |  |  |  +- UpdateSingleNodeConnections (see above)
+ |  |  |     
+ |  |  +- SetRoversBearing    
+ |  |  |    
+ |  |  +- UpdateAllNodeConnections
+ |  |     | 
+ |  |     +- NodesAreVisibleToEachOther (see above)
+ |  |     |  
+ |  |     +- Distance             (see above)
+ |  |     |  
+ |  |     +- SetAdjacencyMatrixValue (see above)
+ |  |        
+ |  +- SetRoversPosition    (see above)
+ |  |  
+ |  +- GetRoversNodeId     
+ |  |    
+ |  +- Dijkstra            
+ |  |  | 
+ |  |  +- GetAdjacencyMatrixValue
+ |  |       
+ |  +- GetClosestNodeForTarget
+ |  |  | 
+ |  |  +- Dijkstra             (see above)
+ |  |     
+ |  +- GetNodeCoordinates  
+ |       
  +- _Startup            
     | 
     +- Init                
@@ -1587,6 +1655,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 8
-Total size of all blocks to be downloaded: 1589
+Number of blocks to be downloaded: 9
+Total size of all blocks to be downloaded: 2407
 
