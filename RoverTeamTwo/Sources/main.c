@@ -17,6 +17,7 @@
 
 static inches_t distance0, distance1, distance3;
 static coordinates_t myCoordinates;
+static beaconGroup_t beaconGroup;
 
 void main( void )
 {  
@@ -28,35 +29,5 @@ void main( void )
    
 
    
-   for(;;)
-   {        
-      DetermineRoversPosition();
-   }
-   for( ;; )
-      myCoordinates = Triangulate( 0, 1, 2 );
-
-   myCoordinates = GetLeftEdgeOfObstacle();
-   
-   for ( ; ; )
-   {
-      distance0 = GetAccurateDistanceToBeacon( 0 );
-   }
-   waitForAndDetectReceivedSonarPulse();
-   TurnOnErrorLight();
-   for(;;); 
-      
-   InitializeTimers();
-   InitializeMotorControlSystem();
-   //CalibrateCompass();
-
-   MoveForward( 10000 );
-   for (;;);
+   for(;;);
 }
- /*
-nextStep_t PursueTarget( coordinates_t target )
-{
-   nodeNumber_t currentNode;
-   
-   GetCurrentLocation();
-   Dijkstra( currentNode,   
-}  */

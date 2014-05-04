@@ -133,6 +133,8 @@ void Delay( milliseconds_t time );
 
 void TurnOnErrorLight( void );
 void TurnOffErrorLight( void );
+inches_t FeetToInches( Word feet );
+
 
 /*** INITIALIZATION FUNCTIONS ***/
 

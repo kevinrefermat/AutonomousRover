@@ -4,6 +4,7 @@
 #include "Triangulation.h"
 #include "MC9S12C128.h"
 
+
 /*** CONSTANTS ***/
 
 #define NUMBER_OF_MEASUREMENTS 5
@@ -18,8 +19,12 @@ static const inches_t UNINITIALIZED_DISTANCE = -3;
 static const inches_t DISTANCE_OUT_OF_BOUNDS = -4;
 static const inches_t TriangulationErrorThreshhold = 50;
 
+
 /*** BEACON GROUP LUT ***/
-static const beaconGroup_t[]
+#define NUMBER_OF_BEACON_GROUPS 16
+static const Byte NoCoverageIndex = NUMBER_OF_BEACON_GROUPS - 1;
+
+static const beaconGroup_t coverageZoneBeaconGroups[] =
 {             
    { 0, 2, 3 }, //0
    { 0, 2, 1 }, //1
@@ -36,7 +41,8 @@ static const beaconGroup_t[]
    { 0, 1, 3 }, //12
    { 1, 2, 3 }, //13
    { 1, 3, 4 }, //14
-      
+   { -1, -1, -1 } //No coverage
+};
 
 /*** STATIC VARIABLES ***/
 
@@ -296,5 +302,89 @@ coordinates_t GetRoversCoordinates()
 
 beaconGroup_t * GetBeaconGroup( coordinates_t approximateCoordinates )
 {
-     
+   Byte beaconGroupIndex; 
+   inches_t x, y;
+   beaconGroupIndex = NoCoverageIndex; //Default 
+   x = approximateCoordinates.x;
+   y = approximateCoordinates.y;
+   
+   // zone 0
+   if ( x <= 138 && y <= 78 )
+   {
+      beaconGroupIndex = 0;     
+   }
+   // zone 1
+   else if ( x <= 138 && y <= 150 && y >= 78 )
+   {
+      beaconGroupIndex = 1;       
+   }
+   // zone 2
+   else if ( x <= 96 && y <= 246 && y >= 150 )
+   {
+      beaconGroupIndex = 2;
+   }
+   // zone 3
+   else if ( x <= 60 && y >= 246 )
+   {
+      beaconGroupIndex = 3;  
+   }
+   // zone 4
+   else if ( ( x <= 174 && x >= 120 && y <= 522 && y >= 456 ) ||
+             ( x <= 120 && x >= 60 && y >= 174 && y <= 522 ) )
+   {
+      beaconGroupIndex = 4;  
+   }
+   // zone 5
+   else if ( x <= 210 && x >= 174 && y >= 456 && y <= 522 )
+   {
+      beaconGroupIndex = 5;  
+   }
+   // zone 6
+   else if ( x <= 246 && x >= 210 && y >= 456 && y <= 570 )
+   {
+      beaconGroupIndex = 6;  
+   }
+   // zone 7
+   else if ( x <= 192 && x >= 156 && y >= 312 && y <= 456 )
+   {
+      beaconGroupIndex = 7;  
+   }
+   // zone 8
+   else if ( ( x <= 276 && x >= 150 && y >= 210 && y <= 312 ) ||
+             ( x <= 318 && x >= 150 && y >= 150 && y <= 210 ) ||
+             ( x <= 318 && x >= 276 && y >= 210 && y <= ( -x + 528 ) ) )
+   {
+      beaconGroupIndex = 8;  
+   }
+   // zone 9
+   else if ( x <= 288 && x >= 192 && y >= 312 && y <= 456 )
+   {
+      beaconGroupIndex = 9;  
+   }
+   // zone 10
+   else if ( x >= 342 && y >= 516 )
+   {
+      beaconGroupIndex = 10;  
+   } 
+   // zone 11
+   else if ( x <= 330 && x >= 288 && y >= 414 && y <= 432 )
+   {
+      beaconGroupIndex = 11;  
+   }
+   // zone 12
+   else if ( x >= 318 && y <= 264 && y >= ( -x + 528 ) )
+   {
+      beaconGroupIndex = 12;  
+   }
+   // zone 13
+   else if ( x >= 318 && y <= ( -x + 528 ) && y >= ( -x + 456 ) )
+   {
+      beaconGroupIndex = 13;  
+   }
+   // zone 14
+   else if ( x >= 348 && y <= 468 && y >= ( -x + 756 ) )
+   {
+      beaconGroupIndex = 14;  
+   }
+   return &( coverageZoneBeaconGroups[ beaconGroupIndex ] );
 }

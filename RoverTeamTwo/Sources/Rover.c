@@ -74,3 +74,8 @@ void TurnOffErrorLight()
    DDRB_BIT7 = 1;
    PORTB_BIT7 = 1;
 }
+
+inches_t FeetToInches( Word feet )
+{
+   return feet * 12;
+}
