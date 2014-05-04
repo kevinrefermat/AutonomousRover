@@ -48,8 +48,6 @@ static const beaconGroup_t coverageZoneBeaconGroups[] =
 
 static inches_t distanceMeasurements[ NUMBER_OF_MEASUREMENTS ];
 static inches_t distanceToBeacon[ NUMBER_OF_BEACONS ];
-static coordinates_t roversPosition;
-static degree_t roversBearing;
 
 void InitializePositioningSystem()
 {  
@@ -259,17 +257,20 @@ inches_t GetDistanceToBeacon( beaconId_t beaconId )
    return distanceToBeacon[ beaconId ];  
 }
 
+
+/*** DEAL WITH COMPASS PART OF THIS ***/
 void DetermineRoversPosition( coordinates_t approximateCoordinates )
 {        
    inches_t error;
    beaconId_t firstBeacon, secondBeacon, thirdBeacon;
    coordinates_t triangulationCoordinates;
+   beaconGroup_t *pBeaconGroup;
+   degree_t bearing;
    
-   /*** TEST ***/
-   firstBeacon = 0;
-   secondBeacon = 1;
-   thirdBeacon = 3;
-   /*** END TEST ***/
+   pBeaconGroup = GetBeaconGroup( approximateCoordinates );
+   firstBeacon = pBeaconGroup->firstBeacon;
+   secondBeacon = pBeaconGroup->secondBeacon;
+   thirdBeacon = pBeaconGroup->thirdBeacon;
    
    distanceToBeacon[ firstBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( firstBeacon ) );
    distanceToBeacon[ secondBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( secondBeacon ) );
@@ -282,22 +283,22 @@ void DetermineRoversPosition( coordinates_t approximateCoordinates )
       /* guess using PACNT to determine rough position if
        * not at a node. If near a node then use the LUT
        */
-      roversPosition = approximateCoordinates;
+      SetRoversPosition( approximateCoordinates );
    }
    else
    {
-      roversPosition = triangulationCoordinates;
+      SetRoversPosition( triangulationCoordinates );
    }
-}
-
-degree_t GetRoversBearing()
-{
-   return roversBearing;
-}
-
-coordinates_t GetRoversCoordinates()
-{
-   return roversPosition;
+   bearing = GetAnAccurateCompassReading();
+   
+   if ( bearing >= 0 )
+   {        
+      SetRoversBearing( GetAnAccurateCompassReading() );
+   }
+   else
+   {
+      // calculate theoretical angle based on last angle
+   }
 }
 
 beaconGroup_t * GetBeaconGroup( coordinates_t approximateCoordinates )

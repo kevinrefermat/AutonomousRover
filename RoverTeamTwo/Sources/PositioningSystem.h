@@ -13,7 +13,7 @@ typedef struct
 
 void InitializePositioningSystem( void );
 inches_t GetAccurateLineOfSightDistanceToBeacon( beaconId_t );
-void DetermineRoversPosition( void );
+void DetermineRoversPosition( coordinates_t approximateCoordinates );
 beaconGroup_t * GetBeaconGroup( coordinates_t approximateCoordinates );
 
 

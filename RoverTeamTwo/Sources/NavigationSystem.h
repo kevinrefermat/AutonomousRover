@@ -32,7 +32,11 @@ void InitializeNavigationSystem( void );
 
 void AddNode( inches_t x, inches_t y );
 void AddObstacle( inches_t left, inches_t right, inches_t top, inches_t bottom );
-void SetRoverPosition( inches_t x, inches_t y );
+void SetRoversPosition( inches_t x, inches_t y );   
+void SetRoversBearing( degree_t degrees );
+coordinates_t GetRoversPosition( void );
+degree_t GetRoversBearing( void );
+
 boolean_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId );
 
 void UpdateSingleNodeConnections( nodeNumber_t node );

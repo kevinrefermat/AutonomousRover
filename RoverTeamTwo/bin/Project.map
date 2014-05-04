@@ -30,8 +30,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x500     784
-  _Copy    *toCopyDownBeg 0xC7E3
+  _Range   pZeroOut       0x500     783
+  _Copy    *toCopyDownBeg 0xC628
 } _startupData;
 
 *********************************************************************************************
@@ -40,9 +40,9 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata                          168     R     0xC03B     0xC0E2   ROM_C000
-.text                           1745     R     0xC0E3     0xC7B3   ROM_C000
-.copy                              7     R     0xC7E3     0xC7E9   ROM_C000
+.rodata                          120     R     0xC03B     0xC0B2   ROM_C000
+.text                           1350     R     0xC0B3     0xC5F8   ROM_C000
+.copy                              7     R     0xC628     0xC62E   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
 .data                              1   R/W      0x500      0x500   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
@@ -268,13 +268,13 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_17e                   2   N/I      0x17E      0x17F   .absSeg220
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg222
-.bss                             783   R/W      0x501      0x80F   RAM
-RUNTIME                           47     R     0xC7B4     0xC7E2   ROM_C000
+.bss                             782   R/W      0x501      0x80E   RAM
+RUNTIME                           47     R     0xC5F9     0xC627   ROM_C000
 .vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):         7F0 (dec:     2032)
-READ_WRITE (R/W):      410 (dec:     1040)
+READ_ONLY (R):         635 (dec:     1589)
+READ_WRITE (R/W):      40F (dec:     1039)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -521,75 +521,75 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           500       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LCMP_P                                   C7B4      15      21       1   RUNTIME     
-     _CASE_SEARCH_8_BYTE                       C7C9      1A      26       1   RUNTIME     
+     _LCMP_P                                   C5F9      15      21       1   RUNTIME     
+     _CASE_SEARCH_8_BYTE                       C60E      1A      26       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
-     Delay                                     C0E3      20      32       3   .text       
-     InitializeTimers                          C103      37      55       1   .text       
-     TurnOnErrorLight                          C13A       7       7       1   .text       
-     FeetToInches                              C141       9       9       2   .text       
+     Delay                                     C0B3      20      32       3   .text       
+     InitializeTimers                          C0D3      37      55       1   .text       
+     TurnOnErrorLight                          C10A       7       7       1   .text       
 - VARIABLES:
 MODULE:                 -- MotorControlSystem.c.o --
 - PROCEDURES:
-     StopMotion                                C14A      1D      29       2   .text       
-     ClearRoverInMotionFlag                    C167       4       4       1   .text       
-     MotionCompleted                           C16B       4       4       1   .text       
-     BrakeTreads                               C16F       D      13       1   .text       
-     DisableTreads                             C17C       7       7       1   .text       
-     EnableTreads                              C183       7       7       1   .text       
+     StopMotion                                C111      1D      29       2   .text       
+     ClearRoverInMotionFlag                    C12E       4       4       1   .text       
+     MotionCompleted                           C132       4       4       1   .text       
+     BrakeTreads                               C136       D      13       1   .text       
+     DisableTreads                             C143       7       7       1   .text       
+     EnableTreads                              C14A       7       7       1   .text       
 - VARIABLES:
      RoverInMotionFlag                          501       1       1       1   .bss        
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
 - PROCEDURES:
-     InitializeObstacleAvoidanceSystem         C18A      2B      43       1   .text       
-     SetPingTimer                              C1B5       8       8       1   .text       
-     DetectClosestObstacle                     C1BD      1D      29       1   .text       
-     OutputPulseToPing                         C1DA      17      23       1   .text       
-     MeasureReturnPulseFromPing                C1F1      5C      92       1   .text       
-     SetPingRotationalPosition                 C24D      1E      30       2   .text       
-     PeriodicCheckForObstacles                 C26B      22      34       1   .text       
+     InitializeObstacleAvoidanceSystem         C151      2B      43       1   .text       
+     SetPingTimer                              C17C       8       8       1   .text       
+     DetectClosestObstacle                     C184      1D      29       1   .text       
+     OutputPulseToPing                         C1A1      17      23       1   .text       
+     MeasureReturnPulseFromPing                C1B8      5C      92       1   .text       
+     SetPingRotationalPosition                 C214      1E      30       2   .text       
+     PeriodicCheckForObstacles                 C232      22      34       1   .text       
 - VARIABLES:
      PingPeriodTimerCounterOffset               502       2       2       1   .bss        
      CurrentPingAngle                           504       2       2       2   .bss        
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C28D      90     144       1   .text       
+     main                                      C254       E      14       1   .text       
 - VARIABLES:
-     myCoordinates                              506       4       4       3   .bss        
-     beaconGroup                                50A       3       3       2   .bss        
 MODULE:                 -- NavigationSystem.c.o --
 - PROCEDURES:
-     InitializeNavigationSystem                C31D       3       3       1   .text       
-     UpdateAllNodeConnections                  C320      8A     138       1   .text       
-     NodesAreVisibleToEachOther                C3AA      58      88       1   .text       
-     IntersectWithObstacle                     C402      46      70       1   .text       
-     IntersectWithShape                        C448      44      68       1   .text       
-     IntersectWithSegment                      C48C      42      66       1   .text       
-     IsAbove                                   C4CE      58      88       4   .text       
-     SetAdjacencyMatrixValue                   C526      39      57       1   .text       
+     InitializeNavigationSystem                C262      10      16       1   .text       
+     SetRoversPosition                         C272      1E      30       1   .text       
+     SetRoversBearing                          C290       4       4       1   .text       
+     UpdateSingleNodeConnections               C294      80     128       1   .text       
+     UpdateAllNodeConnections                  C314      8A     138       1   .text       
+     NodesAreVisibleToEachOther                C39E      58      88       2   .text       
+     IntersectWithObstacle                     C3F6      46      70       1   .text       
+     IntersectWithShape                        C43C      44      68       1   .text       
+     IntersectWithSegment                      C480      42      66       1   .text       
+     IsAbove                                   C4C2      58      88       4   .text       
+     SetAdjacencyMatrixValue                   C51A      39      57       2   .text       
 - VARIABLES:
-     RomNodeCoordinateList                     C03B      28      40       4   .rodata     
+     RomNodeCoordinateList                     C03B      28      40       6   .rodata     
      RomObstacleList                           C063      50      80       1   .rodata     
-     NumberOfNodes                              500       1       1       2   .data       
-     RamNumberOfObstacles                       50D       1       1       1   .bss        
-     RamNodeCoordinateList                      50E      40      64       3   .bss        
-     RamAdjacencyMatrixData                     54E     28A     650       1   .bss        
-     RamObstacleList                            7D8      38      56       1   .bss        
+     NumberOfNodes                              500       1       1       3   .data       
+     RamNumberOfObstacles                       506       1       1       1   .bss        
+     RamNodeCoordinateList                      507      40      64       7   .bss        
+     RamAdjacencyMatrixData                     547     28A     650       1   .bss        
+     RamObstacleList                            7D1      38      56       1   .bss        
+     RoversPosition                             809       4       4       4   .bss        
+     RoversBearing                              80D       2       2       1   .bss        
 MODULE:                 -- Math.c.o --
 - PROCEDURES:
-     SquareRoot                                C55F      3A      58       1   .text       
-     Distance                                  C599      4B      75       1   .text       
+     SquareRoot                                C553      3A      58       1   .text       
+     Distance                                  C58D      4B      75       2   .text       
 - VARIABLES:
 MODULE:                 -- PositioningSystem.c.o --
 - PROCEDURES:
-     InitializePositioningSystem               C5E4      21      33       1   .text       
-     GetBeaconGroup                            C605     1AF     431       2   .text       
+     InitializePositioningSystem               C5D8      21      33       1   .text       
 - VARIABLES:
-     coverageZoneBeaconGroups                  C0B3      30      48       1   .rodata     
 
 *********************************************************************************************
 MODULE STATISTIC
@@ -598,37 +598,38 @@ MODULE STATISTIC
   MC9S12C128.c.o                             260      0      0
   Start12.c.o                                  0     49      0
   rtshc12.c.o (ansisf.lib)                     0     47      0
-  Rover.c.o                                    0    103      0
+  Rover.c.o                                    0     94      0
   MotorControlSystem.c.o                       1     64      2
   ObstacleAvoidanceSystem.c.o                  4    259      2
-  main.c.o                                     7    144      0
-  NavigationSystem.c.o                       772    578    120
+  main.c.o                                     0     14      0
+  NavigationSystem.c.o                       778    753    120
   Math.c.o                                     0    133      0
-  PositioningSystem.c.o                        0    464     48
+  PositioningSystem.c.o                        0     33      0
   other                                      256     12      7
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  Delay InitializeTimers TurnOnErrorLight FeetToInches StopMotion 
-  ClearRoverInMotionFlag MotionCompleted BrakeTreads DisableTreads EnableTreads 
+  Delay InitializeTimers TurnOnErrorLight StopMotion ClearRoverInMotionFlag 
+  MotionCompleted BrakeTreads DisableTreads EnableTreads 
   InitializeObstacleAvoidanceSystem SetPingTimer DetectClosestObstacle 
   OutputPulseToPing MeasureReturnPulseFromPing SetPingRotationalPosition 
-  PeriodicCheckForObstacles main InitializeNavigationSystem 
-  UpdateAllNodeConnections NodesAreVisibleToEachOther IntersectWithObstacle 
-  IntersectWithShape IntersectWithSegment IsAbove SetAdjacencyMatrixValue 
-  SquareRoot Distance InitializePositioningSystem GetBeaconGroup 
+  PeriodicCheckForObstacles main InitializeNavigationSystem SetRoversPosition 
+  SetRoversBearing UpdateSingleNodeConnections UpdateAllNodeConnections 
+  NodesAreVisibleToEachOther IntersectWithObstacle IntersectWithShape 
+  IntersectWithSegment IsAbove SetAdjacencyMatrixValue SquareRoot Distance 
+  InitializePositioningSystem 
 SECTION: ".data"
   NumberOfNodes 
 SECTION: ".bss"
   RoverInMotionFlag PingPeriodTimerCounterOffset CurrentPingAngle 
-  myCoordinates beaconGroup RamNumberOfObstacles RamNodeCoordinateList 
-  RamAdjacencyMatrixData RamObstacleList 
+  RamNumberOfObstacles RamNodeCoordinateList RamAdjacencyMatrixData 
+  RamObstacleList RoversPosition RoversBearing 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata"
-  RomNodeCoordinateList RomObstacleList coverageZoneBeaconGroups 
+  RomNodeCoordinateList RomObstacleList 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1303,53 +1304,53 @@ OBJECT LIST SORTED BY ADDRESS
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     NumberOfNodes                              500       1       1       2   .data       
+     NumberOfNodes                              500       1       1       3   .data       
      RoverInMotionFlag                          501       1       1       1   .bss        
      PingPeriodTimerCounterOffset               502       2       2       1   .bss        
      CurrentPingAngle                           504       2       2       2   .bss        
-     myCoordinates                              506       4       4       3   .bss        
-     beaconGroup                                50A       3       3       2   .bss        
-     RamNumberOfObstacles                       50D       1       1       1   .bss        
-     RamNodeCoordinateList                      50E      40      64       3   .bss        
-     RamAdjacencyMatrixData                     54E     28A     650       1   .bss        
-     RamObstacleList                            7D8      38      56       1   .bss        
+     RamNumberOfObstacles                       506       1       1       1   .bss        
+     RamNodeCoordinateList                      507      40      64       7   .bss        
+     RamAdjacencyMatrixData                     547     28A     650       1   .bss        
+     RamObstacleList                            7D1      38      56       1   .bss        
+     RoversPosition                             809       4       4       4   .bss        
+     RoversBearing                              80D       2       2       1   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     RomNodeCoordinateList                     C03B      28      40       4   .rodata     
+     RomNodeCoordinateList                     C03B      28      40       6   .rodata     
      RomObstacleList                           C063      50      80       1   .rodata     
-     coverageZoneBeaconGroups                  C0B3      30      48       1   .rodata     
-     Delay                                     C0E3      20      32       3   .text       
-     InitializeTimers                          C103      37      55       1   .text       
-     TurnOnErrorLight                          C13A       7       7       1   .text       
-     FeetToInches                              C141       9       9       2   .text       
-     StopMotion                                C14A      1D      29       2   .text       
-     ClearRoverInMotionFlag                    C167       4       4       1   .text       
-     MotionCompleted                           C16B       4       4       1   .text       
-     BrakeTreads                               C16F       D      13       1   .text       
-     DisableTreads                             C17C       7       7       1   .text       
-     EnableTreads                              C183       7       7       1   .text       
-     InitializeObstacleAvoidanceSystem         C18A      2B      43       1   .text       
-     SetPingTimer                              C1B5       8       8       1   .text       
-     DetectClosestObstacle                     C1BD      1D      29       1   .text       
-     OutputPulseToPing                         C1DA      17      23       1   .text       
-     MeasureReturnPulseFromPing                C1F1      5C      92       1   .text       
-     SetPingRotationalPosition                 C24D      1E      30       2   .text       
-     PeriodicCheckForObstacles                 C26B      22      34       1   .text       
-     main                                      C28D      90     144       1   .text       
-     InitializeNavigationSystem                C31D       3       3       1   .text       
-     UpdateAllNodeConnections                  C320      8A     138       1   .text       
-     NodesAreVisibleToEachOther                C3AA      58      88       1   .text       
-     IntersectWithObstacle                     C402      46      70       1   .text       
-     IntersectWithShape                        C448      44      68       1   .text       
-     IntersectWithSegment                      C48C      42      66       1   .text       
-     IsAbove                                   C4CE      58      88       4   .text       
-     SetAdjacencyMatrixValue                   C526      39      57       1   .text       
-     SquareRoot                                C55F      3A      58       1   .text       
-     Distance                                  C599      4B      75       1   .text       
-     InitializePositioningSystem               C5E4      21      33       1   .text       
-     GetBeaconGroup                            C605     1AF     431       2   .text       
-     _LCMP_P                                   C7B4      15      21       1   RUNTIME     
-     _CASE_SEARCH_8_BYTE                       C7C9      1A      26       1   RUNTIME     
+     Delay                                     C0B3      20      32       3   .text       
+     InitializeTimers                          C0D3      37      55       1   .text       
+     TurnOnErrorLight                          C10A       7       7       1   .text       
+     StopMotion                                C111      1D      29       2   .text       
+     ClearRoverInMotionFlag                    C12E       4       4       1   .text       
+     MotionCompleted                           C132       4       4       1   .text       
+     BrakeTreads                               C136       D      13       1   .text       
+     DisableTreads                             C143       7       7       1   .text       
+     EnableTreads                              C14A       7       7       1   .text       
+     InitializeObstacleAvoidanceSystem         C151      2B      43       1   .text       
+     SetPingTimer                              C17C       8       8       1   .text       
+     DetectClosestObstacle                     C184      1D      29       1   .text       
+     OutputPulseToPing                         C1A1      17      23       1   .text       
+     MeasureReturnPulseFromPing                C1B8      5C      92       1   .text       
+     SetPingRotationalPosition                 C214      1E      30       2   .text       
+     PeriodicCheckForObstacles                 C232      22      34       1   .text       
+     main                                      C254       E      14       1   .text       
+     InitializeNavigationSystem                C262      10      16       1   .text       
+     SetRoversPosition                         C272      1E      30       1   .text       
+     SetRoversBearing                          C290       4       4       1   .text       
+     UpdateSingleNodeConnections               C294      80     128       1   .text       
+     UpdateAllNodeConnections                  C314      8A     138       1   .text       
+     NodesAreVisibleToEachOther                C39E      58      88       2   .text       
+     IntersectWithObstacle                     C3F6      46      70       1   .text       
+     IntersectWithShape                        C43C      44      68       1   .text       
+     IntersectWithSegment                      C480      42      66       1   .text       
+     IsAbove                                   C4C2      58      88       4   .text       
+     SetAdjacencyMatrixValue                   C51A      39      57       2   .text       
+     SquareRoot                                C553      3A      58       1   .text       
+     Distance                                  C58D      4B      75       2   .text       
+     InitializePositioningSystem               C5D8      21      33       1   .text       
+     _LCMP_P                                   C5F9      15      21       1   RUNTIME     
+     _CASE_SEARCH_8_BYTE                       C60E      1A      26       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
@@ -1364,7 +1365,7 @@ rtshc12.c.o (ansisf.lib):
   _ILSEXT _COPY _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE 
   _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 _FCALL _FPCMP 
 Rover.c.o:
-  TurnOffErrorLight 
+  TurnOffErrorLight FeetToInches 
 MotorControlSystem.c.o:
   InitializeMotorControlSystem StabilizeTreads DisableTreadStabilization 
   ConvertSignedWordToSignedByte AdjustTreadDrivePower SetLeftTreadDrivePower 
@@ -1377,15 +1378,16 @@ ObstacleAvoidanceSystem.c.o:
   EnablePeriodicObstacleDetection DisablePeriodicObstacleDetection 
   GetLeftEdgeOfObstacle 
 NavigationSystem.c.o:
-  Dijkstra AddObstacle AddNode SetRoverPosition UpdateSingleNodeConnections 
+  Dijkstra AddObstacle AddNode GetRoversPosition GetRoversBearing 
   GetAdjacencyMatrixValue UpdateTurnByTurnQueueFromNodeSequence 
   GetNodeCoordinates GetNextTurnByTurnElement HasNextTurnByTurnElement 
+  NavigateToTarget 
 Math.c.o:
   arcTangent GetFloorDistance abs16 
 PositioningSystem.c.o:
   GetAccurateLineOfSightDistanceToBeacon GetLineOfSightDistanceToBeacon 
   waitForAndDetectReceivedSonarPulse SetDistanceToBeacon GetDistanceToBeacon 
-  DetermineRoversPosition GetRoversBearing GetRoversCoordinates 
+  DetermineRoversPosition GetBeaconGroup 
 NOT USED VARIABLES
 rtshc12.c.o (ansisf.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
@@ -1402,13 +1404,14 @@ ObstacleAvoidanceSystem.c.o:
   TimeOutThreshhold.1 LookLeftPwmDuty.2 LookRightPwmDuty.3 StartSweepAngle.6 
   FinishSweepAngle.7 leftEdgeAngle.4 leftEdgeDistance.5 
 main.c.o:
-  distance0 distance1 distance3 
+  distance0 distance1 distance3 myCoordinates beaconGroup 
 NavigationSystem.c.o:
   NO_CONNECTION MaxRamNumberOfNodes RomNumberOfNodes MaxTotalNumberOfNodes 
   MaxRamNumberOfObstacles RomNumberOfObstacles MaxTotalNumberOfObstacles 
-  RomTargetCoordinateList FORWARD_MOTION ROTATE_MOTION RamNumberOfNodes 
-  NumberOfObstacles currentAngle.1 RamTurnByTurnQueue RamNodeSequence 
-  beenVisited previousNode distanceFromTarget 
+  RoversCurrentPositionIndex RomTargetCoordinateList FORWARD_MOTION 
+  ROTATE_MOTION RamNumberOfNodes NumberOfObstacles currentAngle.1 
+  RamTurnByTurnQueue RamNodeSequence beenVisited previousNode 
+  distanceFromTarget 
 Math.c.o:
   TangentLut CeilingHeightSquared.1 
 PositioningSystem.c.o:
@@ -1416,19 +1419,19 @@ PositioningSystem.c.o:
   TransmittingOverhead WAITING_FOR_SIGNAL_TIMED_OUT 
   TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST UNINITIALIZED_DISTANCE 
   DISTANCE_OUT_OF_BOUNDS TriangulationErrorThreshhold NoCoverageIndex 
-  TimeOutThreshhold.1 distanceMeasurements distanceToBeacon roversPosition 
-  roversBearing time.2 
+  coverageZoneBeaconGroups TimeOutThreshhold.1 distanceMeasurements 
+  distanceToBeacon time.2 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC7E3 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xC628 ---- SIZE       4 ---
 Filling bytes inserted
  00010500
-------- ROM-ADDRESS: 0xC7E7 ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xC62C ---- RAM-ADDRESS: 0x500 ---- SIZE       1 ---
 Name of initialized Object : NumberOfNodes
  0B
-------- ROM-ADDRESS: 0xC7E8 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC62D ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1458,9 +1461,15 @@ SetPingRotationalPosition USES _PWMDTY01 CurrentPingAngle
 PeriodicCheckForObstacles USES SetPingTimer CurrentPingAngle 
                                 SetPingRotationalPosition Delay DetectClosestObstacle StopMotion _TFLG1 
 main                      USES InitializeTimers InitializePositioningSystem 
-                                InitializeObstacleAvoidanceSystem InitializeNavigationSystem FeetToInches 
-                                myCoordinates GetBeaconGroup beaconGroup 
-InitializeNavigationSystem USES UpdateAllNodeConnections 
+                                InitializeObstacleAvoidanceSystem InitializeNavigationSystem 
+InitializeNavigationSystem USES UpdateAllNodeConnections SetRoversPosition 
+                                SetRoversBearing 
+SetRoversPosition         USES RoversPosition RamNodeCoordinateList 
+                                UpdateSingleNodeConnections 
+SetRoversBearing          USES RoversBearing 
+UpdateSingleNodeConnections USES NodesAreVisibleToEachOther Distance 
+                                SetAdjacencyMatrixValue NumberOfNodes RamNodeCoordinateList 
+                                RomNodeCoordinateList 
 UpdateAllNodeConnections  USES NodesAreVisibleToEachOther Distance 
                                 SetAdjacencyMatrixValue NumberOfNodes RamNodeCoordinateList 
                                 RomNodeCoordinateList 
@@ -1474,7 +1483,6 @@ SetAdjacencyMatrixValue   USES RamAdjacencyMatrixData
 SquareRoot                USES _LCMP_P 
 Distance                  USES SquareRoot 
 InitializePositioningSystem USES _ATDCTL23 _ATDCTL45 _DDRAB _PORTAB 
-GetBeaconGroup            USES GetBeaconGroup coverageZoneBeaconGroups 
 _Vector_17                USES MotionCompleted 
 _Vector_9                 USES PeriodicCheckForObstacles 
 
@@ -1500,31 +1508,39 @@ DEPENDENCY TREE
  |  |  +- Delay               
  |  |       
  |  +- InitializeNavigationSystem
- |  |  | 
- |  |  +- UpdateAllNodeConnections
- |  |     | 
- |  |     +- NodesAreVisibleToEachOther
- |  |     |  | 
- |  |     |  +- IntersectWithObstacle
- |  |     |     | 
- |  |     |     +- IntersectWithShape  
- |  |     |        | 
- |  |     |        +- IntersectWithSegment
- |  |     |           | 
- |  |     |           +- IsAbove             
- |  |     |                
- |  |     +- Distance            
- |  |     |  | 
- |  |     |  +- SquareRoot          
- |  |     |     | 
- |  |     |     +- _LCMP_P             
- |  |     |          
- |  |     +- SetAdjacencyMatrixValue
- |  |          
- |  +- FeetToInches        
- |  |    
- |  +- GetBeaconGroup      
- |       
+ |     | 
+ |     +- UpdateAllNodeConnections
+ |     |  | 
+ |     |  +- NodesAreVisibleToEachOther
+ |     |  |  | 
+ |     |  |  +- IntersectWithObstacle
+ |     |  |     | 
+ |     |  |     +- IntersectWithShape  
+ |     |  |        | 
+ |     |  |        +- IntersectWithSegment
+ |     |  |           | 
+ |     |  |           +- IsAbove             
+ |     |  |                
+ |     |  +- Distance            
+ |     |  |  | 
+ |     |  |  +- SquareRoot          
+ |     |  |     | 
+ |     |  |     +- _LCMP_P             
+ |     |  |          
+ |     |  +- SetAdjacencyMatrixValue
+ |     |       
+ |     +- SetRoversPosition   
+ |     |  | 
+ |     |  +- UpdateSingleNodeConnections
+ |     |     | 
+ |     |     +- NodesAreVisibleToEachOther (see above)
+ |     |     |  
+ |     |     +- Distance             (see above)
+ |     |     |  
+ |     |     +- SetAdjacencyMatrixValue (see above)
+ |     |        
+ |     +- SetRoversBearing    
+ |          
  +- _Startup            
     | 
     +- Init                
@@ -1572,5 +1588,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 8
-Total size of all blocks to be downloaded: 2032
+Total size of all blocks to be downloaded: 1589
 

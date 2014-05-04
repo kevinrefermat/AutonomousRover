@@ -1,11 +1,16 @@
 #include "Rover.h"
 #include "NavigationSystem.h"
+#include "PositioningSystem.h"
+#include "Compass.h"
 #include "Math.h"
 
 #define BOTTOM_OF_ROOM 0
 #define TOP_OF_ROOM 696
 #define LEFT_OF_ROOM 0
 #define RIGHT_OF_ROOM 450
+
+
+/*** CONSTANTS ***/
 
 static const inches_t NO_CONNECTION = -1;
 
@@ -26,6 +31,10 @@ static const nodeNumber_t MaxTotalNumberOfNodes = MAX_TOTAL_NUMBER_OF_NODES;
 static const obstacleNumber_t MaxRamNumberOfObstacles = MAX_RAM_NUMBER_OF_OBSTACLES;
 static const obstacleNumber_t RomNumberOfObstacles = ROM_NUMBER_OF_OBSTACLES;
 static const obstacleNumber_t MaxTotalNumberOfObstacles = MAX_TOTAL_NUMBER_OF_OBSTACLES;
+
+static const nodeNumber_t RoversCurrentPositionIndex = 0;
+
+/*** TYPEDEFS ***/
                    
 typedef struct
 {
@@ -42,6 +51,9 @@ typedef struct
    Byte size;
 } nodeSequence_t;
 
+
+/*** STATIC VARIABLES ***/
+
 static turnByTurnQueue_t RamTurnByTurnQueue;
 static nodeSequence_t RamNodeSequence;
 
@@ -56,6 +68,16 @@ static obstacleNumber_t NumberOfObstacles = ROM_NUMBER_OF_OBSTACLES;
 static coordinates_t RamNodeCoordinateList[ MAX_RAM_NUMBER_OF_NODES ]; 
 static inches_t RamAdjacencyMatrixData[ MAX_TOTAL_NUMBER_OF_NODES * ( MAX_TOTAL_NUMBER_OF_NODES - 1 ) / 2 ];
 static tetragon_t RamObstacleList[ MAX_RAM_NUMBER_OF_OBSTACLES ];
+
+static boolean_t beenVisited[ MAX_TOTAL_NUMBER_OF_NODES ];
+static nodeNumber_t previousNode[ MAX_TOTAL_NUMBER_OF_NODES ];
+static inches_t distanceFromTarget[ MAX_TOTAL_NUMBER_OF_NODES ];
+
+static coordinates_t RoversPosition;
+static degree_t RoversBearing;
+
+
+/*** LOOKUP TABLES ***/
 
 static const coordinates_t RomTargetCoordinateList[] =
 {
@@ -95,13 +117,11 @@ static const tetragon_t RomObstacleList[] =
    { 390, RIGHT_OF_ROOM, TOP_OF_ROOM, 612 }  // high right corner
 };
 
-static boolean_t beenVisited[ MAX_TOTAL_NUMBER_OF_NODES ];
-static nodeNumber_t previousNode[ MAX_TOTAL_NUMBER_OF_NODES ];
-static inches_t distanceFromTarget[ MAX_TOTAL_NUMBER_OF_NODES ];
-
 void InitializeNavigationSystem()
 {
    UpdateAllNodeConnections();
+   SetRoversPosition( 36, 36 );
+   SetRoversBearing( 0 );
 }
 
 boolean_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
@@ -189,14 +209,34 @@ void AddNode( inches_t x, inches_t y )
    UpdateSingleNodeConnections( NumberOfNodes - 1 ); 
 }
 
-void SetRoverPosition( inches_t x, inches_t y )
+void SetRoversPosition( inches_t x, inches_t y )
 {
-   // KILL MAGIC NUMBER 0 -- DEAL WITH ROVER IDENTIFICATION BETWEEN ROM AND RAM LISTS
-   RamNodeCoordinateList[ 0 ].x = x;
-   RamNodeCoordinateList[ 0 ].y = y;
+   // DEAL WITH ROVER IDENTIFICATION BETWEEN ROM AND RAM LISTS
+   // for approximate location
+   RoversPosition.x = x;
+   RoversPosition.y = y;
+      
+   // for Dijkstra
+   RamNodeCoordinateList[ RoversCurrentPositionIndex ].x = RoversPosition.x;
+   RamNodeCoordinateList[ RoversCurrentPositionIndex ].y = RoversPosition.y;
 
    // RomNumberOfNodes == roverId
    UpdateSingleNodeConnections( RomNumberOfNodes );
+}
+
+void SetRoversBearing( degree_t degree )
+{
+   RoversBearing = degree;
+}
+
+coordinates_t GetRoversPosition()
+{
+   return RoversPosition;
+}
+
+degree_t GetRoversBearing()
+{
+   return RoversBearing;
 }
 
 void UpdateSingleNodeConnections( nodeNumber_t node )
@@ -408,4 +448,37 @@ turnByTurnElement_t * GetNextTurnByTurnElement()
 boolean_t HasNextTurnByTurnElement()
 {
    return RamTurnByTurnQueue.index < RamTurnByTurnQueue.size;
+}
+
+state_t NavigateToTarget( Word targetNode )
+{
+   Byte nodeSequenceIndex;
+   coordinates_t approximateCoordinates, currentNode, nextNode;
+   turnByTurnElement_t currentTurnByTurnElement;
+   
+   Dijkstra( 0, targetNode );
+   for ( nodeSequenceIndex = 0; nodeSequenceIndex < RamNodeSequence.size/* WHILE ROVER IN MOTION? */; nodeSequenceIndex++ )
+   { 
+      currentNode = GetRoversPosition(); 
+      nextNode = *GetNodeCoordinates( RamNodeSequence.nodeSequence[ nodeSequenceIndex ] );
+   
+      currentTurnByTurnElement.typeOfMotion = ROTATE_MOTION;
+      currentTurnByTurnElement.value = GetRoversBearing() - arcTangent( nextNode.y - currentNode.y, nextNode.x - currentNode.x );
+      
+      //EXECUTE ROTATION
+      while( GetRoverInMotionFlag() ); // AND OBSTACLE DETECTED is FALSE
+      
+      currentTurnByTurnElement.typeOfMotion = FORWARD_MOTION;
+      currentTurnByTurnElement.value = distanceFromTarget[ RamNodeSequence.nodeSequence[ nodeSequenceIndex ] ] - distanceFromTarget[ RamNodeSequence.nodeSequence[ nodeSequenceIndex + 1 ] ];	
+      
+      //EXECUTE FORWARD MOTION
+      
+      while( GetRoverInMotionFlag() )  // AND OBSTACLE DETECTED is FALSE
+      {
+         // update approximateCoordinates  
+      }
+      
+      DetermineRoversPosition( approximateCoordinates );
+   }
+
 }

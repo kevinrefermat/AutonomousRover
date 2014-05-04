@@ -24,6 +24,8 @@ typedef sByte beaconId_t;
 typedef sByte nodeNumber_t;
 typedef sByte obstacleNumber_t;
 
+typedef Byte state_t;
+
 typedef struct
 {
    inches_t x;
