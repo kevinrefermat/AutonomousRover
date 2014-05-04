@@ -13,9 +13,9 @@ static const coordinates_t beaconCoords[ NUMBER_OF_BEACONS ] =
 {
    { 94, 149 },
    { 409, 400 },
-   { 450, 0 },
+   { 157, 335 },
    { 346, 142 },
-   { 225, 360 }
+   { 95, 509 }
 };
 
 /*** STATIC VARIABLES ***/

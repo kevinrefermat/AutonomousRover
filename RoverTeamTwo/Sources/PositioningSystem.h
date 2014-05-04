@@ -4,6 +4,13 @@
 
 #include "Rover.h"
 
+typedef struct
+{
+   beaconId_t firstBeacon;
+   beaconId_t secondBeacon;
+   beaconId_t thirdBeacon;
+} beaconGroup_t;
+
 void InitializePositioningSystem( void );
 inches_t GetAccurateLineOfSightDistanceToBeacon( beaconId_t );
 void DetermineRoversPosition( void );

@@ -18,6 +18,25 @@ static const inches_t UNINITIALIZED_DISTANCE = -3;
 static const inches_t DISTANCE_OUT_OF_BOUNDS = -4;
 static const inches_t TriangulationErrorThreshhold = 50;
 
+/*** BEACON GROUP LUT ***/
+static const beaconGroup_t[]
+{             
+   { 0, 2, 3 }, //0
+   { 0, 2, 1 }, //1
+   { 0, 3, 4 }, //2
+   { 0, 2, 4 }, //3
+   { 1, 2, 4 }, //4
+   { 2, 3, 4 }, //5
+   { 0, 2, 4 }, //6
+   { 1, 2, 3 }, //7
+   { 0, 2, 3 }, //8
+   { 0, 2, 4 }, //9
+   { 1, 3, 4 }, //10
+   { 1, 2, 4 }, //11
+   { 0, 1, 3 }, //12
+   { 1, 2, 3 }, //13
+   { 1, 3, 4 }, //14
+      
 
 /*** STATIC VARIABLES ***/
 
@@ -273,4 +292,9 @@ degree_t GetRoversBearing()
 coordinates_t GetRoversCoordinates()
 {
    return roversPosition;
+}
+
+beaconGroup_t * GetBeaconGroup( coordinates_t approximateCoordinates )
+{
+     
 }
