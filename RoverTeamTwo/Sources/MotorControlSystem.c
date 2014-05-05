@@ -10,15 +10,15 @@
 
 static const Byte MaxPower = 0xFF;
 
-static const Byte InitialRightTreadPower = 0xFC;  // 0xE1 90% ( out of 255 )
+static const Byte InitialRightTreadPower = 0xFF;  // 0xE1 90% ( out of 255 )
 static const Byte InitialLeftTreadPower = 0xFF;   // 0xE1 90% ( out of 255 )
                                                                  
 static const milliseconds_t WaitForRoverToActuallyStopDelay = 200;
 
 static const pulseCount_t PulsesPerInch = 12;
 static const pulseCount_t PulsesPerFoot = 137;
-static const pulseCount_t PulsesPerFiveFeet = 712;
-static const pulseCount_t PulsesPerTwentyFiveFeet = 3560;
+static const pulseCount_t PulsesPerFiveFeet = 690;
+static const pulseCount_t PulsesPerTwentyFiveFeet = 3400;
 
 static const pulseCount_t PulsesPerDegreeNumerator = 100;
 static const pulseCount_t PulsesPerDegreeDenominator = 72;
@@ -333,6 +333,8 @@ static void InitializePulseAccumulator( pulseCount_t numberOfPulsesTillInterrupt
 static pulseCount_t DistanceToPulses( inches_t distance ) 
 {
    pulseCount_t inches, feet, fiveFeet, twentyFiveFeet;
+   static const pulseCount_t PulsesItTakesAfterRoverStopped = 12;
+   
    twentyFiveFeet = distance / ( 25 * 12 );
    distance -= twentyFiveFeet * 25 * 12;
    fiveFeet = distance / ( 5 * 12 );
@@ -344,7 +346,7 @@ static pulseCount_t DistanceToPulses( inches_t distance )
    fiveFeet *= PulsesPerFiveFeet;
    feet *= PulsesPerFoot;
    inches *= PulsesPerInch;
-	return twentyFiveFeet + fiveFeet + feet + inches;
+	return twentyFiveFeet + fiveFeet + feet + inches - PulsesItTakesAfterRoverStopped;
 }
 
 static inches_t PulsesToDistance( pulseCount_t pulses )
@@ -389,7 +391,6 @@ inches_t GetDistanceIntoCurrentRoute()
 interrupt VectorNumber_Vtimpaovf void MotionCompleted()
 {
 	StopMotion();
-	//ExecuteNextTurnByTurnInstruction();
 }
 
 

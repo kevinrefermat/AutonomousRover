@@ -3,7 +3,6 @@
 #include <libdefs.h>
 
 #include "Rover.h"
-#include "main.h"
 #include "MotorControlSystem.h"
 #include "NavigationSystem.h"
 #include "ObstacleAvoidanceSystem.h"
@@ -20,25 +19,46 @@ static coordinates_t myCoordinates;
 static beaconGroup_t beaconGroup;
 static nodeNumber_t closestNode;
 
+static nextState_t nextState;
+static nodeNumber_t nextTargetIndex;
+
 static nodeNumber_t targetNodes[] = { 0, 1, 2 };
 
 void main( void )
 {  
-   degree_t i;
    InitializeTimers();
    InitializePositioningSystem();
    InitializeObstacleAvoidanceSystem();
    InitializeNavigationSystem( &targetNodes );
+   InitializeMotorControlSystem();
+   InitializeCompass();
+   //CalibrateCompass();
+   //Delay( 10000 );
    
-   SetRoversPosition( 120, 120 );               
-   closestNode = GetClosestNodeForTarget( 0 );
-   myCoordinates = *GetNodeCoordinates( closestNode );
-   closestNode = GetClosestNodeForTarget( 1 );   
-   myCoordinates = *GetNodeCoordinates( closestNode );
-   closestNode = GetClosestNodeForTarget( 2 ); 
-   myCoordinates = *GetNodeCoordinates( closestNode );
+   nextState = FindClosestTarget;
    
-   distance0 = Dijkstra( GetRoversNodeId(), 2 );
+   for ( ; ; )
+   {
+      switch ( nextState )
+      {
+         case FindClosestTarget:
+            nextState = FindNextTarget( &nextState );
+            break;
+         case PursueTarget:
+            nextState = NavigateToTarget( nextTargetIndex );
+            break;
+         case SenseAndPlaceObstacle:
+            DetermineRoversPosition( GetRoversPosition() );
+            nextState = FindClosestTarget;
+            break;
+         case TimeToCelebrate:
+         default:
+            nextState = FindClosestTarget;
+            break;
+      }
+   }
+
+   NavigateToTarget( 2 );
    
-   for(;;);
+   for( ;; );
 }

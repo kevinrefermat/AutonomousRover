@@ -17,7 +17,7 @@ static const inches_t WAITING_FOR_SIGNAL_TIMED_OUT = -1;
 static const inches_t TRANSCEIVER_NOT_ACKOWLEDGING_TRANSMIT_REQUEST = -2;
 static const inches_t UNINITIALIZED_DISTANCE = -3;
 static const inches_t DISTANCE_OUT_OF_BOUNDS = -4;
-static const inches_t TriangulationErrorThreshhold = 50;
+static const inches_t TriangulationErrorThreshhold = 40;
 
 
 /*** BEACON GROUP LUT ***/
@@ -65,7 +65,6 @@ void InitializePositioningSystem()
    BEACON_TRANSMITTER_ACKNOWLEDGE_PIN_DDR = INPUT;
    
    BEACON_TRANSMITTER_ENABLE = 0;
-   
 }
 
 inches_t GetAccurateLineOfSightDistanceToBeacon( beaconId_t beaconId )
@@ -272,12 +271,15 @@ void DetermineRoversPosition( coordinates_t approximateCoordinates )
    secondBeacon = pBeaconGroup->secondBeacon;
    thirdBeacon = pBeaconGroup->thirdBeacon;
    
-   distanceToBeacon[ firstBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( firstBeacon ) );
-   distanceToBeacon[ secondBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( secondBeacon ) );
-   distanceToBeacon[ thirdBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( thirdBeacon ) );
-   triangulationCoordinates = Triangulate( firstBeacon, secondBeacon, thirdBeacon );
-   error = GetTriangulationError();
-   
+   error = MAX_SIGNED_16_BIT_VALUE;
+   if ( firstBeacon >= 0 && secondBeacon >= 0 && thirdBeacon >= 0 )
+   {
+      distanceToBeacon[ firstBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( firstBeacon ) );
+      distanceToBeacon[ secondBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( secondBeacon ) );
+      distanceToBeacon[ thirdBeacon ] = GetFloorDistance( GetAccurateLineOfSightDistanceToBeacon( thirdBeacon ) );
+      triangulationCoordinates = Triangulate( firstBeacon, secondBeacon, thirdBeacon );
+      error = GetTriangulationError();
+   }
    if ( error > TriangulationErrorThreshhold )
    {
       /* guess using PACNT to determine rough position if
@@ -293,11 +295,7 @@ void DetermineRoversPosition( coordinates_t approximateCoordinates )
    
    if ( bearing >= 0 )
    {        
-      SetRoversBearing( GetAnAccurateCompassReading() );
-   }
-   else
-   {
-      // calculate theoretical angle based on last angle
+      SetRoversBearing( bearing );
    }
 }
 
@@ -388,4 +386,15 @@ beaconGroup_t * GetBeaconGroup( coordinates_t approximateCoordinates )
       beaconGroupIndex = 14;  
    }
    return &( coverageZoneBeaconGroups[ beaconGroupIndex ] );
+}
+
+degree_t ConvertUnitCircleAngleToCompassBearing( degree_t arcTanDegrees )
+{
+   degree_t compassBearing;
+   compassBearing = -arcTanDegrees + 90; 
+   if ( compassBearing < 0 )
+   {
+      compassBearing += 360;
+   }
+   return compassBearing;
 }

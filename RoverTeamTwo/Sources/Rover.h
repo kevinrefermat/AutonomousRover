@@ -24,7 +24,7 @@ typedef sByte beaconId_t;
 typedef sByte nodeNumber_t;
 typedef sByte obstacleNumber_t;
 
-typedef Byte state_t;
+typedef Byte nextState_t;
 
 typedef struct
 {
@@ -128,6 +128,11 @@ extern const direction_t FORWARD_MOTION;
 extern const direction_t REVERSE_MOTION;
 extern const direction_t STOP_MOTION;
 extern const direction_t ROTATE_MOTION;
+
+#define PursueTarget 1
+#define SenseAndPlaceObstacle 2
+#define FindClosestTarget 3
+#define TimeToCelebrate 4
 
 /*** GLOBAL FUNCTIONS ***/
 

@@ -53,7 +53,7 @@ static void AdjustTreadDrivePower( Byte leftOrRight, sByte value );
 
 static sByte ConvertSignedWordToSignedByte( sWord adjustment16 );
 
-
+inches_t GetDistanceIntoCurrentRoute( void );
 
 /*** Interrupt Service Routine ***/
 

@@ -1,7 +1,7 @@
 OPEN source 0 0 60 39
 Source < attributes TOOLTIP on,TOOLTIP_FORMAT signed,TOOLTIP_MODE details,FREEZE off,MARKS off
 OPEN assembly 60 0 40 31
-Assembly < attributes ADR on,CODE off,ABSADR on,SYMB off,FORMAT Auto,FREEZE off,TOPPC 0xC218
+Assembly < attributes ADR on,CODE off,ABSADR on,SYMB off,FORMAT Auto,FREEZE off,TOPPC 0xC9D0
 OPEN procedure 0 39 60 17
 Procedure < attributes VALUES on,TYPES off
 OPEN register 60 31 40 25
@@ -17,4 +17,4 @@ Command < attributes CACHESIZE 1000
 bckcolor 50331647
 font 'Courier New' 9 BLACK
 AUTOSIZE on
-ACTIVATE "Data:2" "Command" "Procedure" "Data:1" "Register" "Assembly" "Memory" "Source"
+ACTIVATE "Command" "Procedure" "Data:1" "Register" "Assembly" "Memory" "Data:2" "Source"

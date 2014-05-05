@@ -17,6 +17,8 @@ static const milliseconds_t DelayBetweenOneDegreeChangePingPosition = 2;
 static timerCount_t PingPeriodTimerCounterOffset;
 static degree_t CurrentPingAngle;
 
+static boolean_t ObstacleDetectedFlag = FALSE;
+
 // MAKE SURE THERE IS NO OVERFLOW IN THE MEASURE RETURN PULSE CONSIDERING VARIABLE TIMER_PRESCALER
 
 
@@ -225,19 +227,24 @@ coordinates_t GetLeftEdgeOfObstacle()
    
 }
 
+boolean_t GetObstacleDetectedFlag()
+{
+   return ObstacleDetectedFlag;
+}
+
+void ClearObstacleDetectedFlag()
+{
+   ObstacleDetectedFlag = FALSE;
+}
+
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()
 {
-   SetPingTimer();
-   if ( CurrentPingAngle != 0 )
-   {
-      SetPingRotationalPosition( 0 );
-      Delay( DelayAfterMovingPingALot );
-   }
    if ( DetectClosestObstacle() <= ObstacleDetectionThreshhold )
    {
-      /*********** IMPLEMENT MORE ELEGANT SOLUTION **************/
       StopMotion();
+      ObstacleDetectedFlag = TRUE;
    }
    
+   SetPingTimer();
    TFLG1_C1F = 1;
 }

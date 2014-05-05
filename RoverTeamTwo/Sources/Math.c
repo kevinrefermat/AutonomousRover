@@ -88,6 +88,8 @@ inches_t GetFloorDistance( inches_t hypotenuse )
    Word upper, lower;
    static const CeilingHeightSquared = CEILING_HEIGHT * CEILING_HEIGHT;
    
+   if ( hypotenuse < 0 ) return hypotenuse;
+   
    _asm
    {
       LDY   hypotenuse 

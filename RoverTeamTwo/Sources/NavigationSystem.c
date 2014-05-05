@@ -83,6 +83,8 @@ static inches_t distanceFromTarget[ MAX_TOTAL_NUMBER_OF_NODES ];
 static degree_t RoversBearing;
 
 static runtimeTarget_t runtimeTarget[ NUMBER_OF_TARGETS ];
+ 
+static boolean_t visitedTarget[] = { FALSE, FALSE, FALSE };
 
 
 /*** LOOKUP TABLES ***/
@@ -93,14 +95,14 @@ static const target_t TargetLookupTable[] =
    { { 120, 480 }, { { 120 - TARGET_TO_NODE_DISTANCE, 480 }, { 120 + TARGET_TO_NODE_DISTANCE, 480 }, { 120, 480 + TARGET_TO_NODE_DISTANCE }, { -1, -1 } }, 3 },
    { { 216, 324 }, { { 216 - TARGET_TO_NODE_DISTANCE, 324 }, { 216 + TARGET_TO_NODE_DISTANCE, 324 }, { 216, 324 - TARGET_TO_NODE_DISTANCE }, { 216, 324 + TARGET_TO_NODE_DISTANCE } }, 4 },
    { { 384, 120 }, { { 384 + TARGET_TO_NODE_DISTANCE, 120 }, { 384, 120 + TARGET_TO_NODE_DISTANCE }, { -1, -1 }, { -1, -1 } }, 2 },
-   { { 396, 396 }, { { 396 - TARGET_TO_NODE_DISTANCE, 396 }, { 396 + TARGET_TO_NODE_DISTANCE, 396 }, { 396, 396 + TARGET_TO_NODE_DISTANCE } }, 3 },
-   { { 384, 540 }, { { 384 + TARGET_TO_NODE_DISTANCE, 540 }, { 384 - TARGET_TO_NODE_DISTANCE }, { 384, 540 - TARGET_TO_NODE_DISTANCE }, { -1, -1 } }, 3 }
+   { { 396, 396 }, { { 396 - TARGET_TO_NODE_DISTANCE, 396 }, { 396 + TARGET_TO_NODE_DISTANCE, 396 }, { 396, 396 + TARGET_TO_NODE_DISTANCE }, { -1, -1 } }, 3 },
+   { { 384, 540 }, { { 384 + TARGET_TO_NODE_DISTANCE, 540 }, { 384 - TARGET_TO_NODE_DISTANCE, 540 }, { 384, 540 - TARGET_TO_NODE_DISTANCE }, { -1, -1 } }, 3 }
 };
 
 static const coordinates_t RomNodeCoordinateList[] = 
 {
    { 36, 36 },
-   { 165, 199 },
+   { 180, 204 },
    { 381, 199 },
    { 33, 211 },
    { 33, 495 },
@@ -116,7 +118,7 @@ static const tetragon_t RomObstacleList[] =
    { 96, 450, 36, BOTTOM_OF_ROOM },          // x axis shit collecting wall
    { 420, 450, 336, BOTTOM_OF_ROOM },        // right side low cabinets
    { 420, 450, 534, 444 },                   // right side high cabinets
-   { 174, 330, 156, BOTTOM_OF_ROOM },        // right low desk  EXTENDED to block treachorous south wall corridor
+   { 174, 354, 156, BOTTOM_OF_ROOM },        // right low desk  EXTENDED to block treachorous south wall corridor
    { 84, 156, 438, 246 },                    // left center desk
    { 276, 348, 408, 246 },                   // right center desk
    { 246, 330, 570, 444 },                   // right high desk   EXTENDED to block the space between this and RF room
@@ -194,7 +196,10 @@ inches_t Dijkstra( nodeNumber_t sourceNodeId, nodeNumber_t targetNodeId )
       RamNodeSequence.index = -1;
       return TARGET_UNREACHABLE_ERROR;
    }
-   RamNodeSequence.size = 0;
+   
+   RamNodeSequence.size = 1;
+   RamNodeSequence.nodeSequence[ 0 ] = GetRoversNodeId();
+   
    while ( currentNodeId != targetNodeId )
    {
       currentNodeId = previousNode[ currentNodeId ];
@@ -471,38 +476,88 @@ boolean_t HasNextTurnByTurnElement()
    return RamTurnByTurnQueue.index < RamTurnByTurnQueue.size;
 }
 
-state_t NavigateToTarget( Word targetNode )
+nextState_t NavigateToTarget( nodeNumber_t runtimeTargetNodeIndex )
 {
    Byte nodeSequenceIndex;
-   coordinates_t approximateCoordinates, currentNode, nextNode;
-   turnByTurnElement_t currentTurnByTurnElement;
+   coordinates_t approximateCoordinates, currentNodeCoords, nextNodeCoords;
+   inches_t totalDistance, partialDistance;
+   degree_t netDegrees, newBearing;
    
-   Dijkstra( 0, targetNode );
-   for ( nodeSequenceIndex = 0; nodeSequenceIndex < RamNodeSequence.size/* WHILE ROVER IN MOTION? */; nodeSequenceIndex++ )
-   { 
-      currentNode = GetRoversPosition(); 
-      nextNode = *GetNodeCoordinates( RamNodeSequence.nodeSequence[ nodeSequenceIndex ] );
-   
-      currentTurnByTurnElement.typeOfMotion = ROTATE_MOTION;
-      currentTurnByTurnElement.value = GetRoversBearing() - arcTangent( nextNode.y - currentNode.y, nextNode.x - currentNode.x );
+   Dijkstra( GetRoversNodeId(), GetClosestNodeForTarget( GetRoversNodeId(), runtimeTargetNodeIndex ) );
+   approximateCoordinates = GetRoversPosition();
+   nodeSequenceIndex = 0;
+   //for ( nodeSequenceIndex = 0; nodeSequenceIndex < RamNodeSequence.size - 1; nodeSequenceIndex++ ) // WHILE ROVER IN MOTION? 
+   {      
+      currentNodeCoords = GetRoversPosition(); 
+      nextNodeCoords = *GetNodeCoordinates( RamNodeSequence.nodeSequence[ nodeSequenceIndex + 1 ] );
       
       //EXECUTE ROTATION
-      while( GetRoverInMotionFlag() ); // AND OBSTACLE DETECTED is FALSE
-      
-      currentTurnByTurnElement.typeOfMotion = FORWARD_MOTION;
-      currentTurnByTurnElement.value = distanceFromTarget[ RamNodeSequence.nodeSequence[ nodeSequenceIndex ] ] - distanceFromTarget[ RamNodeSequence.nodeSequence[ nodeSequenceIndex + 1 ] ];	
+      newBearing = ConvertUnitCircleAngleToCompassBearing( arcTangent( nextNodeCoords.y - currentNodeCoords.y, nextNodeCoords.x - currentNodeCoords.x ) );
+      netDegrees = newBearing - GetRoversBearing(); 
+      Rotate( netDegrees );
+      SetRoversBearing( newBearing ); 
+      //IF OBSTACLE DETECTED is FALSE
       
       //EXECUTE FORWARD MOTION
-      
-      while( GetRoverInMotionFlag() )  // AND OBSTACLE DETECTED is FALSE
+      partialDistance = 0;
+      totalDistance = distanceFromTarget[ RamNodeSequence.nodeSequence[ nodeSequenceIndex ] ] - distanceFromTarget[ RamNodeSequence.nodeSequence[ nodeSequenceIndex + 1 ] ];	
+      MoveForward( totalDistance );
+      EnablePeriodicObstacleDetection();
+      while( GetRoverInMotionFlag() && !GetObstacleDetectedFlag() )
       {
-         // update approximateCoordinates  
+         partialDistance = GetDistanceIntoCurrentRoute();
+         approximateCoordinates.x = currentNodeCoords.x + ( ( nextNodeCoords.x - currentNodeCoords.x ) * ( partialDistance / 15 ) ) / ( totalDistance / 15 );
+         approximateCoordinates.y = currentNodeCoords.y + ( ( nextNodeCoords.y - currentNodeCoords.y ) * ( partialDistance / 15 ) ) / ( totalDistance / 15 );
       }
-      
+      DisablePeriodicObstacleDetection();
+      if ( GetObstacleDetectedFlag() )
+      {
+         ClearObstacleDetectedFlag();
+         SetRoversPosition( approximateCoordinates.x, approximateCoordinates.y );
+         return SenseAndPlaceObstacle;
+      }
       DetermineRoversPosition( approximateCoordinates );
    }
-   // FINAL ROTATE COMMAND
+   if ( Distance( GetRoversPosition(), *GetNodeCoordinates( RamNodeSequence.nodeSequence[ RamNodeSequence.size - 1 ] ) ) > 5 )
+   {
+      return PursueTarget;
+   }
+   else
+   {
+      visitedTarget[ runtimeTargetNodeIndex ] = TRUE;
+      return FindClosestTarget;
+   }
 }
+
+nextState_t FindNextTarget( nodeNumber_t *pTarget )
+{
+   inches_t distance, shortestDistance;
+   Byte i, closestTargetIndex;
+   
+   shortestDistance = MAX_SIGNED_16_BIT_VALUE;
+   
+   for ( i = 0; i < NUMBER_OF_TARGETS; i++ )
+   {
+      if ( visitedTarget[ i ] == FALSE )
+      {
+         distance = Dijkstra( GetRoversNodeId(), runtimeTarget[ i ].startingAccessPointNodeNumber );
+         if ( distance < shortestDistance )
+         {
+            shortestDistance = distance;
+            closestTargetIndex = i;
+         }
+      }
+   }
+   if ( shortestDistance == MAX_SIGNED_16_BIT_VALUE )
+   {
+      return TimeToCelebrate;
+   }
+   else
+   {  
+      *pTarget = closestTargetIndex;
+      return PursueTarget;
+   }
+} 
 
 nodeNumber_t GetClosestNodeForTarget( nodeNumber_t sourceNodeId, nodeNumber_t runtimeTargetIndex )
 {

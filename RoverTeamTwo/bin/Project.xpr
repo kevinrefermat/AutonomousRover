@@ -1,1 +1,2 @@
 Data:1 < ADDXPR ONLY_ADD_IF_NEW "NavigationSystem.c::runtimeTarget"
+Data:1 < ADDXPR ONLY_ADD_IF_NEW "NavigationSystem.c::RamNodeSequence"

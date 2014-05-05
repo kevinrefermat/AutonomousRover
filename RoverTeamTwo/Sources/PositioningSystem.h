@@ -16,6 +16,7 @@ inches_t GetAccurateLineOfSightDistanceToBeacon( beaconId_t );
 void DetermineRoversPosition( coordinates_t approximateCoordinates );
 beaconGroup_t * GetBeaconGroup( coordinates_t approximateCoordinates );
 
+degree_t ConvertUnitCircleAngleToCompassBearing( degree_t arcTanDegrees );
 
 
 inches_t GetLineOfSightDistanceToBeacon( beaconId_t beaconId );

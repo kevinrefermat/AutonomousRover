@@ -71,6 +71,7 @@ coordinates_t* GetNodeCoordinates( nodeNumber_t nodeId );
 turnByTurnElement_t* GetNextTurnByTurnElement( void );
 boolean_t HasNextTurnByTurnElement( void );
 
+nodeNumber_t GetClosestNodeForTarget( nodeNumber_t sourceNodeId, nodeNumber_t runtimeTargetIndex );
 
 
 

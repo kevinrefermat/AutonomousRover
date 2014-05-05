@@ -18,6 +18,8 @@ static void SetPingTimer( void );
 
 coordinates_t GetLeftEdgeOfObstacle( void );
 
+boolean_t GetObstacleDetectedFlag( void );
+void ClearObstacleDetectedFlag( void );
 
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles( void );
 
