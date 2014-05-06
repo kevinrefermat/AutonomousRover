@@ -8,7 +8,7 @@
 #include "PositioningSystem.h"
 #include "Math.h"
 #include "Triangulation.h"
-
+#include "Celebratory.h"
 
 #include "Compass.h"
 #include "I2C.h"
@@ -21,10 +21,11 @@ static nodeNumber_t closestNode;
 static nextState_t nextState;
 static nodeNumber_t nextTargetIndex;
 
-static nodeNumber_t targetNodes[] = { 0, 1, 2 };
+static nodeNumber_t targetNodes[] = { 2, 3, 1 };
 
 void main( void )
 {  
+   InitializeCelebratory();
    InitializeTimers();
    InitializePositioningSystem();
    InitializeObstacleAvoidanceSystem();
@@ -34,7 +35,7 @@ void main( void )
    //CalibrateCompass();
    //Delay( 10000 );
    
-   nextState = FindClosestTarget;
+   nextState = PursueTarget;
    
    SetRoversBearing( 0 );
    SetRoversPosition( 36, 36 );
@@ -51,9 +52,10 @@ void main( void )
             break;
          case SenseAndPlaceObstacle:
             DetermineRoversPosition( GetRoversPosition() );
-            nextState = FindClosestTarget;
+            nextState = DetectAndPlaceObstacle();
             break;
          case TimeToCelebrate:
+            Celebrate();
             for(;;);
             break;
          default:

@@ -217,11 +217,7 @@ coordinates_t GetLeftEdgeOfObstacle()
          SetPingRotationalPosition( 0 );
          Delay( DelayAfterMovingPingALot );
          
-         /******* FIX THISSSSS *********/
-         
-         coordinates.x = -2;
-         coordinates.y = -2;
-       
+         coordinates = GetRoversPosition();
          return coordinates;
       }
    }
@@ -236,6 +232,17 @@ boolean_t GetObstacleDetectedFlag()
 void ClearObstacleDetectedFlag()
 {
    ObstacleDetectedFlag = FALSE;
+}
+
+nextState_t DetectAndPlaceObstacle()
+{
+   coordinates_t coordinates;
+   
+   coordinates = GetLeftEdgeOfObstacle();
+   AddObstacle( coordinates.x - 8, coordinates.x + 8, coordinates.y + 8, coordinates.y - 8 );
+   AddNode( coordinates.x - 16, coordinates.y - 16 );
+   AddNode( coordinates.x + 16, coordinates.y - 16 );
+   return PursueTarget; 
 }
 
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles()

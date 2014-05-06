@@ -235,6 +235,37 @@ void MoveReverse( inches_t distance )
  	EnableInterrupts;	
 }
 
+void CelebrateRotate( degree_t degrees )
+{ 
+   InitializePulseAccumulator( DegreesToPulses( degrees ) );
+   
+   DisableTreads();
+
+   if ( degrees == 0 )
+   {
+      StopMotion();
+      return;
+   }
+   
+   DisableInterrupts;
+   
+   if ( degrees > 0 )
+   {
+      LeftTreadForward();
+      RightTreadReverse();
+   }
+   else if ( degrees < 0 )
+   {    
+      LeftTreadReverse();
+      RightTreadForward();
+   }       
+   SetRoverInMotionFlag(); 
+   
+   EnableTreads();
+   EnableInterrupts;  
+}
+
+
 void Rotate( degree_t degrees )
 {
    degree_t currentBearing, desiredBearing;

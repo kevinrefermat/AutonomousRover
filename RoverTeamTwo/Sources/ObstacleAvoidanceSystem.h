@@ -21,6 +21,8 @@ coordinates_t GetLeftEdgeOfObstacle( void );
 boolean_t GetObstacleDetectedFlag( void );
 void ClearObstacleDetectedFlag( void );
 
+nextState_t DetectAndPlaceObstacle( void );
+
 interrupt VectorNumber_Vtimch1 void PeriodicCheckForObstacles( void );
 
 #endif

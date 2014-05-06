@@ -52,6 +52,7 @@ static void ClearRoverInMotionFlag( void );
 static void AdjustTreadDrivePower( Byte leftOrRight, sByte value );
 
 static sByte ConvertSignedWordToSignedByte( sWord adjustment16 );
+void CelebrateRotate( degree_t degrees );
 
 inches_t GetDistanceIntoCurrentRoute( void );
 
