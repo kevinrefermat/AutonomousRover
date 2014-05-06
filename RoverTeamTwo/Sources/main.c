@@ -1,6 +1,5 @@
 #include <hidef.h>
 #include "derivative.h"
-#include <libdefs.h>
 
 #include "Rover.h"
 #include "MotorControlSystem.h"
@@ -37,12 +36,15 @@ void main( void )
    
    nextState = FindClosestTarget;
    
+   SetRoversBearing( 0 );
+   SetRoversPosition( 36, 36 );
+   
    for ( ; ; )
    {
       switch ( nextState )
       {
          case FindClosestTarget:
-            nextState = FindNextTarget( &nextState );
+            nextState = FindNextTarget( &nextTargetIndex );
             break;
          case PursueTarget:
             nextState = NavigateToTarget( nextTargetIndex );
@@ -52,13 +54,11 @@ void main( void )
             nextState = FindClosestTarget;
             break;
          case TimeToCelebrate:
+            for(;;);
+            break;
          default:
             nextState = FindClosestTarget;
             break;
       }
    }
-
-   NavigateToTarget( 2 );
-   
-   for( ;; );
 }

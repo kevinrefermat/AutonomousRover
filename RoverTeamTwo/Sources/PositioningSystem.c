@@ -282,17 +282,14 @@ void DetermineRoversPosition( coordinates_t approximateCoordinates )
    }
    if ( error > TriangulationErrorThreshhold )
    {
-      /* guess using PACNT to determine rough position if
-       * not at a node. If near a node then use the LUT
-       */
       SetRoversPosition( approximateCoordinates );
    }
    else
    {
       SetRoversPosition( triangulationCoordinates );
    }
+   Delay( 500 );
    bearing = GetAnAccurateCompassReading();
-   
    if ( bearing >= 0 )
    {        
       SetRoversBearing( bearing );

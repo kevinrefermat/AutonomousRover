@@ -10,12 +10,12 @@
 
 static const Byte MaxPower = 0xFF;
 
-static const Byte InitialRightTreadPower = 0xFF;  // 0xE1 90% ( out of 255 )
+static const Byte InitialRightTreadPower = 0xFC;  // 0xE1 90% ( out of 255 )
 static const Byte InitialLeftTreadPower = 0xFF;   // 0xE1 90% ( out of 255 )
                                                                  
 static const milliseconds_t WaitForRoverToActuallyStopDelay = 200;
 
-static const pulseCount_t PulsesPerInch = 12;
+static const pulseCount_t PulsesPerInch = 11;
 static const pulseCount_t PulsesPerFoot = 137;
 static const pulseCount_t PulsesPerFiveFeet = 690;
 static const pulseCount_t PulsesPerTwentyFiveFeet = 3400;
@@ -243,7 +243,8 @@ void Rotate( degree_t degrees )
    if ( desiredBearing > 359 ) desiredBearing -= 360;
    if ( desiredBearing < 0 ) desiredBearing += 360;
 
-   if ( degrees > 180 ) degrees -= 360;
+   while ( degrees > 180 ) degrees -= 360;
+   while ( degrees < -180 ) degrees += 360;
    
    InitializePulseAccumulator( DegreesToPulses( degrees ) );
    

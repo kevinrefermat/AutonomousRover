@@ -141,6 +141,7 @@ void Delay( milliseconds_t time );
 void TurnOnErrorLight( void );
 void TurnOffErrorLight( void );
 inches_t FeetToInches( Word feet );
+void OutputBeeps( Byte number, milliseconds_t length );
 
 
 /*** INITIALIZATION FUNCTIONS ***/

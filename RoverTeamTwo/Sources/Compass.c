@@ -13,9 +13,9 @@ static const Byte AddressMode = 0x02;
 static const Byte SlaveWrite = 0x3C;
 static const Byte SlaveRead = 0x3D;
 
-static sWord xShiftValue = -48;
-static sWord yShiftValue = 74;
-static sWord yScaleValueNumerator = 4;
+static sWord xShiftValue = -16;
+static sWord yShiftValue = 123;
+static sWord yScaleValueNumerator = 7;
 static sWord yScaleValueDenominator = 100;
 
 static const boolean_t NACK = TRUE;

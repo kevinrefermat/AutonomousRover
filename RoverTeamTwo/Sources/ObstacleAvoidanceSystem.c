@@ -52,6 +52,7 @@ void InitializeObstacleAvoidanceSystem()
   
    PWME_PWME1 = 1;
    Delay( DelayAfterMovingPingALot );
+   ClearObstacleDetectedFlag();
 } 
 
 void EnablePeriodicObstacleDetection( milliseconds_t period )

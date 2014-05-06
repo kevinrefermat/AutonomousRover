@@ -73,6 +73,7 @@ boolean_t HasNextTurnByTurnElement( void );
 
 nodeNumber_t GetClosestNodeForTarget( nodeNumber_t sourceNodeId, nodeNumber_t runtimeTargetIndex );
 
+nextState_t FindNextTarget( Byte *pNextTargetIndex );
 
 
 #endif

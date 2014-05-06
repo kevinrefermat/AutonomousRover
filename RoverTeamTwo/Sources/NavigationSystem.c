@@ -119,7 +119,7 @@ static const tetragon_t RomObstacleList[] =
    { 420, 450, 336, BOTTOM_OF_ROOM },        // right side low cabinets
    { 420, 450, 534, 444 },                   // right side high cabinets
    { 174, 354, 156, BOTTOM_OF_ROOM },        // right low desk  EXTENDED to block treachorous south wall corridor
-   { 84, 156, 438, 246 },                    // left center desk
+   { 84, 156, 450, 246 },                    // left center desk
    { 276, 348, 408, 246 },                   // right center desk
    { 246, 330, 570, 444 },                   // right high desk   EXTENDED to block the space between this and RF room
    { 66, 222, TOP_OF_ROOM, 522 },            // desk area
@@ -135,15 +135,14 @@ void InitializeNavigationSystem( nodeNumber_t *targets )
    {
       runtimeTarget[ i ].startingAccessPointNodeNumber = RomNumberOfNodes + RamNumberOfNodes;
       runtimeTarget[ i ].numberOfAccessPoints = TargetLookupTable[ targets[ i ] ].numberOfAccessPoints;
-      for ( j = 0; j < TargetLookupTable[ targets[ i ] ].numberOfAccessPoints; j++ )
+      for ( j = 0; j < runtimeTarget[ i ].numberOfAccessPoints; j++ )
       {
-         tempCoords = TargetLookupTable[ targets[ i ] ]. accessPoint[ j ];
+         tempCoords = TargetLookupTable[ targets[ i ] ].accessPoint[ j ];
          AddNode( tempCoords.x, tempCoords.y );
       }
+      tempCoords = TargetLookupTable[ targets[ i ] ].coordinates;
+      AddObstacle( tempCoords.x - 6, tempCoords.x + 6, tempCoords.y + 6, tempCoords.y - 6 );
    }
-   
-   SetRoversPosition( 36, 36 );
-   SetRoversBearing( 0 );
    UpdateAllNodeConnections();
 }
 
@@ -485,51 +484,54 @@ nextState_t NavigateToTarget( nodeNumber_t runtimeTargetNodeIndex )
    
    Dijkstra( GetRoversNodeId(), GetClosestNodeForTarget( GetRoversNodeId(), runtimeTargetNodeIndex ) );
    approximateCoordinates = GetRoversPosition();
-   nodeSequenceIndex = 0;
-   //for ( nodeSequenceIndex = 0; nodeSequenceIndex < RamNodeSequence.size - 1; nodeSequenceIndex++ ) // WHILE ROVER IN MOTION? 
+   
+   for ( nodeSequenceIndex = 0; nodeSequenceIndex < RamNodeSequence.size - 1; nodeSequenceIndex++ ) // WHILE ROVER IN MOTION? 
    {      
       currentNodeCoords = GetRoversPosition(); 
       nextNodeCoords = *GetNodeCoordinates( RamNodeSequence.nodeSequence[ nodeSequenceIndex + 1 ] );
+
       
       //EXECUTE ROTATION
       newBearing = ConvertUnitCircleAngleToCompassBearing( arcTangent( nextNodeCoords.y - currentNodeCoords.y, nextNodeCoords.x - currentNodeCoords.x ) );
+      while ( newBearing >= 360 ) newBearing -= 360;
+      while ( newBearing < 0 ) newBearing += 360;
       netDegrees = newBearing - GetRoversBearing(); 
       Rotate( netDegrees );
       SetRoversBearing( newBearing ); 
-      //IF OBSTACLE DETECTED is FALSE
       
       //EXECUTE FORWARD MOTION
       partialDistance = 0;
       totalDistance = distanceFromTarget[ RamNodeSequence.nodeSequence[ nodeSequenceIndex ] ] - distanceFromTarget[ RamNodeSequence.nodeSequence[ nodeSequenceIndex + 1 ] ];	
       MoveForward( totalDistance );
+      
       EnablePeriodicObstacleDetection();
-      while( GetRoverInMotionFlag() && !GetObstacleDetectedFlag() )
+      while( GetRoverInMotionFlag() && !GetObstacleDetectedFlag() );
+      DisablePeriodicObstacleDetection();
+      
+      partialDistance = GetDistanceIntoCurrentRoute();
+      if ( ( partialDistance / totalDistance ) >= 1 )
       {
-         partialDistance = GetDistanceIntoCurrentRoute();
+         approximateCoordinates = *GetNodeCoordinates( RamNodeSequence.nodeSequence[ nodeSequenceIndex + 1 ] );
+      }
+      else
+      {
          approximateCoordinates.x = currentNodeCoords.x + ( ( nextNodeCoords.x - currentNodeCoords.x ) * ( partialDistance / 15 ) ) / ( totalDistance / 15 );
          approximateCoordinates.y = currentNodeCoords.y + ( ( nextNodeCoords.y - currentNodeCoords.y ) * ( partialDistance / 15 ) ) / ( totalDistance / 15 );
       }
-      DisablePeriodicObstacleDetection();
-      if ( GetObstacleDetectedFlag() )
+      
+      DetermineRoversPosition( approximateCoordinates );
+      
+      if ( GetObstacleDetectedFlag() == TRUE )
       {
          ClearObstacleDetectedFlag();
-         SetRoversPosition( approximateCoordinates.x, approximateCoordinates.y );
          return SenseAndPlaceObstacle;
       }
-      DetermineRoversPosition( approximateCoordinates );
    }
-   if ( Distance( GetRoversPosition(), *GetNodeCoordinates( RamNodeSequence.nodeSequence[ RamNodeSequence.size - 1 ] ) ) > 5 )
-   {
-      return PursueTarget;
-   }
-   else
-   {
-      visitedTarget[ runtimeTargetNodeIndex ] = TRUE;
-      return FindClosestTarget;
-   }
+   visitedTarget[ runtimeTargetNodeIndex ] = TRUE;
+   return FindClosestTarget;
 }
 
-nextState_t FindNextTarget( nodeNumber_t *pTarget )
+nextState_t FindNextTarget( nodeNumber_t *pNextTargetIndex )
 {
    inches_t distance, shortestDistance;
    Byte i, closestTargetIndex;
@@ -554,7 +556,7 @@ nextState_t FindNextTarget( nodeNumber_t *pTarget )
    }
    else
    {  
-      *pTarget = closestTargetIndex;
+      *pNextTargetIndex = closestTargetIndex;
       return PursueTarget;
    }
 } 

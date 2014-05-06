@@ -80,3 +80,16 @@ inches_t FeetToInches( Word feet )
 {
    return feet * 12;
 }
+
+void OutputBeeps( Byte number, milliseconds_t length )
+{
+   Byte i;
+   DDRA_BIT7 = OUTPUT;
+   for ( i = 0; i < number; i++ )
+   {
+      PORTA_BIT7 = 0;
+      Delay( length );
+      PORTA_BIT7 = 1;
+      Delay( length );
+   }
+}
