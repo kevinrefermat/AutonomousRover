@@ -21,7 +21,7 @@ static nodeNumber_t closestNode;
 static nextState_t nextState;
 static nodeNumber_t nextTargetIndex;
 
-static nodeNumber_t targetNodes[] = { 2, 3, 1 };
+static nodeNumber_t targetNodes[] = { 1, 2, 3 };
 
 void main( void )
 {  

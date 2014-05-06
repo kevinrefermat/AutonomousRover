@@ -35,7 +35,7 @@ _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
   _Range   pZeroOut       0x550     2639
-  _Copy    *toCopyDownBeg 0xD88A
+  _Copy    *toCopyDownBeg 0xD875
 } _startupData;
 
 *********************************************************************************************
@@ -45,8 +45,8 @@ Section Name                    Size  Type     From       To       Segment
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
 .rodata                          498     R     0xC03B     0xC22C   ROM_C000
-.text                           5658     R     0xC22D     0xD846   ROM_C000
-.copy                             23     R     0xD88A     0xD8A0   ROM_C000
+.text                           5637     R     0xC22D     0xD831   ROM_C000
+.copy                             23     R     0xD875     0xD88B   ROM_C000
 .stack                           336   R/W      0x400      0x54F   RAM
 .data                             17   R/W      0x550      0x560   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
@@ -273,11 +273,11 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_ffdc                  2     R     0xFFDC     0xFFDD   .absSeg221
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg222
 .bss                            2622   R/W      0x561      0xF9E   RAM
-RUNTIME                           67     R     0xD847     0xD889   ROM_C000
+RUNTIME                           67     R     0xD832     0xD874   ROM_C000
 .vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):        18A7 (dec:     6311)
+READ_ONLY (R):        1892 (dec:     6290)
 READ_WRITE (R/W):      B9F (dec:     2975)
 NO_INIT (N/I):         104 (dec:      260)
 
@@ -525,13 +525,13 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           550       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LCMP_P                                   D847      15      21       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        D85C      14      20       2   RUNTIME     
-     _CASE_SEARCH_8_BYTE                       D870      1A      26       1   RUNTIME     
+     _LCMP_P                                   D832      15      21       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        D847      14      20       2   RUNTIME     
+     _CASE_SEARCH_8_BYTE                       D85B      1A      26       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- Rover.c.o --
 - PROCEDURES:
-     Delay                                     C22D      20      32       8   .text       
+     Delay                                     C22D      20      32      10   .text       
      InitializeTimers                          C24D      37      55       1   .text       
      TurnOnErrorLight                          C284       7       7       3   .text       
 - VARIABLES:
@@ -540,27 +540,26 @@ MODULE:                 -- MotorControlSystem.c.o --
      InitializeMotorControlSystem              C28B      34      52       1   .text       
      SetLeftTreadDrivePower                    C2BF       C      12       1   .text       
      SetRightTreadDrivePower                   C2CB       C      12       1   .text       
-     MoveForward                               C2D7      1A      26       3   .text       
-     MoveReverse                               C2F1      1A      26       2   .text       
-     CelebrateRotate                           C30B      34      52       2   .text       
-     Rotate                                    C33F      9C     156       2   .text       
-     StopMotion                                C3DB      1D      29       5   .text       
-     GetRoverInMotionFlag                      C3F8       4       4      11   .text       
-     SetRoverInMotionFlag                      C3FC       6       6       4   .text       
-     ClearRoverInMotionFlag                    C402       4       4       1   .text       
-     InitializePulseAccumulator                C406       F      15       4   .text       
-     DistanceToPulses                          C415      66     102       2   .text       
-     PulsesToDistance                          C47B       8       8       1   .text       
-     DegreesToPulses                           C483      1F      31       2   .text       
-     GetDistanceIntoCurrentRoute               C4A2       8       8       1   .text       
-     MotionCompleted                           C4AA       4       4       1   .text       
-     LeftTreadForward                          C4AE       7       7       3   .text       
-     RightTreadForward                         C4B5       7       7       3   .text       
-     LeftTreadReverse                          C4BC       7       7       3   .text       
-     RightTreadReverse                         C4C3       7       7       3   .text       
-     BrakeTreads                               C4CA       D      13       1   .text       
-     DisableTreads                             C4D7       7       7       5   .text       
-     EnableTreads                              C4DE       7       7       5   .text       
+     MoveForward                               C2D7      1A      26       2   .text       
+     CelebrateRotate                           C2F1      34      52       2   .text       
+     Rotate                                    C325      9C     156       2   .text       
+     StopMotion                                C3C1      1D      29       5   .text       
+     GetRoverInMotionFlag                      C3DE       4       4      11   .text       
+     SetRoverInMotionFlag                      C3E2       6       6       3   .text       
+     ClearRoverInMotionFlag                    C3E8       4       4       1   .text       
+     InitializePulseAccumulator                C3EC       F      15       3   .text       
+     DistanceToPulses                          C3FB      66     102       1   .text       
+     PulsesToDistance                          C461       8       8       1   .text       
+     DegreesToPulses                           C469      1F      31       2   .text       
+     GetDistanceIntoCurrentRoute               C488       8       8       1   .text       
+     MotionCompleted                           C490       4       4       1   .text       
+     LeftTreadForward                          C494       7       7       3   .text       
+     RightTreadForward                         C49B       7       7       3   .text       
+     LeftTreadReverse                          C4A2       7       7       2   .text       
+     RightTreadReverse                         C4A9       7       7       2   .text       
+     BrakeTreads                               C4B0       D      13       1   .text       
+     DisableTreads                             C4BD       7       7       4   .text       
+     EnableTreads                              C4C4       7       7       4   .text       
 - VARIABLES:
      LeftTreadPower                             561       1       1       1   .bss        
      RightTreadPower                            562       1       1       1   .bss        
@@ -569,19 +568,19 @@ MODULE:                 -- MotorControlSystem.c.o --
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
 MODULE:                 -- ObstacleAvoidanceSystem.c.o --
 - PROCEDURES:
-     InitializeObstacleAvoidanceSystem         C4E5      2E      46       1   .text       
-     EnablePeriodicObstacleDetection           C513      25      37       1   .text       
-     DisablePeriodicObstacleDetection          C538       4       4       1   .text       
-     SetPingTimer                              C53C       8       8       2   .text       
-     DetectClosestObstacle                     C544      1D      29       2   .text       
-     OutputPulseToPing                         C561      17      23       1   .text       
-     MeasureReturnPulseFromPing                C578      5C      92       1   .text       
-     SetPingRotationalPosition                 C5D4      1E      30       3   .text       
-     GetLeftEdgeOfObstacle                     C5F2      93     147       1   .text       
-     GetObstacleDetectedFlag                   C685       4       4       2   .text       
-     ClearObstacleDetectedFlag                 C689       4       4       2   .text       
-     DetectAndPlaceObstacle                    C68D      3A      58       1   .text       
-     PeriodicCheckForObstacles                 C6C7      17      23       1   .text       
+     InitializeObstacleAvoidanceSystem         C4CB      2E      46       1   .text       
+     EnablePeriodicObstacleDetection           C4F9      25      37       1   .text       
+     DisablePeriodicObstacleDetection          C51E       4       4       1   .text       
+     SetPingTimer                              C522       8       8       2   .text       
+     DetectClosestObstacle                     C52A      1D      29       2   .text       
+     OutputPulseToPing                         C547      17      23       1   .text       
+     MeasureReturnPulseFromPing                C55E      5C      92       1   .text       
+     SetPingRotationalPosition                 C5BA      1E      30       3   .text       
+     GetLeftEdgeOfObstacle                     C5D8      93     147       1   .text       
+     GetObstacleDetectedFlag                   C66B       4       4       2   .text       
+     ClearObstacleDetectedFlag                 C66F       4       4       2   .text       
+     DetectAndPlaceObstacle                    C673      3A      58       1   .text       
+     PeriodicCheckForObstacles                 C6AD      17      23       1   .text       
 - VARIABLES:
      OBSTACLE_NOT_SEEN_ERROR                   C03B       4       4       2   .rodata     
      ObstacleDetectedFlag                       566       1       1       3   .bss        
@@ -592,35 +591,35 @@ MODULE:                 -- ObstacleAvoidanceSystem.c.o --
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C6DE      6E     110       1   .text       
+     main                                      C6C4      6E     110       1   .text       
 - VARIABLES:
      targetNodes                                550       3       3       1   .data       
      nextState                                  56F       1       1       3   .bss        
      nextTargetIndex                            570       1       1       2   .bss        
 MODULE:                 -- NavigationSystem.c.o --
 - PROCEDURES:
-     InitializeNavigationSystem                C74C      A6     166       1   .text       
-     Dijkstra                                  C7F2     136     310       8   .text       
-     AddObstacle                               C928      2E      46       2   .text       
-     AddNode                                   C956      25      37       2   .text       
-     SetRoversPosition                         C97B      12      18       2   .text       
-     GetRoversPosition                         C98D      1C      28       4   .text       
-     SetRoversBearing                          C9A9       4       4       3   .text       
-     GetRoversBearing                          C9AD       4       4       1   .text       
-     GetRoversNodeId                           C9B1       3       3       4   .text       
-     UpdateSingleNodeConnections               C9B4      80     128       2   .text       
-     UpdateAllNodeConnections                  CA34      8A     138       2   .text       
-     NodesAreVisibleToEachOther                CABE      58      88       2   .text       
-     IntersectWithObstacle                     CB16      46      70       1   .text       
-     IntersectWithShape                        CB5C      44      68       1   .text       
-     IntersectWithSegment                      CBA0      42      66       1   .text       
-     IsAbove                                   CBE2      58      88       4   .text       
-     SetAdjacencyMatrixValue                   CC3A      39      57       2   .text       
-     GetAdjacencyMatrixValue                   CC73      3C      60       2   .text       
-     GetNodeCoordinates                        CCAF      29      41       2   .text       
-     NavigateToTarget                          CCD8     13A     314       3   .text       
-     FindNextTarget                            CE12      51      81       1   .text       
-     GetClosestNodeForTarget                   CE63      4B      75       1   .text       
+     InitializeNavigationSystem                C732      A6     166       1   .text       
+     Dijkstra                                  C7D8     136     310       8   .text       
+     AddObstacle                               C90E      2E      46       2   .text       
+     AddNode                                   C93C      25      37       2   .text       
+     SetRoversPosition                         C961      12      18       2   .text       
+     GetRoversPosition                         C973      1C      28       4   .text       
+     SetRoversBearing                          C98F       4       4       3   .text       
+     GetRoversBearing                          C993       4       4       1   .text       
+     GetRoversNodeId                           C997       3       3       4   .text       
+     UpdateSingleNodeConnections               C99A      80     128       2   .text       
+     UpdateAllNodeConnections                  CA1A      8A     138       2   .text       
+     NodesAreVisibleToEachOther                CAA4      58      88       2   .text       
+     IntersectWithObstacle                     CAFC      46      70       1   .text       
+     IntersectWithShape                        CB42      44      68       1   .text       
+     IntersectWithSegment                      CB86      42      66       1   .text       
+     IsAbove                                   CBC8      58      88       4   .text       
+     SetAdjacencyMatrixValue                   CC20      39      57       2   .text       
+     GetAdjacencyMatrixValue                   CC59      3C      60       2   .text       
+     GetNodeCoordinates                        CC95      29      41       2   .text       
+     NavigateToTarget                          CCBE     13A     314       3   .text       
+     FindNextTarget                            CDF8      51      81       1   .text       
+     GetClosestNodeForTarget                   CE49      4B      75       1   .text       
 - VARIABLES:
      TargetLookupTable                         C03F      7E     126       5   .rodata     
      RomNodeCoordinateList                     C0BD      28      40       7   .rodata     
@@ -641,39 +640,39 @@ MODULE:                 -- NavigationSystem.c.o --
      runtimeTarget                              F7D       6       6       5   .bss        
 MODULE:                 -- I2C.c.o --
 - PROCEDURES:
-     i2cDelay                                  CEAE       E      14      12   .text       
-     readSCL                                   CEBC      11      17       1   .text       
-     readSDA                                   CECD      12      18       6   .text       
-     clearSCL                                  CEDF       7       7       3   .text       
-     clearSDA                                  CEE6       7       7       3   .text       
-     readSCL_AllowClockStretching              CEED      19      25       5   .text       
-     i2cStartCond                              CF06      1F      31       1   .text       
-     i2cStopCond                               CF25      11      17       2   .text       
-     i2cWriteBit                               CF36      13      19       2   .text       
-     i2cReadBit                                CF49      15      21       2   .text       
-     I2CWriteByte                              CF5E      2D      45       1   .text       
-     I2CReadByte                               CF8B      2A      42       1   .text       
+     i2cDelay                                  CE94       E      14      12   .text       
+     readSCL                                   CEA2      11      17       1   .text       
+     readSDA                                   CEB3      12      18       6   .text       
+     clearSCL                                  CEC5       7       7       3   .text       
+     clearSDA                                  CECC       7       7       3   .text       
+     readSCL_AllowClockStretching              CED3      19      25       5   .text       
+     i2cStartCond                              CEEC      1F      31       1   .text       
+     i2cStopCond                               CF0B      11      17       2   .text       
+     i2cWriteBit                               CF1C      13      19       2   .text       
+     i2cReadBit                                CF2F      15      21       2   .text       
+     I2CWriteByte                              CF44      2D      45       1   .text       
+     I2CReadByte                               CF71      2A      42       1   .text       
 - VARIABLES:
      TimeOutTime                                556       1       1       1   .data       
      started                                    F83       1       1       3   .bss        
      timer                                      F84       1       1       3   .bss        
 MODULE:                 -- Math.c.o --
 - PROCEDURES:
-     arcTangent                                CFB5      BA     186       2   .text       
-     SquareRoot                                D06F      3A      58       2   .text       
-     GetFloorDistance                          D0A9      27      39       1   .text       
-     Distance                                  D0D0      4B      75       5   .text       
-     abs16                                     D11B       A      10       3   .text       
+     arcTangent                                CF9B      BA     186       2   .text       
+     SquareRoot                                D055      3A      58       2   .text       
+     GetFloorDistance                          D08F      27      39       1   .text       
+     Distance                                  D0B6      4B      75       5   .text       
+     abs16                                     D101       A      10       3   .text       
 - VARIABLES:
      TangentLut                                C135      B4     180       1   .rodata     
 MODULE:                 -- Compass.c.o --
 - PROCEDURES:
-     writeByteToCompass                        D125      28      40      11   .text       
-     InitializeCompass                         D14D      82     130       2   .text       
-     readByteFromCompass                       D1CF       C      12       6   .text       
-     GetDataFromCompass                        D1DB      60      96       1   .text       
-     GetASingleCompassReading                  D23B      36      54       2   .text       
-     GetAnAccurateCompassReading               D271      28      40       3   .text       
+     writeByteToCompass                        D10B      28      40      11   .text       
+     InitializeCompass                         D133      82     130       2   .text       
+     readByteFromCompass                       D1B5       C      12       6   .text       
+     GetDataFromCompass                        D1C1      60      96       1   .text       
+     GetASingleCompassReading                  D221      36      54       2   .text       
+     GetAnAccurateCompassReading               D257      28      40       3   .text       
 - VARIABLES:
      xShiftValue                                557       2       2       1   .data       
      yShiftValue                                559       2       2       1   .data       
@@ -684,29 +683,29 @@ MODULE:                 -- Compass.c.o --
      rawZData                                   F89       2       2       2   .bss        
 MODULE:                 -- PositioningSystem.c.o --
 - PROCEDURES:
-     InitializePositioningSystem               D299      21      33       1   .text       
-     GetAccurateLineOfSightDistanceToBeacon       D2BA      88     136       1   .text       
-     GetLineOfSightDistanceToBeacon            D342      A1     161       1   .text       
-     waitForAndDetectReceivedSonarPulse        D3E3      54      84       1   .text       
-     GetDistanceToBeacon                       D437       A      10       3   .text       
-     DetermineRoversPosition                   D441      91     145       2   .text       
-     GetBeaconGroup                            D4D2     1AF     431       2   .text       
-     ConvertUnitCircleAngleToCompassBearing       D681      14      20       1   .text       
+     InitializePositioningSystem               D27F      21      33       1   .text       
+     GetAccurateLineOfSightDistanceToBeacon       D2A0      88     136       1   .text       
+     GetLineOfSightDistanceToBeacon            D328      A1     161       1   .text       
+     waitForAndDetectReceivedSonarPulse        D3C9      54      84       1   .text       
+     GetDistanceToBeacon                       D41D       A      10       3   .text       
+     DetermineRoversPosition                   D427      91     145       2   .text       
+     GetBeaconGroup                            D4B8     1AF     431       2   .text       
+     ConvertUnitCircleAngleToCompassBearing       D667      14      20       1   .text       
 - VARIABLES:
      coverageZoneBeaconGroups                  C1E9      30      48       1   .rodata     
      distanceMeasurements                       F8B       A      10       8   .bss        
      distanceToBeacon                           F95       A      10       2   .bss        
 MODULE:                 -- Triangulation.c.o --
 - PROCEDURES:
-     Triangulate                               D695     132     306       2   .text       
-     GetTriangulationError                     D7C7       4       4       1   .text       
+     Triangulate                               D67B     132     306       2   .text       
+     GetTriangulationError                     D7AD       4       4       1   .text       
 - VARIABLES:
      beaconCoords                              C219      14      20       4   .rodata     
      triangulationError                         55F       2       2       6   .data       
 MODULE:                 -- Celebratory.c.o --
 - PROCEDURES:
-     InitializeCelebratory                     D7CB       A      10       1   .text       
-     Celebrate                                 D7D5      72     114       1   .text       
+     InitializeCelebratory                     D7B1       A      10       1   .text       
+     Celebrate                                 D7BB      77     119       1   .text       
 - VARIABLES:
 
 *********************************************************************************************
@@ -717,7 +716,7 @@ MODULE STATISTIC
   Start12.c.o                                  0     49      0
   rtshc12.c.o (ansisf.lib)                     0     67      0
   Rover.c.o                                    0     94      0
-  MotorControlSystem.c.o                       5    602      2
+  MotorControlSystem.c.o                       5    576      2
   ObstacleAvoidanceSystem.c.o                  9    505      6
   main.c.o                                     5    110      0
   NavigationSystem.c.o                      2581   1890    246
@@ -726,7 +725,7 @@ MODULE STATISTIC
   Compass.c.o                                 14    372      0
   PositioningSystem.c.o                       20   1020     48
   Triangulation.c.o                            2    310     20
-  Celebratory.c.o                              0    124      0
+  Celebratory.c.o                              0    129      0
   other                                      336     12     23
 
 *********************************************************************************************
@@ -734,8 +733,8 @@ SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
   Delay InitializeTimers TurnOnErrorLight InitializeMotorControlSystem 
-  SetLeftTreadDrivePower SetRightTreadDrivePower MoveForward MoveReverse 
-  CelebrateRotate Rotate StopMotion GetRoverInMotionFlag SetRoverInMotionFlag 
+  SetLeftTreadDrivePower SetRightTreadDrivePower MoveForward CelebrateRotate 
+  Rotate StopMotion GetRoverInMotionFlag SetRoverInMotionFlag 
   ClearRoverInMotionFlag InitializePulseAccumulator DistanceToPulses 
   PulsesToDistance DegreesToPulses GetDistanceIntoCurrentRoute MotionCompleted 
   LeftTreadForward RightTreadForward LeftTreadReverse RightTreadReverse 
@@ -1499,107 +1498,106 @@ OBJECT LIST SORTED BY ADDRESS
      TangentLut                                C135      B4     180       1   .rodata     
      coverageZoneBeaconGroups                  C1E9      30      48       1   .rodata     
      beaconCoords                              C219      14      20       4   .rodata     
-     Delay                                     C22D      20      32       8   .text       
+     Delay                                     C22D      20      32      10   .text       
      InitializeTimers                          C24D      37      55       1   .text       
      TurnOnErrorLight                          C284       7       7       3   .text       
      InitializeMotorControlSystem              C28B      34      52       1   .text       
      SetLeftTreadDrivePower                    C2BF       C      12       1   .text       
      SetRightTreadDrivePower                   C2CB       C      12       1   .text       
-     MoveForward                               C2D7      1A      26       3   .text       
-     MoveReverse                               C2F1      1A      26       2   .text       
-     CelebrateRotate                           C30B      34      52       2   .text       
-     Rotate                                    C33F      9C     156       2   .text       
-     StopMotion                                C3DB      1D      29       5   .text       
-     GetRoverInMotionFlag                      C3F8       4       4      11   .text       
-     SetRoverInMotionFlag                      C3FC       6       6       4   .text       
-     ClearRoverInMotionFlag                    C402       4       4       1   .text       
-     InitializePulseAccumulator                C406       F      15       4   .text       
-     DistanceToPulses                          C415      66     102       2   .text       
-     PulsesToDistance                          C47B       8       8       1   .text       
-     DegreesToPulses                           C483      1F      31       2   .text       
-     GetDistanceIntoCurrentRoute               C4A2       8       8       1   .text       
-     MotionCompleted                           C4AA       4       4       1   .text       
-     LeftTreadForward                          C4AE       7       7       3   .text       
-     RightTreadForward                         C4B5       7       7       3   .text       
-     LeftTreadReverse                          C4BC       7       7       3   .text       
-     RightTreadReverse                         C4C3       7       7       3   .text       
-     BrakeTreads                               C4CA       D      13       1   .text       
-     DisableTreads                             C4D7       7       7       5   .text       
-     EnableTreads                              C4DE       7       7       5   .text       
-     InitializeObstacleAvoidanceSystem         C4E5      2E      46       1   .text       
-     EnablePeriodicObstacleDetection           C513      25      37       1   .text       
-     DisablePeriodicObstacleDetection          C538       4       4       1   .text       
-     SetPingTimer                              C53C       8       8       2   .text       
-     DetectClosestObstacle                     C544      1D      29       2   .text       
-     OutputPulseToPing                         C561      17      23       1   .text       
-     MeasureReturnPulseFromPing                C578      5C      92       1   .text       
-     SetPingRotationalPosition                 C5D4      1E      30       3   .text       
-     GetLeftEdgeOfObstacle                     C5F2      93     147       1   .text       
-     GetObstacleDetectedFlag                   C685       4       4       2   .text       
-     ClearObstacleDetectedFlag                 C689       4       4       2   .text       
-     DetectAndPlaceObstacle                    C68D      3A      58       1   .text       
-     PeriodicCheckForObstacles                 C6C7      17      23       1   .text       
-     main                                      C6DE      6E     110       1   .text       
-     InitializeNavigationSystem                C74C      A6     166       1   .text       
-     Dijkstra                                  C7F2     136     310       8   .text       
-     AddObstacle                               C928      2E      46       2   .text       
-     AddNode                                   C956      25      37       2   .text       
-     SetRoversPosition                         C97B      12      18       2   .text       
-     GetRoversPosition                         C98D      1C      28       4   .text       
-     SetRoversBearing                          C9A9       4       4       3   .text       
-     GetRoversBearing                          C9AD       4       4       1   .text       
-     GetRoversNodeId                           C9B1       3       3       4   .text       
-     UpdateSingleNodeConnections               C9B4      80     128       2   .text       
-     UpdateAllNodeConnections                  CA34      8A     138       2   .text       
-     NodesAreVisibleToEachOther                CABE      58      88       2   .text       
-     IntersectWithObstacle                     CB16      46      70       1   .text       
-     IntersectWithShape                        CB5C      44      68       1   .text       
-     IntersectWithSegment                      CBA0      42      66       1   .text       
-     IsAbove                                   CBE2      58      88       4   .text       
-     SetAdjacencyMatrixValue                   CC3A      39      57       2   .text       
-     GetAdjacencyMatrixValue                   CC73      3C      60       2   .text       
-     GetNodeCoordinates                        CCAF      29      41       2   .text       
-     NavigateToTarget                          CCD8     13A     314       3   .text       
-     FindNextTarget                            CE12      51      81       1   .text       
-     GetClosestNodeForTarget                   CE63      4B      75       1   .text       
-     i2cDelay                                  CEAE       E      14      12   .text       
-     readSCL                                   CEBC      11      17       1   .text       
-     readSDA                                   CECD      12      18       6   .text       
-     clearSCL                                  CEDF       7       7       3   .text       
-     clearSDA                                  CEE6       7       7       3   .text       
-     readSCL_AllowClockStretching              CEED      19      25       5   .text       
-     i2cStartCond                              CF06      1F      31       1   .text       
-     i2cStopCond                               CF25      11      17       2   .text       
-     i2cWriteBit                               CF36      13      19       2   .text       
-     i2cReadBit                                CF49      15      21       2   .text       
-     I2CWriteByte                              CF5E      2D      45       1   .text       
-     I2CReadByte                               CF8B      2A      42       1   .text       
-     arcTangent                                CFB5      BA     186       2   .text       
-     SquareRoot                                D06F      3A      58       2   .text       
-     GetFloorDistance                          D0A9      27      39       1   .text       
-     Distance                                  D0D0      4B      75       5   .text       
-     abs16                                     D11B       A      10       3   .text       
-     writeByteToCompass                        D125      28      40      11   .text       
-     InitializeCompass                         D14D      82     130       2   .text       
-     readByteFromCompass                       D1CF       C      12       6   .text       
-     GetDataFromCompass                        D1DB      60      96       1   .text       
-     GetASingleCompassReading                  D23B      36      54       2   .text       
-     GetAnAccurateCompassReading               D271      28      40       3   .text       
-     InitializePositioningSystem               D299      21      33       1   .text       
-     GetAccurateLineOfSightDistanceToBeacon       D2BA      88     136       1   .text       
-     GetLineOfSightDistanceToBeacon            D342      A1     161       1   .text       
-     waitForAndDetectReceivedSonarPulse        D3E3      54      84       1   .text       
-     GetDistanceToBeacon                       D437       A      10       3   .text       
-     DetermineRoversPosition                   D441      91     145       2   .text       
-     GetBeaconGroup                            D4D2     1AF     431       2   .text       
-     ConvertUnitCircleAngleToCompassBearing       D681      14      20       1   .text       
-     Triangulate                               D695     132     306       2   .text       
-     GetTriangulationError                     D7C7       4       4       1   .text       
-     InitializeCelebratory                     D7CB       A      10       1   .text       
-     Celebrate                                 D7D5      72     114       1   .text       
-     _LCMP_P                                   D847      15      21       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        D85C      14      20       2   RUNTIME     
-     _CASE_SEARCH_8_BYTE                       D870      1A      26       1   RUNTIME     
+     MoveForward                               C2D7      1A      26       2   .text       
+     CelebrateRotate                           C2F1      34      52       2   .text       
+     Rotate                                    C325      9C     156       2   .text       
+     StopMotion                                C3C1      1D      29       5   .text       
+     GetRoverInMotionFlag                      C3DE       4       4      11   .text       
+     SetRoverInMotionFlag                      C3E2       6       6       3   .text       
+     ClearRoverInMotionFlag                    C3E8       4       4       1   .text       
+     InitializePulseAccumulator                C3EC       F      15       3   .text       
+     DistanceToPulses                          C3FB      66     102       1   .text       
+     PulsesToDistance                          C461       8       8       1   .text       
+     DegreesToPulses                           C469      1F      31       2   .text       
+     GetDistanceIntoCurrentRoute               C488       8       8       1   .text       
+     MotionCompleted                           C490       4       4       1   .text       
+     LeftTreadForward                          C494       7       7       3   .text       
+     RightTreadForward                         C49B       7       7       3   .text       
+     LeftTreadReverse                          C4A2       7       7       2   .text       
+     RightTreadReverse                         C4A9       7       7       2   .text       
+     BrakeTreads                               C4B0       D      13       1   .text       
+     DisableTreads                             C4BD       7       7       4   .text       
+     EnableTreads                              C4C4       7       7       4   .text       
+     InitializeObstacleAvoidanceSystem         C4CB      2E      46       1   .text       
+     EnablePeriodicObstacleDetection           C4F9      25      37       1   .text       
+     DisablePeriodicObstacleDetection          C51E       4       4       1   .text       
+     SetPingTimer                              C522       8       8       2   .text       
+     DetectClosestObstacle                     C52A      1D      29       2   .text       
+     OutputPulseToPing                         C547      17      23       1   .text       
+     MeasureReturnPulseFromPing                C55E      5C      92       1   .text       
+     SetPingRotationalPosition                 C5BA      1E      30       3   .text       
+     GetLeftEdgeOfObstacle                     C5D8      93     147       1   .text       
+     GetObstacleDetectedFlag                   C66B       4       4       2   .text       
+     ClearObstacleDetectedFlag                 C66F       4       4       2   .text       
+     DetectAndPlaceObstacle                    C673      3A      58       1   .text       
+     PeriodicCheckForObstacles                 C6AD      17      23       1   .text       
+     main                                      C6C4      6E     110       1   .text       
+     InitializeNavigationSystem                C732      A6     166       1   .text       
+     Dijkstra                                  C7D8     136     310       8   .text       
+     AddObstacle                               C90E      2E      46       2   .text       
+     AddNode                                   C93C      25      37       2   .text       
+     SetRoversPosition                         C961      12      18       2   .text       
+     GetRoversPosition                         C973      1C      28       4   .text       
+     SetRoversBearing                          C98F       4       4       3   .text       
+     GetRoversBearing                          C993       4       4       1   .text       
+     GetRoversNodeId                           C997       3       3       4   .text       
+     UpdateSingleNodeConnections               C99A      80     128       2   .text       
+     UpdateAllNodeConnections                  CA1A      8A     138       2   .text       
+     NodesAreVisibleToEachOther                CAA4      58      88       2   .text       
+     IntersectWithObstacle                     CAFC      46      70       1   .text       
+     IntersectWithShape                        CB42      44      68       1   .text       
+     IntersectWithSegment                      CB86      42      66       1   .text       
+     IsAbove                                   CBC8      58      88       4   .text       
+     SetAdjacencyMatrixValue                   CC20      39      57       2   .text       
+     GetAdjacencyMatrixValue                   CC59      3C      60       2   .text       
+     GetNodeCoordinates                        CC95      29      41       2   .text       
+     NavigateToTarget                          CCBE     13A     314       3   .text       
+     FindNextTarget                            CDF8      51      81       1   .text       
+     GetClosestNodeForTarget                   CE49      4B      75       1   .text       
+     i2cDelay                                  CE94       E      14      12   .text       
+     readSCL                                   CEA2      11      17       1   .text       
+     readSDA                                   CEB3      12      18       6   .text       
+     clearSCL                                  CEC5       7       7       3   .text       
+     clearSDA                                  CECC       7       7       3   .text       
+     readSCL_AllowClockStretching              CED3      19      25       5   .text       
+     i2cStartCond                              CEEC      1F      31       1   .text       
+     i2cStopCond                               CF0B      11      17       2   .text       
+     i2cWriteBit                               CF1C      13      19       2   .text       
+     i2cReadBit                                CF2F      15      21       2   .text       
+     I2CWriteByte                              CF44      2D      45       1   .text       
+     I2CReadByte                               CF71      2A      42       1   .text       
+     arcTangent                                CF9B      BA     186       2   .text       
+     SquareRoot                                D055      3A      58       2   .text       
+     GetFloorDistance                          D08F      27      39       1   .text       
+     Distance                                  D0B6      4B      75       5   .text       
+     abs16                                     D101       A      10       3   .text       
+     writeByteToCompass                        D10B      28      40      11   .text       
+     InitializeCompass                         D133      82     130       2   .text       
+     readByteFromCompass                       D1B5       C      12       6   .text       
+     GetDataFromCompass                        D1C1      60      96       1   .text       
+     GetASingleCompassReading                  D221      36      54       2   .text       
+     GetAnAccurateCompassReading               D257      28      40       3   .text       
+     InitializePositioningSystem               D27F      21      33       1   .text       
+     GetAccurateLineOfSightDistanceToBeacon       D2A0      88     136       1   .text       
+     GetLineOfSightDistanceToBeacon            D328      A1     161       1   .text       
+     waitForAndDetectReceivedSonarPulse        D3C9      54      84       1   .text       
+     GetDistanceToBeacon                       D41D       A      10       3   .text       
+     DetermineRoversPosition                   D427      91     145       2   .text       
+     GetBeaconGroup                            D4B8     1AF     431       2   .text       
+     ConvertUnitCircleAngleToCompassBearing       D667      14      20       1   .text       
+     Triangulate                               D67B     132     306       2   .text       
+     GetTriangulationError                     D7AD       4       4       1   .text       
+     InitializeCelebratory                     D7B1       A      10       1   .text       
+     Celebrate                                 D7BB      77     119       1   .text       
+     _LCMP_P                                   D832      15      21       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        D847      14      20       2   RUNTIME     
+     _CASE_SEARCH_8_BYTE                       D85B      1A      26       1   RUNTIME     
      _Vector_17                                FFDC       2       2       0   .abs_section_ffdc
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
 
@@ -1617,7 +1615,7 @@ Rover.c.o:
   TurnOffErrorLight FeetToInches OutputBeeps 
 MotorControlSystem.c.o:
   StabilizeTreads DisableTreadStabilization ConvertSignedWordToSignedByte 
-  AdjustTreadDrivePower CommenceTurnByTurnExecution 
+  AdjustTreadDrivePower MoveReverse CommenceTurnByTurnExecution 
   ExecuteNextTurnByTurnInstruction 
 NavigationSystem.c.o:
   UpdateTurnByTurnQueueFromNodeSequence GetNextTurnByTurnElement 
@@ -1664,49 +1662,49 @@ Triangulation.c.o:
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xD88A ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xD875 ---- SIZE       4 ---
 Filling bytes inserted
  00110550
-------- ROM-ADDRESS: 0xD88E ---- RAM-ADDRESS: 0x550 ---- SIZE       3 ---
+------- ROM-ADDRESS: 0xD879 ---- RAM-ADDRESS: 0x550 ---- SIZE       3 ---
 Name of initialized Object : targetNodes
- 020301
-------- ROM-ADDRESS: 0xD891 ---- RAM-ADDRESS: 0x553 ---- SIZE       1 ---
+ 010203
+------- ROM-ADDRESS: 0xD87C ---- RAM-ADDRESS: 0x553 ---- SIZE       1 ---
 Name of initialized Object : RamNumberOfNodes
  01
-------- ROM-ADDRESS: 0xD892 ---- RAM-ADDRESS: 0x554 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD87D ---- RAM-ADDRESS: 0x554 ---- SIZE       1 ---
 Name of initialized Object : NumberOfNodes
  0B
-------- ROM-ADDRESS: 0xD893 ---- RAM-ADDRESS: 0x555 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD87E ---- RAM-ADDRESS: 0x555 ---- SIZE       1 ---
 Name of initialized Object : NumberOfObstacles
  0A
-------- ROM-ADDRESS: 0xD894 ---- RAM-ADDRESS: 0x556 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD87F ---- RAM-ADDRESS: 0x556 ---- SIZE       1 ---
 Name of initialized Object : TimeOutTime
  64
-------- ROM-ADDRESS: 0xD895 ---- RAM-ADDRESS: 0x557 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xD880 ---- RAM-ADDRESS: 0x557 ---- SIZE       2 ---
 Name of initialized Object : xShiftValue
  FFF0
-------- ROM-ADDRESS: 0xD897 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD882 ---- SIZE       1 ---
 Filling bytes inserted
  00
-------- ROM-ADDRESS: 0xD898 ---- RAM-ADDRESS: 0x55A ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD883 ---- RAM-ADDRESS: 0x55A ---- SIZE       1 ---
 Name of initialized Object : yShiftValue:1
  7B
-------- ROM-ADDRESS: 0xD899 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD884 ---- SIZE       1 ---
 Filling bytes inserted
  00
-------- ROM-ADDRESS: 0xD89A ---- RAM-ADDRESS: 0x55C ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD885 ---- RAM-ADDRESS: 0x55C ---- SIZE       1 ---
 Name of initialized Object : yScaleValueNumerator:1
  07
-------- ROM-ADDRESS: 0xD89B ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD886 ---- SIZE       1 ---
 Filling bytes inserted
  00
-------- ROM-ADDRESS: 0xD89C ---- RAM-ADDRESS: 0x55E ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD887 ---- RAM-ADDRESS: 0x55E ---- SIZE       1 ---
 Name of initialized Object : yScaleValueDenominator:1
  64
-------- ROM-ADDRESS: 0xD89D ---- RAM-ADDRESS: 0x55F ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xD888 ---- RAM-ADDRESS: 0x55F ---- SIZE       2 ---
 Name of initialized Object : triangulationError
  7FFF
-------- ROM-ADDRESS: 0xD89F ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xD88A ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1725,9 +1723,6 @@ SetLeftTreadDrivePower    USES _PWMDTY23 _PWMPER23 LeftTreadPower
 SetRightTreadDrivePower   USES _PWMDTY23 _PWMPER23 RightTreadPower 
 MoveForward               USES DistanceToPulses InitializePulseAccumulator 
                                 DisableTreads LeftTreadForward RightTreadForward 
-                                SetRoverInMotionFlag EnableTreads 
-MoveReverse               USES DistanceToPulses InitializePulseAccumulator 
-                                DisableTreads LeftTreadReverse RightTreadReverse 
                                 SetRoverInMotionFlag EnableTreads 
 CelebrateRotate           USES DegreesToPulses InitializePulseAccumulator 
                                 DisableTreads StopMotion LeftTreadForward RightTreadReverse 
@@ -1863,8 +1858,8 @@ Triangulate               USES GetDistanceToBeacon triangulationError
                                 Triangulate beaconCoords Distance abs16 
 GetTriangulationError     USES triangulationError 
 InitializeCelebratory     USES _DDRAB _PORTAB 
-Celebrate                 USES _PORTAB MoveForward GetRoverInMotionFlag 
-                                MoveReverse CelebrateRotate Delay 
+Celebrate                 USES _PORTAB GetRoverInMotionFlag Delay 
+                                CelebrateRotate MoveForward 
 _Vector_17                USES MotionCompleted 
 _Vector_9                 USES PeriodicCheckForObstacles 
 
@@ -2187,26 +2182,10 @@ DEPENDENCY TREE
  |  |     
  |  +- Celebrate           
  |     | 
- |     +- MoveForward          (see above)
- |     |  
  |     +- GetRoverInMotionFlag (see above)
  |     |  
- |     +- MoveReverse         
- |     |  | 
- |     |  +- DistanceToPulses     (see above)
- |     |  |  
- |     |  +- InitializePulseAccumulator (see above)
- |     |  |  
- |     |  +- DisableTreads        (see above)
- |     |  |  
- |     |  +- LeftTreadReverse     (see above)
- |     |  |  
- |     |  +- RightTreadReverse    (see above)
- |     |  |  
- |     |  +- SetRoverInMotionFlag (see above)
- |     |  |  
- |     |  +- EnableTreads         (see above)
- |     |     
+ |     +- Delay                (see above)
+ |     |  
  |     +- CelebrateRotate     
  |     |  | 
  |     |  +- DegreesToPulses      (see above)
@@ -2229,7 +2208,7 @@ DEPENDENCY TREE
  |     |  |  
  |     |  +- EnableTreads         (see above)
  |     |     
- |     +- Delay                (see above)
+ |     +- MoveForward          (see above)
  |        
  +- _Startup            
     | 
@@ -2260,5 +2239,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 6311
+Total size of all blocks to be downloaded: 6290
 
