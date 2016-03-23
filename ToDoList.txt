@@ -1,5 +1,0 @@
-Setup each beacon
-
-Create a test program to get from A to B
-
-Implement modular GoTo function for main
