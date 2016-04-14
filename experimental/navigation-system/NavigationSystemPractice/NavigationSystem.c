@@ -348,11 +348,13 @@ void printNodeSequence()
       printf( "%d inches from %d to %d\n", RamDistanceSequence[ i ], RamNodeSequence[ i ], RamNodeSequence[ i + 1 ] );
 }
 
+#define SCALE_FACTOR 12
+
 void printEnvironment()
 {
    sWord width, height, row, column, i, j, k, left, right, top, bottom;
-   width = RIGHT_OF_ROOM * 2 / 6;
-   height = TOP_OF_ROOM / 6;
+   width = RIGHT_OF_ROOM * 2 / SCALE_FACTOR;
+   height = TOP_OF_ROOM / SCALE_FACTOR;
    char MatrixOfRoom[ height ][ width ];
 
    for ( row = 0; row < height; row++ )
@@ -369,10 +371,10 @@ void printEnvironment()
 
    for ( i = 0; i < RomNumberOfObstacles; i++ )
    {
-      left = RomObstacleList[ i ].left * 2 / 6;
-      right = RomObstacleList[ i ].right * 2 / 6;
-      top = RomObstacleList[ i ].top / 6;
-      bottom = RomObstacleList[ i ].bottom / 6;
+      left = RomObstacleList[ i ].left * 2 / SCALE_FACTOR;
+      right = RomObstacleList[ i ].right * 2 / SCALE_FACTOR;
+      top = RomObstacleList[ i ].top / SCALE_FACTOR;
+      bottom = RomObstacleList[ i ].bottom / SCALE_FACTOR;
       
       printf( "left = %3d   right = %3d   top = %3d   bottom = %3d\n", left, right, top, bottom );
 
@@ -387,10 +389,10 @@ void printEnvironment()
    
    for ( i = 0; i < RamNumberOfObstacles; i++ )
    {
-      left = RamObstacleList[ i ].left * 2 / 6;
-      right = RamObstacleList[ i ].right * 2 / 6;
-      top = RamObstacleList[ i ].top / 6;
-      bottom = RamObstacleList[ i ].bottom / 6;
+      left = RamObstacleList[ i ].left * 2 / SCALE_FACTOR;
+      right = RamObstacleList[ i ].right * 2 / SCALE_FACTOR;
+      top = RamObstacleList[ i ].top / SCALE_FACTOR;
+      bottom = RamObstacleList[ i ].bottom / SCALE_FACTOR;
       
       printf( "left = %3d   right = %3d   top = %3d   bottom = %3d\n", left, right, top, bottom );
 
@@ -405,14 +407,14 @@ void printEnvironment()
 
    for ( i = 0; i < RomNumberOfNodes; i++ )
    {
-      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / 6 ][ RomNodeCoordinateList[ i ].x * 2 / 6 ] = i % 10 + 0x30;
-      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / 6 ][ RomNodeCoordinateList[ i ].x * 2 / 6 - 1 ] = i / 10 + 0x30;
+      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / SCALE_FACTOR ][ RomNodeCoordinateList[ i ].x * 2 / SCALE_FACTOR ] = i % 10 + 0x30;
+      MatrixOfRoom[ RomNodeCoordinateList[ i ].y / SCALE_FACTOR ][ RomNodeCoordinateList[ i ].x * 2 / SCALE_FACTOR - 1 ] = i / 10 + 0x30;
    }
    
    for ( i = 0; i < RamNumberOfNodes; i++ )
    {
-      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / 6 ][ RamNodeCoordinateList[ i ].x * 2 / 6 ] = ( i + RomNumberOfNodes ) % 10 + 0x30;
-      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / 6 ][ RamNodeCoordinateList[ i ].x * 2 / 6 - 1 ] = ( i + RomNumberOfNodes ) / 10 + 0x30;
+      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / SCALE_FACTOR ][ RamNodeCoordinateList[ i ].x * 2 / SCALE_FACTOR ] = ( i + RomNumberOfNodes ) % 10 + 0x30;
+      MatrixOfRoom[ RamNodeCoordinateList[ i ].y / SCALE_FACTOR ][ RamNodeCoordinateList[ i ].x * 2 / SCALE_FACTOR - 1 ] = ( i + RomNumberOfNodes ) / 10 + 0x30;
    }
 
    for ( row = 0; row < height; row++ )
