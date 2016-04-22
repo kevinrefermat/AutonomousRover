@@ -7,7 +7,7 @@ The task was to design and build an autonomous rover. The rover had to be able t
 
 Apart from the above mentioned requirements, no further direction was provided.
 
-![EE Lab](https://cloud.githubusercontent.com/assets/3867343/14502973/c4831cfa-0162-11e6-9d8d-908c2a0d0967.jpg)
+![EE Lab](https://cloud.githubusercontent.com/assets/3867343/14730271/b3e57e40-07f9-11e6-9107-fcd96479d3d3.jpg)
 
 ##Architecture
 There were several logical units of functionality that the rover needed to have in order to accomplish its goals. It needed to be able to:
@@ -21,7 +21,7 @@ There were several logical units of functionality that the rover needed to have 
 
 The functionality was broken down into 6 modules and the system was designed to keep all the modules as loosely coupled as possible.
 
-![System Modules](https://cloud.githubusercontent.com/assets/3867343/14503280/45352c5c-0164-11e6-9c5b-c0fd9ca44631.jpg)
+![System Modules](https://cloud.githubusercontent.com/assets/3867343/14730272/b4080780-07f9-11e6-879f-ea2b5794bede.jpg)
 
 ###Positioning System
 The **positioning system** was responsible for determining the rover's XY coordinates and its current bearing. It was arguably the most important module in the system and one of the most challenging to implement well.
@@ -35,22 +35,23 @@ Because radio waves travel so quickly and the microcontrollers on the rover and 
 
 It is already common to use sound to calculate distances to things. To determine her/his distance from lightning, a person is advised to start counting seconds when the lightning is seen and then stop counting when it is heard. The distance in miles to the lightning is roughly the number of seconds counted divided by 5.
 
-![Lightning](https://cloud.githubusercontent.com/assets/3867343/14502965/c46476c4-0162-11e6-9569-1cd441a1385b.jpg)
+![Lightning](https://cloud.githubusercontent.com/assets/3867343/14730263/b3b63da6-07f9-11e6-8cf0-f5c718a6b79f.jpg)
 
 ####Implementation
 
 Each beacon was equipped with an RF receiver, an ultrasonic transmitter, a unique identifier, and a microcontroller to connect it all together. When a beacon received an RF transmission containing its unique identifier, it would transmit an ultrasonic pulse.
 
-![Beacon](https://cloud.githubusercontent.com/assets/3867343/14502960/c4455848-0162-11e6-9ff8-19f9e461321c.jpg) 
-![Transducer Array](https://cloud.githubusercontent.com/assets/3867343/14502970/c479ba20-0162-11e6-9004-376f309216d2.jpg)
+![Beacon](https://cloud.githubusercontent.com/assets/3867343/14730261/b3ada3a8-07f9-11e6-9951-dacf6cd68e05.jpg) 
+
+![Transducer Array](https://cloud.githubusercontent.com/assets/3867343/14730270/b3dff038-07f9-11e6-9d09-2a39667b37a7.jpg)
 
 On the rover's side of things, when the rover wanted to trilaterate its position, it would send an RF message out containing the identifier of the beacon that it wanted to measure its distance from and then it would start a timer. When the rover detected an ultrasonic pulse, the rover would stop the timer. The time on the timer was then multiplied by the speed of sound to get the distance.
 
-![Positioning System](https://cloud.githubusercontent.com/assets/3867343/14511375/f073660c-018b-11e6-8bec-394e63d2b087.jpg)
+![Positioning System](https://cloud.githubusercontent.com/assets/3867343/14730259/b3a89e4e-07f9-11e6-83eb-cdfecbdfc481.jpg)
 
 Once the rover had the distance to three beacons, it calculated its position.
 
-![Trilateration](https://cloud.githubusercontent.com/assets/3867343/14511389/064c05f6-018c-11e6-8960-989368850628.jpg)
+![Trilateration](https://cloud.githubusercontent.com/assets/3867343/14730268/b3da2a54-07f9-11e6-9eac-dc16bd36aab1.jpg)
 
 ####Results
 
@@ -62,7 +63,7 @@ The **navigation system** would take the rover's current position as input and w
 
 There were certain known obstacles in the rover's environment, namely walls and furniture. There could also be unknown obstacles, say a backpack on the floor. The navigation system organized the environment into a set of waypoints and obstacles. There was a numbered waypoint on the outside of each convex obstacle corner as seen below. This is an ASCII art manifestation of the rover's environmental model.
 
-![ASCII Art Lab](https://cloud.githubusercontent.com/assets/3867343/14541382/9baba4d2-023e-11e6-9f25-971891f85107.png)
+![ASCII Art Lab](https://cloud.githubusercontent.com/assets/3867343/14730323/4b1bcc4c-07fa-11e6-8a61-51b12e22c104.jpg)
 
 When a new obstacle was detected, the obstacle's position was calculated and added to the rover's model of the environment. 4 new waypoints were also added just outside the corners of the obstacle. The graph of the environment would then be updated, which involved reestablishing which waypoints were connected. Often times a discovered obstacle would block a previously existing connection and thus that connection disappears. The 4 new waypoints added around the obstacle, however, gave the rover a decent shot of being able to take approximately the same route.
 
@@ -75,7 +76,7 @@ The **motor control system** converts `rotate` or `moveForward` commands to digi
 
 The challenging part of this system was to develop accurate feedback mechanisms so that the rover reliably rotated and moved forward the proper amount. Because the rover had two independent treads, the rover always rotated a bit differently depending on the slippage of each tread and the amount of power each tread was getting. Likewise, when moving the rover forward, depending on the battery's charge state, the rover's speed would vary. Thus simply timing the rover's forward motion was not a reliable way to travel a specific distance. Feedback mechanisms were needed.
 
-![Motor Control System](https://cloud.githubusercontent.com/assets/3867343/14511374/f0731b98-018b-11e6-8bf5-d588a2b26feb.jpg)
+![Motor Control System](https://cloud.githubusercontent.com/assets/3867343/14730264/b3b9c1d8-07f9-11e6-845b-2127f8333eb7.jpg)
 
 ####Forward Feedback
 
@@ -104,15 +105,15 @@ The **celebratory routine** was predefined set of celebratory maneuvers the rove
 
 ##Photos
 
-![](https://cloud.githubusercontent.com/assets/3867343/14502961/c457c5e6-0162-11e6-82b6-0ce205b13907.jpg)
+![](https://cloud.githubusercontent.com/assets/3867343/14730265/b3c9b390-07f9-11e6-8df2-ef59d23cd339.jpg)
 
 All the bits and pieces: 5 beacons, 5 ultrasonic transducer arrays to be strategically placed upon the ceiling, and 1 rover.  
 
-![](https://cloud.githubusercontent.com/assets/3867343/14502967/c46f2628-0162-11e6-99c2-f8c2aeedd190.jpg)
+![](https://cloud.githubusercontent.com/assets/3867343/14730267/b3d9cd3e-07f9-11e6-8965-d23fe3844c98.jpg)
 
 Our "loosely coupled" system. The original plan was to print up some circuit boards to clean everything up but this fell by the wayside as the deadline approached.
   
-![](https://cloud.githubusercontent.com/assets/3867343/14502963/c461b06a-0162-11e6-8846-f5eb3b6a1561.jpg)
+![](https://cloud.githubusercontent.com/assets/3867343/14730262/b3b425de-07f9-11e6-9665-29f7ac5ad498.jpg)
 
 Pictured above, the rover is deep in thought about the upcoming demo day...
 
